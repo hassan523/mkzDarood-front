@@ -5,23 +5,45 @@ import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
 import colors from '../../../utils/colors/colors';
 import Field from '../../../components/Field/Field';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
-const Login = ({ navigation }: { navigation: Navigation }) => {
+const Signup = ({ navigation }: { navigation: Navigation }) => {
   const [data, setData] = useState({
+    username: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
-  const { email, password } = data;
+  const { username, email, password, confirmPassword } = data;
 
   const handleData = ({ name, value }: { name: string; value: string }) => {
     setData({ ...data, [name]: value });
   };
-
   return (
-    <AuthLayout>
+    <AuthLayout
+      heading="Create Account"
+      isBack
+      onBack={() => navigation.goBack()}
+    >
       <View style={styles.Container}>
+        <View style={styles.FieldContainer}>
+          <Text style={styles.Label}>Usename</Text>
+          <Field
+            placeHolder="Enter Usename"
+            type="text"
+            isIcon={
+              <FontAwesome5
+                name="user-alt"
+                size={20}
+                color={colors.PrimaryColor}
+              />
+            }
+            value={username}
+            onChange={value => handleData({ name: 'username', value })}
+          />
+        </View>
         <View style={styles.FieldContainer}>
           <Text style={styles.Label}>Email or Phone Number</Text>
           <Field
@@ -44,20 +66,25 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
             onChange={value => handleData({ name: 'password', value })}
           />
         </View>
-        <View style={styles.Forget}>
-          <TouchableOpacity>
-            <Text style={[styles.Label, { color: colors.PrimaryColor }]}>
-              Forget Password?
-            </Text>
-          </TouchableOpacity>
+        <View style={styles.FieldContainer}>
+          <Text style={styles.Label}>Confirm Password</Text>
+          <Field
+            placeHolder="Enter Confirm Password"
+            type="password"
+            isIcon={
+              <Fontisto name="locked" size={20} color={colors.PrimaryColor} />
+            }
+            value={confirmPassword}
+            onChange={value => handleData({ name: 'confirmPassword', value })}
+          />
         </View>
-        <Button name="Sign in" />
+        <Button name="Create Account" />
       </View>
       <View style={styles.BottomLine}>
-        <Text style={styles.BottomText}>Don't have account?</Text>
-        <TouchableOpacity onPress={()=> navigation.navigate('Signup')}>
+        <Text style={styles.BottomText}>Already have account?</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>
-            Sign Up
+            Login
           </Text>
         </TouchableOpacity>
       </View>
@@ -65,7 +92,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
   );
 };
 
-export default Login;
+export default Signup;
 
 const styles = StyleSheet.create({
   Container: {
@@ -84,10 +111,6 @@ const styles = StyleSheet.create({
     fontFamily: Font.font600,
     fontSize: 16,
     color: colors.textColor,
-  },
-  Forget: {
-    width: '100%',
-    alignItems: 'flex-end',
   },
   BottomLine: {
     position: 'absolute',

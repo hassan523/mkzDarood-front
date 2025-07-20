@@ -2,6 +2,7 @@ import React, { JSX } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from '../screens/Auth/LoginScreen/Login';
+import Signup from '../screens/Auth/SignupScreen/Signup';
 
 interface AuthNavigation {
   initRoute: string;
@@ -21,6 +22,11 @@ const AuthNavigation = ({ initRoute }: AuthNavigation): JSX.Element => {
           name="Login"
           component={Login}
           options={{ title: 'Login' }}
+        />
+        <Stack.Screen
+          name="Signup"
+          component={Signup}
+          options={{ title: 'Signup' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
