@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Login from '../screens/Auth/LoginScreen/Login';
 import Signup from '../screens/Auth/SignupScreen/Signup';
+import Otp from '../screens/Auth/OtpScreen/Otp';
 
 interface AuthNavigation {
   initRoute: string;
@@ -27,6 +28,11 @@ const AuthNavigation = ({ initRoute }: AuthNavigation): JSX.Element => {
           name="Signup"
           component={Signup}
           options={{ title: 'Signup' }}
+        />
+        <Stack.Screen
+          name="Otp"
+          component={Otp}
+          options={{ title: 'Otp' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -78,7 +78,10 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             onChange={value => handleData({ name: 'confirmPassword', value })}
           />
         </View>
-        <Button name="Create Account" />
+        <Button
+          name="Create Account"
+          onPress={() => navigation.navigate('Otp')}
+        />
       </View>
       <View style={styles.BottomLine}>
         <Text style={styles.BottomText}>Already have account?</Text>
