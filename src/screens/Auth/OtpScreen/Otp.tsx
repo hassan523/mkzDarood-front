@@ -68,10 +68,11 @@ const Otp = ({ navigation }: { navigation: Navigation }) => {
           <Text style={styles.Heading}>Verification Code</Text>
           <View style={styles.InnerText}>
             <Text
-              style={[
-                styles.Heading,
-                { fontSize: 16, fontFamily: Font.font600 },
-              ]}
+              style={{
+                fontSize: 16,
+                fontFamily: Font.font600,
+                color: colors.SecTextColor,
+              }}
             >
               We have sent the code to
             </Text>
