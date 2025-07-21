@@ -1,5 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import {
+  Animated,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, { useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
 import colors from '../../../utils/colors/colors';
@@ -7,61 +14,115 @@ import Field from '../../../components/Field/Field';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
+import BtSheets from '../../../components/BtSheets/BtSheets';
+import BottomSheet from '@gorhom/bottom-sheet';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    email: string;
+    password: string;
+  }>({
     email: '',
     password: '',
   });
   const { email, password } = data;
 
+  const [forgotEmail, setForgotEmail] = useState<string>('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
   const handleData = ({ name, value }: { name: string; value: string }) => {
     setData({ ...data, [name]: value });
   };
 
+  const handleOpenSheet = () => {
+    setIsOpen(true);
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleCloseSheet = () => {
+    setIsOpen(false);
+    Keyboard.dismiss();
+    bottomSheetRef.current?.close();
+  };
+
   return (
-    <AuthLayout>
-      <View style={styles.Container}>
-        <View style={styles.FieldContainer}>
+    <>
+      <AuthLayout>
+        <View style={styles.Container}>
+          <View style={styles.FieldContainer}>
+            <Text style={styles.Label}>Email or Phone Number</Text>
+            <Field
+              placeHolder="Enter Email or Phone Number"
+              type="email"
+              isIcon
+              value={email}
+              onChange={value => handleData({ name: 'email', value })}
+              disabled={isOpen}
+            />
+          </View>
+          <View style={styles.FieldContainer}>
+            <Text style={styles.Label}>Password</Text>
+            <Field
+              placeHolder="Enter Password"
+              type="password"
+              isIcon={
+                <Fontisto name="locked" size={20} color={colors.PrimaryColor} />
+              }
+              value={password}
+              onChange={value => handleData({ name: 'password', value })}
+              disabled={isOpen}
+            />
+          </View>
+          <View style={styles.Forget}>
+            <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen}>
+              <Text style={[styles.Label, { color: colors.PrimaryColor }]}>
+                Forget Password?
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Button name="Sign in" disabled={isOpen} />
+        </View>
+        <View style={styles.BottomLine}>
+          <Text style={styles.BottomText}>Don't have account?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>
+              Sign Up
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* {isOpen && (
+          <TouchableOpacity
+            style={styles.Overlay}
+            activeOpacity={1}
+            onPress={handleCloseSheet}
+          />
+        )} */}
+      </AuthLayout>
+
+      <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet}>
+        <Text style={styles.ForgotHeading}>Forgot Password</Text>
+        <Text style={styles.InnerText}>Enter your Email or Phone Number</Text>
+        <View style={[styles.FieldContainer, { marginBottom: 25 }]}>
           <Text style={styles.Label}>Email or Phone Number</Text>
           <Field
             placeHolder="Enter Email or Phone Number"
             type="email"
             isIcon
-            value={email}
-            onChange={value => handleData({ name: 'email', value })}
+            value={forgotEmail}
+            onChange={setForgotEmail}
           />
         </View>
-        <View style={styles.FieldContainer}>
-          <Text style={styles.Label}>Password</Text>
-          <Field
-            placeHolder="Enter Password"
-            type="password"
-            isIcon={
-              <Fontisto name="locked" size={20} color={colors.PrimaryColor} />
-            }
-            value={password}
-            onChange={value => handleData({ name: 'password', value })}
-          />
-        </View>
-        <View style={styles.Forget}>
-          <TouchableOpacity>
-            <Text style={[styles.Label, { color: colors.PrimaryColor }]}>
-              Forget Password?
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Button name="Sign in" />
-      </View>
-      <View style={styles.BottomLine}>
-        <Text style={styles.BottomText}>Don't have account?</Text>
-        <TouchableOpacity onPress={()=> navigation.navigate('Signup')}>
-          <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>
-            Sign Up
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </AuthLayout>
+        <Button
+          name="Send Code"
+          onPress={() => {
+            navigation.navigate('Otp');
+          }}
+        />
+      </BtSheets>
+    </>
   );
 };
 
@@ -103,5 +164,20 @@ const styles = StyleSheet.create({
     color: colors.textColor,
     fontFamily: Font.font600,
     fontSize: 15,
+  },
+  ForgotHeading: {
+    fontFamily: Font.font600,
+    fontSize: 18,
+    color: colors.textColor,
+  },
+  InnerText: {
+    fontFamily: Font.font600,
+    fontSize: 16,
+    color: colors.SecTextColor,
+  },
+  Overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1,
   },
 });
