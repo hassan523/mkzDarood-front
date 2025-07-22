@@ -5,6 +5,7 @@ import {
   NativeSyntheticEvent,
   Text,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import React, { useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
@@ -13,8 +14,24 @@ import colors from '../../../utils/colors/colors';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import BtSheets from '../../../components/BtSheets/BtSheets';
+import BottomSheet from '@gorhom/bottom-sheet';
 
-const Otp = ({ navigation }: { navigation: Navigation }) => {
+const Otp = ({
+  route,
+  navigation,
+}: {
+  route: {
+    params: {
+      type: string;
+    };
+  };
+  navigation: Navigation;
+}) => {
+  const { type } = route.params;
+
+  const [isOpen, setIsOpen] = useState(false);
   const [verificationCode, setVerificationCode] = useState<string[]>([
     '',
     '',
@@ -23,6 +40,18 @@ const Otp = ({ navigation }: { navigation: Navigation }) => {
     '',
   ]);
   const inputs = useRef<(TextInput | null)[]>(Array(5).fill(null));
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  const handleOpenSheet = () => {
+    setIsOpen(true);
+    bottomSheetRef.current?.expand();
+  };
+
+  const handleCloseSheet = () => {
+    setIsOpen(false);
+    Keyboard.dismiss();
+    bottomSheetRef.current?.close();
+  };
 
   const handleChangeCode = (text: string, index: number) => {
     const updatedCode = [...verificationCode];
@@ -53,92 +82,141 @@ const Otp = ({ navigation }: { navigation: Navigation }) => {
   };
 
   return (
-    <AuthLayout
-      heading="Verification"
-      isBack
-      onBack={() => navigation.goBack()}
-    >
-      <View style={styles.Container}>
-        <View style={styles.IconContainer}>
-          <View style={styles.IconSecContainer}>
-            <Fontisto name="locked" size={40} color={colors.SecondaryColor} />
+    <>
+      <AuthLayout
+        heading="Verification"
+        isBack
+        onBack={() => navigation.goBack()}
+      >
+        <View style={styles.Container}>
+          <View style={styles.IconContainer}>
+            <View style={styles.IconSecContainer}>
+              <Fontisto name="locked" size={40} color={colors.SecondaryColor} />
+            </View>
           </View>
-        </View>
-        <View style={styles.HeadingContainer}>
-          <Text style={styles.Heading}>Verification Code</Text>
-          <View style={styles.InnerText}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: Font.font600,
-                color: colors.SecTextColor,
-              }}
-            >
-              We have sent the code to
-            </Text>
-            <Text
-              style={[
-                styles.Heading,
-                { fontSize: 16, fontFamily: Font.font600 },
-              ]}
-            >
-              lorem@example.com
-            </Text>
-          </View>
-        </View>
-        <View style={styles.codeContainer}>
-          {[0, 1, 2, 3, 4].map(index => (
-            <TextInput
-              ref={ref => {
-                if (ref && inputs.current) {
-                  inputs.current[index] = ref;
-                }
-              }}
-              key={index}
-              style={styles.codeInput}
-              value={verificationCode[index]}
-              onChangeText={text => handleChangeCode(text, index)}
-              onKeyPress={e => handleKeyPress(e, index)}
-              keyboardType="number-pad"
-              maxLength={1}
-              placeholder="-"
-              placeholderTextColor="black"
-              returnKeyType={index === 4 ? 'done' : 'next'}
-              onSubmitEditing={() => {
-                if (index < 4) {
-                  inputs.current[index + 1]?.focus();
-                }
-              }}
-            />
-          ))}
-        </View>
-        <View style={styles.BtnContainer}>
-          <Button name="Submit" onPress={() => {}} />
-          <View style={styles.ResendContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: Font.font600,
-                color: colors.SecTextColor,
-              }}
-            >
-              Didn’t receive the code?
-            </Text>
-            <TouchableOpacity>
+          <View style={styles.HeadingContainer}>
+            <Text style={styles.Heading}>Verification Code</Text>
+            <View style={styles.InnerText}>
               <Text
                 style={{
                   fontSize: 16,
-                  fontFamily: Font.font700,
-                  color: colors.PrimaryColor,
+                  fontFamily: Font.font600,
+                  color: colors.SecTextColor,
                 }}
               >
-                Resend
+                We have sent the code to
               </Text>
-            </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: Font.font600,
+                  color: colors.SecTextColor,
+                }}
+              >
+                lorem@example.com
+              </Text>
+            </View>
+          </View>
+          <View style={styles.codeContainer}>
+            {[0, 1, 2, 3, 4].map(index => (
+              <TextInput
+                ref={ref => {
+                  if (ref && inputs.current) {
+                    inputs.current[index] = ref;
+                  }
+                }}
+                key={index}
+                style={styles.codeInput}
+                value={verificationCode[index]}
+                onChangeText={text => handleChangeCode(text, index)}
+                onKeyPress={e => handleKeyPress(e, index)}
+                keyboardType="number-pad"
+                maxLength={1}
+                placeholder="-"
+                placeholderTextColor="black"
+                returnKeyType={index === 4 ? 'done' : 'next'}
+                onSubmitEditing={() => {
+                  if (index < 4) {
+                    inputs.current[index + 1]?.focus();
+                  }
+                }}
+              />
+            ))}
+          </View>
+          <View style={styles.BtnContainer}>
+            <Button name="Submit" onPress={handleOpenSheet} />
+            <View style={styles.ResendContainer}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: Font.font600,
+                  color: colors.SecTextColor,
+                }}
+              >
+                Didn’t receive the code?
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: Font.font700,
+                    color: colors.PrimaryColor,
+                  }}
+                >
+                  Resend
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </AuthLayout>
+      </AuthLayout>
+      <BtSheets
+        ref={bottomSheetRef}
+        onClose={handleCloseSheet}
+        snapPoints={type == 'signup' ? ['50%', '50%'] : ['40%', '40%']}
+      >
+        <View style={styles.CheckContainer}>
+          <FontAwesome name="check" color={colors.SecondaryColor} size={50} />
+        </View>
+        <View
+          style={{
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 15,
+            paddingBottom: 20,
+          }}
+        >
+          <Text style={styles.Heading}>
+            {type == 'signup'
+              ? 'Register Successfully'
+              : 'Verfication Complete'}
+          </Text>
+          {type == 'signup' && (
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: Font.font600,
+                color: colors.SecTextColor,
+                textAlign: 'center',
+                width: '85%',
+              }}
+            >
+              Congratulations! Your account created successfully. Now you can
+              get amazing experience with our services.
+            </Text>
+          )}
+        </View>
+        <Button
+          name={type == 'signup' ? 'Get Started' : 'Continue'}
+          onPress={() =>
+            type == 'signup'
+              ? handleCloseSheet()
+              : navigation.navigate('NewPassword')
+          }
+        />
+      </BtSheets>
+    </>
   );
 };
 
@@ -213,5 +291,14 @@ const styles = StyleSheet.create({
     gap: 5,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  CheckContainer: {
+    width: 90,
+    height: 90,
+    borderRadius: 1000,
+    backgroundColor: colors.PrimaryColor,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 20,
   },
 });

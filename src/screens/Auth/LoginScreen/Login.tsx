@@ -118,7 +118,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
         <Button
           name="Send Code"
           onPress={() => {
-            navigation.navigate('Otp');
+            navigation.navigate('Otp', { type: 'forgot' });
           }}
         />
       </BtSheets>

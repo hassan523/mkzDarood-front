@@ -80,7 +80,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
         </View>
         <Button
           name="Create Account"
-          onPress={() => navigation.navigate('Otp')}
+          onPress={() => navigation.navigate('Otp', { type: 'signup' })}
         />
       </View>
       <View style={styles.BottomLine}>
