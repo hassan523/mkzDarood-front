@@ -1,5 +1,6 @@
 import {
   Animated,
+  Image,
   Keyboard,
   StyleSheet,
   Text,
@@ -51,6 +52,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
     <>
       <AuthLayout>
         <View style={styles.Container}>
+          <Image source={require("../../../assets/logo.png")} style={styles.Logo} />
           <View style={styles.FieldContainer}>
             <Text style={styles.Label}>Email or Phone Number</Text>
             <Field
@@ -131,11 +133,11 @@ export default Login;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
+    paddingTop: 100
   },
   FieldContainer: {
     width: '100%',
@@ -180,4 +182,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 1,
   },
+  Logo: {
+    marginBottom: 40
+  }
 });
