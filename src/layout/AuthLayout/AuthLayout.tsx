@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 60,
+    top: 20,
   },
   Heading: {
     fontFamily: Font.font600,
