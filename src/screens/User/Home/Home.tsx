@@ -1,14 +1,179 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {
+  FlatList,
+  Image,
+  ImageBackground,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, { useState } from 'react';
+import { windowWidth } from '../../../utils/dimensions/dimensions';
+import colors from '../../../utils/colors/colors';
+import Font from '../../../utils/fonts/Font';
+import Button from '../../../components/Button/Button';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 const Home = () => {
-  return (
-    <View>
-      <Text>Home</Text>
+  const [refreshing, setRefresing] = useState(false);
+
+  const onRefresh = () => {
+    setRefresing(true);
+    setTimeout(() => {
+      setRefresing(false);
+    }, 2000);
+  };
+
+  const renderItem = () => (
+    <View style={styles.Container}>
+      <View style={styles.ImageBgContainer}>
+        <ImageBackground
+          source={require('../../../assets/homebg.png')}
+          style={styles.Image}
+          resizeMode="cover"
+        >
+          <View style={styles.Overlay} />
+        </ImageBackground>
+        <View style={styles.HeroContainer}>
+          <Image source={require('../../../assets/durood.png')} />
+          <Text style={styles.Heading}>Global Darood Count</Text>
+          <Text style={styles.Count}>560,644,600</Text>
+          <View style={{ minWidth: 'auto' }}>
+            <Button name="Submit Darood" />
+          </View>
+        </View>
+      </View>
+      <View style={styles.IconsContainer}>
+        <TouchableOpacity style={styles.IconBox}>
+          <Image source={require('../../../assets/tasbih.png')} />
+          <Text style={styles.IconText}>Tasbih</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.IconBox}>
+          <Image source={require('../../../assets/nabi.png')} />
+          <Text style={styles.IconText}>Asma un Nabi</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.IconBox}>
+          <Image source={require('../../../assets/nabi.png')} />
+          <Text style={styles.IconText}>Asma ul Husna</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.DescContainer}>
+        <Text style={[styles.Heading, { color: colors.PrimaryColor }]}>
+          A Drop in the Ocean of Mercy
+        </Text>
+        <View style={styles.DescBox}>
+          <Image
+            source={require('../../../assets/peersaab.png')}
+          />
+          <Text style={styles.Desc}>
+            {"Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ"}
+          </Text>
+        </View>
+        <View style={{width: 225}}>
+            <Button name='Translate to Urdu' iconRight icon={<MaterialIcons name='translate' color={colors.SecondaryColor} size={25} />} />
+        </View>
+        <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
+      </View>
     </View>
-  )
-}
+  );
+  return (
+    <FlatList
+      data={[1]}
+      renderItem={renderItem}
+      keyExtractor={item => item.toString()}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors.PrimaryColor]}
+        />
+      }
+    />
+  );
+};
 
-export default Home
+export default Home;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+    gap: 25,
+    paddingBottom: 30
+  },
+  ImageBgContainer: {
+    height: 270,
+    position: 'relative',
+    width: windowWidth,
+  },
+  Overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+  },
+  Image: {
+    height: '100%',
+    width: '100%',
+    ...StyleSheet.absoluteFillObject,
+  },
+  HeroContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+    paddingHorizontal: 20,
+    height: '100%',
+    width: '100%',
+    gap: 15,
+  },
+  Heading: {
+    color: colors.SecondaryColor,
+    fontFamily: Font.font600,
+    fontSize: 18,
+  },
+  Count: {
+    color: colors.SecondaryColor,
+    fontFamily: Font.font600,
+    fontSize: 50,
+  },
+  IconsContainer: {
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  IconBox: {
+    gap: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  DescContainer: {
+    paddingHorizontal: 20,
+    gap: 15,
+    paddingVertical: 10,
+    position: 'relative',
+  },
+  DescBox: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    gap: 10
+  },
+  Desc: {
+    flexShrink: 1,
+    flexGrow: 1,
+    flexBasis: 0,
+    fontFamily: Font.font500,
+    color: colors.terTextColor,
+    fontSize: 16
+  },
+  IconText: {
+    fontFamily: Font.font500,
+    color: colors.textColor,
+  },
+  BgIcon: {
+    position: 'absolute',
+    right: 20,
+    bottom: 0,
+    borderBottomRightRadius: 15
+  },
+});
