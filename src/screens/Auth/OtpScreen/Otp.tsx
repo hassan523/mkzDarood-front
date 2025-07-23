@@ -140,6 +140,7 @@ const Otp = ({
                     inputs.current[index + 1]?.focus();
                   }
                 }}
+                editable={!isOpen}
               />
             ))}
           </View>
