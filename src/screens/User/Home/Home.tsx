@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    gap: 20,
+    gap: 15,
   },
   Cross: {
     position: 'absolute',

@@ -18,6 +18,8 @@ import {
   ImageLibraryOptions,
   launchImageLibrary,
 } from 'react-native-image-picker';
+import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 interface DataTypes {
   profileImage: string | undefined;
@@ -39,6 +41,13 @@ const Profile = () => {
     email: '',
   });
   const [isEdit, setIsEdit] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [changePassword, setChangePassword] = useState({
+    password: '',
+    newPass: '',
+    reNewPass: '',
+  });
+  const { password, newPass, reNewPass } = changePassword;
 
   const handleIsEdit = () => {
     setUpdateData(data);
@@ -190,7 +199,7 @@ const Profile = () => {
             </View>
           ) : (
             <Button
-              name="Update Password"
+              name="Change Password"
               customWidth={200}
               textStyle={{
                 color: colors.SecondaryColor,
@@ -199,10 +208,66 @@ const Profile = () => {
                 textDecorationLine: 'underline',
                 textDecorationColor: colors.SecondaryColor,
               }}
+              onPress={() => setIsOpen(true)}
             />
           )}
         </View>
       </ScrollView>
+      <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
+        <View style={styles.ModalContainer}>
+          <TouchableOpacity
+            style={styles.Cross}
+            onPress={() => setIsOpen(false)}
+          >
+            <Entypo name="cross" color={colors.textColor} size={25} />
+          </TouchableOpacity>
+          <Text
+            style={[
+              styles.Heading,
+              { color: colors.PrimaryColor, marginTop: 20 },
+            ]}
+          >
+            Change Password
+          </Text>
+          <View style={styles.FieldContainer}>
+            <Text style={styles.Label}>Current Password</Text>
+            <Field
+              placeHolder="Enter Current Password"
+              type="password"
+              isIcon
+              value={password}
+              onChange={value =>
+                setChangePassword({ ...changePassword, password: value })
+              }
+            />
+          </View>
+          <View style={styles.FieldContainer}>
+            <Text style={styles.Label}>New Password</Text>
+            <Field
+              placeHolder="Enter New Password"
+              type="password"
+              isIcon
+              value={newPass}
+              onChange={value =>
+                setChangePassword({ ...changePassword, newPass: value })
+              }
+            />
+          </View>
+          <View style={styles.FieldContainer}>
+            <Text style={styles.Label}>Re-Enter New Password</Text>
+            <Field
+              placeHolder="Re-Enter New Password"
+              type="password"
+              isIcon
+              value={reNewPass}
+              onChange={value =>
+                setChangePassword({ ...changePassword, reNewPass: value })
+              }
+            />
+          </View>
+          <Button name='Save' />
+        </View>
+      </ModalLayout>
     </View>
   );
 };
@@ -294,5 +359,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 15,
+  },
+  ModalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    gap: 20,
+  },
+  Cross: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
   },
 });
