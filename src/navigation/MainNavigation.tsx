@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/User/Home/Home';
 import Profile from '../screens/User/Profile/Profile';
 import News from '../screens/User/News/News';
+import Tasbih from '../screens/User/Home/Tasbih/Tasbih';
 
 interface MainNavigation {
   initRoute: string;
@@ -61,6 +62,11 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
       }}
     >
       <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen
+        name="Tasbih"
+        component={Tasbih}
+        options={{ headerShown: false }}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -106,16 +112,16 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
     <NavigationContainer>
       <Drawer.Navigator
         drawerContent={props => (
-            <View style={styles.drawerContainer}>
-              <View style={styles.logoContainer}>
-                <Image
-                  source={require('../assets/logo.png')}
-                  style={styles.logo}
-                  resizeMode="contain"
-                />
-              </View>
-            <DrawerItemList {...props} />
+          <View style={styles.drawerContainer}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/logo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </View>
+            <DrawerItemList {...props} />
+          </View>
         )}
         screenOptions={{
           headerShown: false,

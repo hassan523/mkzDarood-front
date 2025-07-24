@@ -13,9 +13,10 @@ import { windowWidth } from '../../../utils/dimensions/dimensions';
 import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import Button from '../../../components/Button/Button';
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
-const Home = () => {
+const Home = ({ navigation }: { navigation: Navigation }) => {
   const [refreshing, setRefresing] = useState(false);
 
   const onRefresh = () => {
@@ -45,7 +46,10 @@ const Home = () => {
         </View>
       </View>
       <View style={styles.IconsContainer}>
-        <TouchableOpacity style={styles.IconBox}>
+        <TouchableOpacity
+          style={styles.IconBox}
+          onPress={() => navigation.navigate('Tasbih')}
+        >
           <Image source={require('../../../assets/tasbih.png')} />
           <Text style={styles.IconText}>Tasbih</Text>
         </TouchableOpacity>
@@ -65,15 +69,31 @@ const Home = () => {
         <View style={styles.DescBox}>
           <Image
             source={require('../../../assets/peersaab.png')}
+            style={styles.DescImage}
           />
           <Text style={styles.Desc}>
-            {"Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ"}
+            {
+              'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ'
+            }
           </Text>
         </View>
-        <View style={{width: 225}}>
-            <Button name='Translate to Urdu' iconRight icon={<MaterialIcons name='translate' color={colors.SecondaryColor} size={25} />} />
+        <View style={{ width: 225 }}>
+          <Button
+            name="Translate to Urdu"
+            iconRight
+            icon={
+              <MaterialIcons
+                name="translate"
+                color={colors.SecondaryColor}
+                size={25}
+              />
+            }
+          />
         </View>
-        <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
+        <Image
+          source={require('../../../assets/bg3.png')}
+          style={styles.BgIcon}
+        />
       </View>
     </View>
   );
@@ -100,7 +120,7 @@ const styles = StyleSheet.create({
   Container: {
     flex: 1,
     gap: 25,
-    paddingBottom: 30
+    paddingBottom: 30,
   },
   ImageBgContainer: {
     height: 270,
@@ -154,17 +174,14 @@ const styles = StyleSheet.create({
   },
   DescBox: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    gap: 10
+    gap: 15,
   },
   Desc: {
+    flex: 1,
     flexShrink: 1,
-    flexGrow: 1,
-    flexBasis: 0,
     fontFamily: Font.font500,
     color: colors.terTextColor,
-    fontSize: 16
+    fontSize: 16,
   },
   IconText: {
     fontFamily: Font.font500,
@@ -174,6 +191,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     bottom: 0,
-    borderBottomRightRadius: 15
+    borderBottomRightRadius: 15,
+  },
+  DescImage: {
+    height: 100,
+    width: 100,
+    borderRadius: 10,
   },
 });
