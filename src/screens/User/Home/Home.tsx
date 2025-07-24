@@ -14,12 +14,17 @@ import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import Button from '../../../components/Button/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
+import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
+import Field from '../../../components/Field/Field';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
   const count = 265265625;
 
   const [refreshing, setRefresing] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [num, setNum] = useState('');
 
   const onRefresh = () => {
     setRefresing(true);
@@ -47,7 +52,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
             {count.toLocaleString()}
           </Text>
           <View style={{ minWidth: 'auto' }}>
-            <Button name="Submit Darood" />
+            <Button name="Submit Darood" onPress={() => setIsOpen(true)} />
           </View>
         </View>
       </View>
@@ -104,19 +109,46 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
     </View>
   );
   return (
-    <FlatList
-      data={[1]}
-      renderItem={renderItem}
-      keyExtractor={item => item.toString()}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={[colors.PrimaryColor]}
-        />
-      }
-    />
+    <>
+      <FlatList
+        data={[1]}
+        renderItem={renderItem}
+        keyExtractor={item => item.toString()}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.PrimaryColor]}
+          />
+        }
+      />
+      <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
+        <View style={styles.ModalContainer}>
+          <TouchableOpacity
+            style={styles.Cross}
+            onPress={() => setIsOpen(false)}
+          >
+            <Entypo name="cross" color={colors.textColor} size={25} />
+          </TouchableOpacity>
+          <Text
+            style={[
+              styles.Heading,
+              { color: colors.PrimaryColor, marginTop: 20 },
+            ]}
+          >
+            Submit Durood
+          </Text>
+          <Field
+            placeHolder="Enter Number of Recited Darood Shareef"
+            type="number"
+            value={num}
+            onChange={value => setNum(value)}
+          />
+          <Button name="Submit" onPress={() => setIsOpen(false)} />
+        </View>
+      </ModalLayout>
+    </>
   );
 };
 
@@ -203,5 +235,16 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 10,
+  },
+  ModalContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    gap: 20,
+  },
+  Cross: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
   },
 });
