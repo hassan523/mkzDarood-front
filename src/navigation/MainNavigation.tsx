@@ -121,6 +121,19 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
               />
             </View>
             <DrawerItemList {...props} />
+
+            {isLogin && (
+              <TouchableOpacity style={styles.logoutButton} onPress={() => {}}>
+                <View style={styles.logoutButtonContent}>
+                  <Ionicons
+                    name="log-out"
+                    color={colors.PrimaryColor}
+                    size={24}
+                  />
+                  <Text style={styles.logoutButtonText}>Logout</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         )}
         screenOptions={{
@@ -226,6 +239,25 @@ const styles = StyleSheet.create({
   logo: {
     width: '100%',
     height: 100,
+  },
+  logoutButton: {
+    marginHorizontal: 8,
+    marginVertical: 4,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    position: 'absolute',
+    bottom: 40
+  },
+  logoutButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logoutButtonText: {
+    color: colors.PrimaryColor,
+    fontFamily: Font.font600,
+    fontSize: 16,
   },
 });
 
