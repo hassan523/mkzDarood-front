@@ -17,6 +17,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
+  const count = 265265625;
+
   const [refreshing, setRefresing] = useState(false);
 
   const onRefresh = () => {
@@ -39,7 +41,11 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
         <View style={styles.HeroContainer}>
           <Image source={require('../../../assets/durood.png')} />
           <Text style={styles.Heading}>Global Darood Count</Text>
-          <Text style={styles.Count}>560,644,600</Text>
+          <Text
+            style={[styles.Count, { fontSize: count <= 9999999999 ? 50 : 40 }]}
+          >
+            {count.toLocaleString()}
+          </Text>
           <View style={{ minWidth: 'auto' }}>
             <Button name="Submit Darood" />
           </View>
@@ -58,7 +64,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
           <Text style={styles.IconText}>Asma un Nabi</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.IconBox}>
-          <Image source={require('../../../assets/nabi.png')} />
+          <Image source={require('../../../assets/Allah.png')} />
           <Text style={styles.IconText}>Asma ul Husna</Text>
         </TouchableOpacity>
       </View>

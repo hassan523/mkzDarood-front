@@ -106,7 +106,7 @@ function ProfileStackScreen({ navigation }: { navigation: any }) {
 }
 
 const MainNavigation = ({ initRoute }: MainNavigation) => {
-  const isLogin = false;
+  const isLogin = true;
 
   return (
     <NavigationContainer>
