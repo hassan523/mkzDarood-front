@@ -30,6 +30,8 @@ interface FieldProps {
   multiline?: boolean;
   iconColor?: string;
   textAlignVertical?: 'auto' | 'top' | 'bottom' | 'center';
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 
 const Field: React.FC<FieldProps> = props => {
@@ -49,6 +51,8 @@ const Field: React.FC<FieldProps> = props => {
     multiline = false,
     iconColor = 'black',
     textAlignVertical = 'auto',
+    onFocus = () => {},
+    onBlur = () => {},
   } = props;
 
   const [isPass, setIsPass] = useState<boolean>(true);
@@ -81,6 +85,8 @@ const Field: React.FC<FieldProps> = props => {
             maxLength={maxLength}
             onChangeText={onChange}
             autoCapitalize="none"
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
           <TouchableOpacity
             onPress={() => setIsPass(!isPass)}
@@ -106,6 +112,8 @@ const Field: React.FC<FieldProps> = props => {
             maxLength={maxLength}
             onChangeText={onChange}
             autoCapitalize="none"
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
         </View>
       ) : isIcon ? (
@@ -121,6 +129,8 @@ const Field: React.FC<FieldProps> = props => {
             onChangeText={onChange}
             autoCapitalize="none"
             keyboardType={getInputType()}
+            onFocus={onFocus}
+            onBlur={onBlur}
           />
         </View>
       ) : (
@@ -136,6 +146,8 @@ const Field: React.FC<FieldProps> = props => {
           multiline={multiline}
           textAlignVertical={textAlignVertical}
           autoCapitalize="none"
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
       )}
     </>

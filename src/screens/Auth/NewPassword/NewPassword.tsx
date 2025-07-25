@@ -62,11 +62,11 @@ export default NewPassword;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
+    marginTop: 125
   },
   IconContainer: {
     height: 125,

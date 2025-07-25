@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, { useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
@@ -19,6 +25,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
     confirmPassword: '',
   });
   const { username, email, phone, password, confirmPassword } = data;
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleData = ({ name, value }: { name: string; value: string }) => {
     setData({ ...data, [name]: value });
@@ -29,7 +36,13 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
       isBack
       onBack={() => navigation.goBack()}
     >
-      <View style={styles.Container}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.Container,
+          { paddingBottom: isFocused ? 500 : 0 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.FieldContainer}>
           <Text style={styles.Label}>Usename</Text>
           <Field
@@ -44,6 +57,8 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             }
             value={username}
             onChange={value => handleData({ name: 'username', value })}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         </View>
         <View style={styles.FieldContainer}>
@@ -54,6 +69,8 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             isIcon
             value={email}
             onChange={value => handleData({ name: 'email', value })}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         </View>
         <View style={styles.FieldContainer}>
@@ -64,8 +81,10 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             isIcon={
               <FontAwesome name="phone" size={20} color={colors.PrimaryColor} />
             }
-            value={email}
-            onChange={value => handleData({ name: 'email', value })}
+            value={phone}
+            onChange={value => handleData({ name: 'phone', value })}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         </View>
         <View style={styles.FieldContainer}>
@@ -78,6 +97,8 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             }
             value={password}
             onChange={value => handleData({ name: 'password', value })}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         </View>
         <View style={styles.FieldContainer}>
@@ -90,13 +111,15 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
             }
             value={confirmPassword}
             onChange={value => handleData({ name: 'confirmPassword', value })}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
         </View>
         <Button
           name="Create Account"
           onPress={() => navigation.navigate('Otp', { type: 'signup' })}
         />
-      </View>
+      </ScrollView>
       <View style={styles.BottomLine}>
         <Text style={styles.BottomText}>Already have account?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -113,12 +136,11 @@ export default Signup;
 
 const styles = StyleSheet.create({
   Container: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
+    marginTop: 125,
   },
   FieldContainer: {
     width: '100%',

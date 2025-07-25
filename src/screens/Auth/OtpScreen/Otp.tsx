@@ -244,11 +244,11 @@ export default Otp;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
+    marginTop: 125
   },
   codeContainer: {
     flexDirection: 'row',

@@ -12,6 +12,7 @@ import colors from '../../../utils/colors/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Button from '../../../components/Button/Button';
 import Field from '../../../components/Field/Field';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {
   Asset,
@@ -25,6 +26,7 @@ interface DataTypes {
   profileImage: string | undefined;
   username: string;
   email: string;
+  phone: string;
 }
 
 const Profile = () => {
@@ -32,16 +34,18 @@ const Profile = () => {
     profileImage: '',
     username: 'Hasan',
     email: 'lorem@gmail.com',
+    phone: '123456789',
   });
-  const { profileImage, username, email } = data;
-
+  const { profileImage, username, email, phone } = data;
   const [updateData, setUpdateData] = useState<DataTypes>({
     profileImage: '',
     username: '',
     email: '',
+    phone: '',
   });
   const [isEdit, setIsEdit] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [changePassword, setChangePassword] = useState({
     password: '',
     newPass: '',
@@ -63,8 +67,9 @@ const Profile = () => {
       profileImage: updateData.profileImage || profileImage,
       username: updateData.username || username,
       email: updateData.email || email,
+      phone: updateData.phone || phone,
     });
-    setUpdateData({ profileImage: '', username: '', email: '' });
+    setUpdateData({ profileImage: '', username: '', email: '', phone: '' });
     setIsEdit(false);
   };
 
@@ -96,7 +101,13 @@ const Profile = () => {
 
   return (
     <View style={styles.Container}>
-      <ScrollView contentContainerStyle={styles.ContainerWrapper}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.ContainerWrapper,
+          { paddingBottom: isFocused ? 400 : 0 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.Heading}>Profile</Text>
         <View style={styles.ImageContainer}>
           {isEdit && updateData.profileImage ? (
@@ -154,12 +165,14 @@ const Profile = () => {
                 }
                 value={updateData.username}
                 onChange={value => handleData({ name: 'username', value })}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
             ) : (
               <Text style={styles.Value}>{username}</Text>
             )}
           </View>
-          <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
+          <View style={styles.FieldContainer}>
             <Text style={styles.Label}>Email</Text>
             {isEdit ? (
               <Field
@@ -168,9 +181,33 @@ const Profile = () => {
                 isIcon
                 value={updateData.email}
                 onChange={value => handleData({ name: 'email', value })}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
             ) : (
               <Text style={styles.Value}>{email}</Text>
+            )}
+          </View>
+          <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
+            <Text style={styles.Label}>Phone Number</Text>
+            {isEdit ? (
+              <Field
+                placeHolder="Enter Phone Number"
+                type="text"
+                isIcon={
+                  <FontAwesome
+                    name="phone"
+                    size={20}
+                    color={colors.PrimaryColor}
+                  />
+                }
+                value={updateData.phone}
+                onChange={value => handleData({ name: 'phone', value })}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+            ) : (
+              <Text style={styles.Value}>{phone}</Text>
             )}
           </View>
 
@@ -265,7 +302,7 @@ const Profile = () => {
               }
             />
           </View>
-          <Button name='Save' />
+          <Button name="Save" />
         </View>
       </ModalLayout>
     </View>

@@ -1,5 +1,4 @@
 import {
-  Animated,
   Image,
   Keyboard,
   StyleSheet,
@@ -158,7 +157,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
-    paddingTop: 100,
+    marginTop: 100,
   },
   FieldContainer: {
     width: '100%',

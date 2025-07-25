@@ -1,4 +1,10 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, { ReactNode } from 'react';
 import { windowHeight, windowWidth } from '../../utils/dimensions/dimensions';
 import colors from '../../utils/colors/colors';
