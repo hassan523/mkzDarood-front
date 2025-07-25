@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -8,12 +8,19 @@ import {
 import colors from '../utils/colors/colors';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import Font from '../utils/fonts/Font';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from '../screens/User/Home/Home';
 import Profile from '../screens/User/Profile/Profile';
 import News from '../screens/User/News/News';
 import Tasbih from '../screens/User/Home/Tasbih/Tasbih';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import Login from '../screens/Auth/LoginScreen/Login';
+import Signup from '../screens/Auth/SignupScreen/Signup';
+import Otp from '../screens/Auth/OtpScreen/Otp';
+import NewPassword from '../screens/Auth/NewPassword/NewPassword';
+import { logout } from '../redux/Features/authState';
+import ModalLayout from '../layout/ModalLayout/ModalLayout';
 
 interface MainNavigation {
   initRoute: string;
@@ -50,6 +57,8 @@ const CustomHeader = ({
 };
 
 function HomeStackScreen({ navigation }: { navigation: any }) {
+  const selector = useSelector((state: RootState) => state?.userData);
+  const isLogin: boolean = selector?.isLoggin;
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -67,6 +76,30 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
         component={Tasbih}
         options={{ headerShown: false }}
       />
+      {!isLogin && (
+        <>
+          <HomeStack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <HomeStack.Screen
+            name="Signup"
+            component={Signup}
+            options={{ headerShown: false }}
+          />
+          <HomeStack.Screen
+            name="Otp"
+            component={Otp}
+            options={{ headerShown: false }}
+          />
+          <HomeStack.Screen
+            name="NewPassword"
+            component={NewPassword}
+            options={{ headerShown: false }}
+          />
+        </>
+      )}
     </HomeStack.Navigator>
   );
 }
@@ -106,10 +139,44 @@ function ProfileStackScreen({ navigation }: { navigation: any }) {
 }
 
 const MainNavigation = ({ initRoute }: MainNavigation) => {
-  const isLogin = true;
+  const dispatch = useDispatch();
+  const selector = useSelector((state: RootState) => state?.userData);
+  const isLogin: boolean = selector?.isLoggin;
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [drawerNavigation, setDrawerNavigation] = useState<any>(null);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setShowLogoutModal(false);
+    drawerNavigation?.closeDrawer();
+    setDrawerNavigation(null);
+  };
 
   return (
     <NavigationContainer>
+      <ModalLayout isOpen={showLogoutModal} setIsOpen={setShowLogoutModal}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Logout Confirmation</Text>
+          <Text style={styles.modalText}>Are you sure you want to logout?</Text>
+
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={() => setShowLogoutModal(false)}
+            >
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, styles.logoutBtn]}
+              onPress={handleLogout}
+            >
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ModalLayout>
       <Drawer.Navigator
         drawerContent={props => (
           <View style={styles.drawerContainer}>
@@ -123,7 +190,13 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
             <DrawerItemList {...props} />
 
             {isLogin && (
-              <TouchableOpacity style={styles.logoutButton} onPress={() => {}}>
+              <TouchableOpacity
+                style={styles.logoutButton}
+                onPress={() => {
+                  setShowLogoutModal(true);
+                  setDrawerNavigation(props.navigation);
+                }}
+              >
                 <View style={styles.logoutButtonContent}>
                   <Ionicons
                     name="log-out"
@@ -247,7 +320,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     position: 'absolute',
-    bottom: 40
+    bottom: 40,
   },
   logoutButtonContent: {
     flexDirection: 'row',
@@ -256,6 +329,47 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     color: colors.PrimaryColor,
+    fontFamily: Font.font600,
+    fontSize: 16,
+  },
+  modalContent: {
+    padding: 20,
+    width: '100%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    marginBottom: 15,
+    textAlign: 'center',
+    color: colors.PrimaryColor,
+    fontFamily: Font.font600,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 25,
+    textAlign: 'center',
+    color: colors.textColor,
+    fontFamily: Font.font500,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  cancelButton: {
+    backgroundColor: colors.SecTextColor,
+  },
+  logoutBtn: {
+    backgroundColor: colors.PrimaryColor,
+  },
+  buttonText: {
+    color: colors.SecondaryColor,
     fontFamily: Font.font600,
     fontSize: 16,
   },

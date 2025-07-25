@@ -17,6 +17,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
+import { useDispatch } from 'react-redux';
+import { authUser } from '../../../redux/Features/authState';
 
 const Otp = ({
   route,
@@ -30,6 +32,8 @@ const Otp = ({
   navigation: Navigation;
 }) => {
   const { type } = route.params;
+
+  const dispatch = useDispatch();
 
   const [isOpen, setIsOpen] = useState(false);
   const [verificationCode, setVerificationCode] = useState<string[]>([
@@ -79,6 +83,20 @@ const Otp = ({
       }
       setVerificationCode(updatedCode);
     }
+  };
+
+  const handleLogin = () => {
+    dispatch(
+      authUser({
+        data: {
+          username: 'Hasan',
+          email: 'lorem@gmail.com',
+          phone: '123456789',
+          profileImage: '',
+        },
+      }),
+    );
+    navigation.navigate('Home');
   };
 
   return (
@@ -210,11 +228,11 @@ const Otp = ({
         </View>
         <Button
           name={type == 'signup' ? 'Get Started' : 'Continue'}
-          onPress={() =>
+          onPress={() => {
             type == 'signup'
-              ? handleCloseSheet()
-              : navigation.navigate('NewPassword')
-          }
+              ? handleLogin()
+              : navigation.navigate('NewPassword');
+          }}
         />
       </BtSheets>
     </>

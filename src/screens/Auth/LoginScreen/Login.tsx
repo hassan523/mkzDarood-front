@@ -17,8 +17,12 @@ import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
+import { useDispatch } from 'react-redux';
+import { authUser } from '../../../redux/Features/authState';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
+  const dispatch = useDispatch();
+
   const [data, setData] = useState<{
     email: string;
     password: string;
@@ -48,11 +52,28 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
     bottomSheetRef.current?.close();
   };
 
+  const handleSubmit = () => {
+    dispatch(
+      authUser({
+        data: {
+          username: 'Hasan',
+          email: 'lorem@gmail.com',
+          phone: '123456789',
+          profileImage: '',
+        },
+      }),
+    );
+    navigation.navigate('Home');
+  };
+
   return (
     <>
       <AuthLayout>
         <View style={styles.Container}>
-          <Image source={require("../../../assets/logo.png")} style={styles.Logo} />
+          <Image
+            source={require('../../../assets/logo.png')}
+            style={styles.Logo}
+          />
           <View style={styles.FieldContainer}>
             <Text style={styles.Label}>Email or Phone Number</Text>
             <Field
@@ -84,7 +105,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <Button name="Sign in" disabled={isOpen} />
+          <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} />
         </View>
         <View style={styles.BottomLine}>
           <Text style={styles.BottomText}>Don't have account?</Text>
@@ -137,7 +158,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     gap: 25,
-    paddingTop: 100
+    paddingTop: 100,
   },
   FieldContainer: {
     width: '100%',
@@ -183,6 +204,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   Logo: {
-    marginBottom: 40
-  }
+    marginBottom: 40,
+  },
 });

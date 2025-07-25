@@ -5,6 +5,7 @@ import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
 import colors from '../../../utils/colors/colors';
 import Field from '../../../components/Field/Field';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
@@ -13,10 +14,11 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
   const [data, setData] = useState({
     username: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
-  const { username, email, password, confirmPassword } = data;
+  const { username, email, phone, password, confirmPassword } = data;
 
   const handleData = ({ name, value }: { name: string; value: string }) => {
     setData({ ...data, [name]: value });
@@ -45,11 +47,23 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
           />
         </View>
         <View style={styles.FieldContainer}>
-          <Text style={styles.Label}>Email or Phone Number</Text>
+          <Text style={styles.Label}>Email</Text>
           <Field
-            placeHolder="Enter Email or Phone Number"
+            placeHolder="Enter Email"
             type="email"
             isIcon
+            value={email}
+            onChange={value => handleData({ name: 'email', value })}
+          />
+        </View>
+        <View style={styles.FieldContainer}>
+          <Text style={styles.Label}>Phone Number</Text>
+          <Field
+            placeHolder="Enter Phone Number"
+            type="text"
+            isIcon={
+              <FontAwesome name="phone" size={20} color={colors.PrimaryColor} />
+            }
             value={email}
             onChange={value => handleData({ name: 'email', value })}
           />

@@ -18,9 +18,15 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Field from '../../../components/Field/Field';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
   const count = 265265625;
+
+  const selector = useSelector((state: RootState) => state?.userData);
+
+  const isLogin: boolean = selector?.isLoggin;
 
   const [refreshing, setRefresing] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +58,12 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
             {count.toLocaleString()}
           </Text>
           <View style={{ minWidth: 'auto' }}>
-            <Button name="Submit Darood" onPress={() => setIsOpen(true)} />
+            <Button
+              name="Submit Darood"
+              onPress={() =>
+                isLogin ? setIsOpen(true) : navigation.navigate('Login')
+              }
+            />
           </View>
         </View>
       </View>
