@@ -24,18 +24,16 @@ const ModalLayout = ({ isOpen, setIsOpen, children }: ModalType) => {
       onRequestClose={() => setIsOpen(false)}
     >
       <View style={styles.modalOverlay}>
-        <Pressable 
+        <Pressable
           style={styles.overlayPressable}
           onPress={() => setIsOpen(false)}
         />
-        
-        <KeyboardAvoidingView 
+
+        <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.modalContainer}
         >
-          <View style={styles.modalContent}>
-            {children}
-          </View>
+          <View style={styles.modalContent}>{children}</View>
         </KeyboardAvoidingView>
       </View>
     </Modal>
@@ -48,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    height: windowHeight
+    height: windowHeight,
   },
   overlayPressable: {
     position: 'absolute',
