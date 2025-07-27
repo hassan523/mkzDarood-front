@@ -14,6 +14,8 @@ import { RootState } from '../../../redux/store';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
    const count = 265265625;
+   const message =
+      'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
 
    const selector = useSelector((state: RootState) => state?.userData);
 
@@ -29,7 +31,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
          setRefresing(false);
       }, 2000);
    };
-   console.log(windowWidth);
+   console.log(Math.floor(windowWidth - 155));
    const renderItem = () => (
       <View style={styles.Container}>
          <View style={styles.ImageBgContainer}>
@@ -63,13 +65,14 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
          </View>
          <View style={styles.DescContainer}>
             <Text style={[styles.Heading, { color: colors.PrimaryColor }]}>A Drop in the Ocean of Mercy</Text>
-            <View style={styles.DescBox}>
-               <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
-               <Text style={styles.Desc}>
-                  {
-                     'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ'
-                  }
-               </Text>
+            <View>
+               <View style={styles.DescBox}>
+                  <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
+                  <View style={{ flex: 1 }}>
+                     <Text style={styles.Desc}>{message?.slice(0, Math.floor(windowWidth - 174) - 94)}</Text>
+                  </View>
+               </View>
+               <Text style={[styles.Desc, { letterSpacing: 0.8 }]}>{message?.slice(Math.floor(windowWidth - 174) - 94)}</Text>
             </View>
             <View style={{ width: 225 }}>
                <Button name="Translate to Urdu" iconRight icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />} />
@@ -80,7 +83,13 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
    );
    return (
       <>
-         <FlatList data={[1]} renderItem={renderItem} keyExtractor={item => item.toString()} showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />} />
+         <FlatList
+            data={[1]}
+            renderItem={renderItem}
+            keyExtractor={item => item.toString()}
+            showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />}
+         />
          <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
             <View style={styles.ModalContainer}>
                <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)}>
@@ -129,7 +138,7 @@ const styles = StyleSheet.create({
    Heading: {
       color: colors.SecondaryColor,
       fontFamily: Font.font600,
-      fontSize: 18,
+      fontSize: 20,
    },
    Count: {
       color: colors.SecondaryColor,
@@ -172,6 +181,21 @@ const styles = StyleSheet.create({
       gap: 15,
       paddingVertical: 10,
       position: 'relative',
+      borderRadius: 10,
+      backgroundColor: '#fff', // Required for shadow on iOS
+
+      // iOS shadow
+      shadowColor: '#000',
+      shadowOffset: {
+         width: 0,
+         height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+
+      // Android shadow
+      elevation: 4,
+      marginHorizontal: 20,
    },
    DescBox: {
       flexDirection: 'row',
@@ -179,10 +203,10 @@ const styles = StyleSheet.create({
    },
    Desc: {
       flex: 1,
-      flexShrink: 1,
       fontFamily: Font.font500,
       color: colors.terTextColor,
       fontSize: 16,
+      letterSpacing: 0.8,
    },
    IconText: {
       fontFamily: Font.font500,
@@ -190,7 +214,7 @@ const styles = StyleSheet.create({
    },
    BgIcon: {
       position: 'absolute',
-      right: 20,
+      right: 0,
       bottom: 0,
       borderBottomRightRadius: 15,
    },
@@ -198,6 +222,7 @@ const styles = StyleSheet.create({
       height: 100,
       width: 100,
       borderRadius: 10,
+      position: 'relative',
    },
    ModalContainer: {
       justifyContent: 'center',
