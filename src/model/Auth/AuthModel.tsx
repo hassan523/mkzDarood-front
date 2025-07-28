@@ -1,16 +1,24 @@
 import { useDispatch } from 'react-redux';
 import { useLoginMutation } from '../../redux/Auth/Auth';
-import { LoginResquest } from '../../redux/Auth/AuthType';
+import { LoginResponse, LoginResquest } from '../../redux/Auth/AuthType';
 import ResToast from '../../components/ResToast/ResToast';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
+import { authUser } from '../../redux/Features/authState';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export const useLoginHandler = () => {
      const dispatch = useDispatch();
      const [login, { isLoading }] = useLoginMutation();
 
+     type RootStackParamList = {
+          Home: undefined;
+     };
+
+     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
      const handleLogin = async (credentials: { identifier: string; password: string; deviceId: string; navigation: Navigation }) => {
           try {
-               const { identifier, password, navigation } = credentials;
+               const { identifier, password } = credentials;
 
                if (!identifier || !password) {
                     return ResToast({
@@ -24,10 +32,12 @@ export const useLoginHandler = () => {
                     password,
                     deviceId: credentials.deviceId,
                });
+               
                if (!res.error) {
-                    dispatch({
-                         type: 'LOGIN_SUCCESS',
-                         payload: res.data || {},
+                    dispatch(authUser({ data: res.data }));
+                    ResToast({
+                         title: 'Login successful!',
+                         type: 'success',
                     });
                     navigation.navigate('Home');
                }
