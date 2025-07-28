@@ -25,7 +25,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const [isOpen, setIsOpen] = useState(false);
      const [num, setNum] = useState('');
 
-     const { counterData, isLoading, isError, refech, error } = useGetCounterHandler();
+     const counterApi = useGetCounterHandler();
+     console.log(counterApi);
 
      const onRefresh = () => {
           setRefresing(true);

@@ -1,12 +1,15 @@
 import { useGetCounterQuery } from '../../redux/Counter/Counter';
+import ResToast from '../../components/ResToast/ResToast';
 
 export const useGetCounterHandler = () => {
-     const getCounter = useGetCounterQuery();
-     const counterData = getCounter?.data;
-     const isLoading = getCounter?.isLoading;
-     const refech = getCounter?.refetch;
-     const isError = getCounter?.refetch;
-     const error = getCounter?.error;
+     try {
+          const { data, isLoading, refetch, isError, error } = useGetCounterQuery();
 
-     return { counterData, isLoading, refech, isError, error };
+          return { data, isLoading, refetch, isError, error };
+     } catch (error) {
+          ResToast({
+               title: 'Something Went Wrong!',
+               type: 'danger',
+          });
+     }
 };
