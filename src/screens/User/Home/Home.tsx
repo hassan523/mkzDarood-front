@@ -31,7 +31,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
          setRefresing(false);
       }, 2000);
    };
-   console.log(Math.floor(windowWidth - 155));
+
    const renderItem = () => (
       <View style={styles.Container}>
          <View style={styles.ImageBgContainer}>
@@ -97,6 +97,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                </TouchableOpacity>
                <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Durood</Text>
                <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={num} onChange={value => setNum(value)} />
+
                <Button name="Submit" onPress={() => setIsOpen(false)} />
             </View>
          </ModalLayout>
@@ -111,6 +112,7 @@ const styles = StyleSheet.create({
       flex: 1,
       gap: 25,
       paddingBottom: 30,
+      backgroundColor: 'white',
    },
    ImageBgContainer: {
       height: 270,
