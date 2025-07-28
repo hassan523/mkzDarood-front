@@ -71,6 +71,7 @@ const Otp = ({ route, navigation }: { route: { params: { type: string; email: st
           await handleVerifyOTP({
                identifier: email,
                otp: verificationCode.join(''),
+               type: 'otp',
           });
           handleOpenSheet();
      };

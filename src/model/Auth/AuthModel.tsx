@@ -4,7 +4,6 @@ import ResToast from '../../components/ResToast/ResToast';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { authUser } from '../../redux/Features/authState';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RegisterResquest } from '../../redux/Auth/AuthType';
 
 export const useLoginHandler = () => {
      const dispatch = useDispatch();
@@ -32,7 +31,7 @@ export const useLoginHandler = () => {
                     password,
                     deviceId: credentials.deviceId,
                });
-               
+
                if (!res.error) {
                     dispatch(authUser({ data: res.data }));
                     ResToast({
@@ -40,6 +39,11 @@ export const useLoginHandler = () => {
                          type: 'success',
                     });
                     navigation.navigate('Home');
+               } else {
+                    ResToast({
+                         title: (res.error as any).data.message || 'Login failed.',
+                         type: 'danger',
+                    });
                }
           } catch (error) {
                console.error('Login failed:', error);
@@ -94,6 +98,11 @@ export const useRegisterHandler = () => {
                          type: 'success',
                     });
                     navigation.navigate('Otp', { type: 'signup' });
+               } else {
+                    ResToast({
+                         title: (res.error as any).data.message || 'Failed to register.',
+                         type: 'danger',
+                    });
                }
           } catch (error) {
                console.error('signup failed:', error);
@@ -147,7 +156,6 @@ export const useForgotPasswordHandler = () => {
 };
 
 export const useVerifyOTPHandler = () => {
-     const dispatch = useDispatch();
      const [verifyOTP, { isLoading }] = useVerifyOtpMutation();
 
      type RootStackParamList = {
@@ -156,7 +164,7 @@ export const useVerifyOTPHandler = () => {
 
      const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-     const handleVerifyOTP = async ({ identifier, otp }: { identifier: string; otp: string }) => {
+     const handleVerifyOTP = async ({ identifier, otp, type }: { identifier: string; otp: string; type: string }) => {
           try {
                if (!identifier || !otp) {
                     return ResToast({
@@ -165,7 +173,8 @@ export const useVerifyOTPHandler = () => {
                     });
                }
 
-               const res = await verifyOTP({ identifier, otp });
+               const res = await verifyOTP({ identifier, otp, type });
+
                if (!res.error) {
                     // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
