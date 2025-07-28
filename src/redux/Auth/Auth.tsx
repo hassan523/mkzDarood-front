@@ -31,7 +31,7 @@ const Auth = createApi({
                }),
           }),
 
-          verifyOtp: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string }>({
+          verifyOtp: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; type: string }>({
                query: data => ({
                     url: `/api/verify-otp`,
                     method: 'PATCH',
