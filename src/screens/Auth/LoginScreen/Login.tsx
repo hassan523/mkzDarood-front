@@ -10,7 +10,7 @@ import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
-import { useLoginHandler } from '../../../model/Auth/AuthModel';
+import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
@@ -47,6 +47,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const { handleLogin, isLoading } = useLoginHandler();
+     const { handleForgotPassword, isLoading: forgotLoading } = useForgotPasswordHandler();
 
      const handleSubmit = () => {
           handleLogin({
@@ -55,6 +56,10 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                password,
                navigation: navigation,
           });
+     };
+
+     const handleForgot = () => {
+          handleForgotPassword({ email: forgotEmail });
      };
 
      return (
@@ -99,12 +104,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                          <Text style={styles.Label}>Email or Phone Number</Text>
                          <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={forgotEmail} onChange={setForgotEmail} />
                     </View>
-                    <Button
-                         name="Send Code"
-                         onPress={() => {
-                              navigation.navigate('Otp', { type: 'forgot' });
-                         }}
-                    />
+                    <Button name="Send Code" onPress={handleForgot} isLoading={forgotLoading} />
                </BtSheets>
           </>
      );

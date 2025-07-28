@@ -9,7 +9,6 @@ interface ModalType {
 }
 
 const ModalLayout = ({ isOpen, setIsOpen, children }: ModalType) => {
-     console.log(isOpen, 'isOpenisOpenisOpen');
      return (
           <Modal animationType="fade" transparent={true} visible={isOpen} onRequestClose={() => setIsOpen(false)}>
                <View style={styles.modalOverlay}>

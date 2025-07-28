@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { LoginResponse } from '../Auth/AuthType';
+import { LoginResponse, RegisterResponse } from '../Auth/AuthType';
 
 interface AuthData {
      isLoggin: boolean;
-     data: LoginResponse | null;
+     data: LoginResponse | RegisterResponse | null;
 }
 
 const initialState: AuthData = {

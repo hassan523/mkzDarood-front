@@ -27,3 +27,25 @@ export interface LoginResquest {
      password: string;
      deviceId: string;
 }
+
+// Register Response and Request Types
+export interface RegisterResponse {
+     accessToken: string;
+     refreshToken: string;
+
+     user: {
+          username: string;
+          email: string;
+          role: 'User';
+          _id: string;
+     };
+}
+
+export interface RegisterResquest {
+     username: string;
+     email: string;
+     phone: string;
+     password: string;
+     deviceId: string;
+     role: 'User';
+}

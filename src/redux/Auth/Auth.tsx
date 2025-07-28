@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import API_BASE_URL from '../../utils/Config';
-import { LoginResponse, LoginResquest } from './AuthType';
+import { LoginResponse, LoginResquest, RegisterResponse, RegisterResquest } from './AuthType';
 
 const Auth = createApi({
      reducerPath: 'Auth',
@@ -15,16 +15,32 @@ const Auth = createApi({
                }),
           }),
 
-          signup: builder.mutation({
+          signup: builder.mutation<RegisterResponse, RegisterResquest>({
                query: data => ({
-                    url: `/api/signup`,
+                    url: `/api/register`,
                     method: 'POST',
+                    body: data,
+               }),
+          }),
+
+          forgotPassword: builder.mutation<{ message: string; identifier: string }, { identifier: string }>({
+               query: data => ({
+                    url: `/api/forget-password`,
+                    method: 'PATCH',
+                    body: data,
+               }),
+          }),
+
+          verifyOtp: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string }>({
+               query: data => ({
+                    url: `/api/verify-otp`,
+                    method: 'PATCH',
                     body: data,
                }),
           }),
      }),
 });
 
-export const { useLoginMutation, useSignupMutation } = Auth;
+export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation } = Auth;
 
 export default Auth;
