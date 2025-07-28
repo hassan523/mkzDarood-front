@@ -1,0 +1,22 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import API_BASE_URL from '../../utils/Config';
+import { GetCounterResponse } from './CounterType';
+
+const Counter = createApi({
+     reducerPath: 'Counter',
+     baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
+     tagTypes: ['counter'],
+     endpoints: builder => ({
+          getCounter: builder.query<GetCounterResponse, void>({
+               query: () => ({
+                    url: `/api/counter/get-seq`,
+                    method: 'GET',
+               }),
+               providesTags: ['counter'],
+          }),
+     }),
+});
+
+export const { useGetCounterQuery } = Counter;
+
+export default Counter;

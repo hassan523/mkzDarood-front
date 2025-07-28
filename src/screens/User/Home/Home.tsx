@@ -11,6 +11,7 @@ import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Field from '../../../components/Field/Field';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
+import { useGetCounterHandler } from '../../../model/Counter/Counter';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const count = 265265625;
@@ -19,9 +20,12 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
+
      const [refreshing, setRefresing] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
      const [num, setNum] = useState('');
+
+     const { counterData, isLoading, isError, refech, error } = useGetCounterHandler();
 
      const onRefresh = () => {
           setRefresing(true);
