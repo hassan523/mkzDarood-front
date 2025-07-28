@@ -10,8 +10,8 @@ import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
-import { authUser } from '../../../redux/Features/authState';
 import { useLoginHandler } from '../../../model/Auth/AuthModel';
+
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
 
@@ -39,32 +39,24 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const handleCloseSheet = () => {
-          setIsOpen(false);
-          Keyboard.dismiss();
-          bottomSheetRef.current?.close();
+          if (isOpen) {
+               setIsOpen(false);
+               Keyboard.dismiss();
+               bottomSheetRef.current?.close();
+          }
      };
 
      const { handleLogin, isLoading } = useLoginHandler();
 
      const handleSubmit = () => {
-          // dispatch(
-          //    authUser({
-          //       data: {
-          //          username: 'Hasan',
-          //          email: 'lorem@gmail.com',
-          //          phone: '123456789',
-          //          profileImage: '',
-          //       },
-          //    }),
-          // );
           handleLogin({
                deviceId: 'app-device-id',
                identifier: email,
                password,
                navigation: navigation,
           });
-          // navigation.navigate('Home');
      };
+
      return (
           <>
                <AuthLayout>
@@ -90,7 +82,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                                    <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
                               </TouchableOpacity>
                          </View>
-                         <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} />
+                         <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
                     </View>
                     <View style={styles.BottomLine}>
                          <Text style={styles.BottomText}>Don't have account?</Text>
@@ -98,14 +90,6 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                               <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                          </TouchableOpacity>
                     </View>
-
-                    {/* {isOpen && (
-          <TouchableOpacity
-            style={styles.Overlay}
-            activeOpacity={1}
-            onPress={handleCloseSheet}
-          />
-        )} */}
                </AuthLayout>
 
                <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet}>

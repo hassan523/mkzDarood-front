@@ -8,14 +8,11 @@ const Auth = createApi({
      tagTypes: ['auth'],
      endpoints: builder => ({
           login: builder.mutation<LoginResponse, LoginResquest>({
-               query: data => {
-                    console.log(data, 'data in login query');
-                    return {
-                         url: `/api/login`,
-                         method: 'POST',
-                         body: data,
-                    };
-               },
+               query: data => ({
+                    url: `/api/login`,
+                    method: 'POST',
+                    body: data,
+               }),
           }),
 
           signup: builder.mutation({

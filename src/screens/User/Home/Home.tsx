@@ -18,7 +18,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
           'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
 
      const selector = useSelector((state: RootState) => state?.userData);
-
+     console.log(selector, 'selector in home screen');
      const isLogin: boolean = selector?.isLoggin;
      const [refreshing, setRefresing] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
