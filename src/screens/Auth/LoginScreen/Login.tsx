@@ -12,7 +12,6 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { authUser } from '../../../redux/Features/authState';
 import { useLoginHandler } from '../../../model/Auth/AuthModel';
-
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
 
