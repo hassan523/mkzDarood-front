@@ -17,23 +17,24 @@ import ResToast from '../../../components/ResToast/ResToast';
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
           'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
-
+     const userMessage = `اس مبارک عالمی تحریکِ محبت و عقیدت کا حصہ بنیے۔ روزانہ دنیا بھر کے مسلمان حضور نبی کریم ﷺ پر درود شریف پڑھتے ہیں۔ محبوبِ خدا، حضرت محمد مصطفیٰ ﷺ، جو بے شمار برکتوں، سلامتی اور روحانی بلندیوں کا سرچشمہ ہیں۔\n\nیہ مشن آپ کو دعوت دیتا ہے کہ آپ روزانہ جتنا درود شریف پڑھتے ہیں، اس کی تعداد ہمارے پلیٹ فارم پر بھیجیں۔ چاہے آپ 100، 500 یا 10,000 مرتبہ درود پڑھیں، جب آپ اپنی گنتی جمع کرواتے ہیں تو وہ ایک بڑھتے ہوئے اجتماعی مجموعے کا حصہ بن جاتی ہے۔ جیسے ایک قطرہ سمندر میں شامل ہو کر خود سمندر بن جاتا ہے، ویسے ہی آپ کا انفرادی درود ایک متحد بہاؤ کا حصہ بن جاتا ہے، اور اللہ ﷻ کے فضل و کرم سے آپ کو اس پورے مجموعی درود کے برابر اجر عطا کیا جاتا ہے۔`;
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
      const Token: string | undefined = selector?.data?.accessToken;
 
      const [refreshing, setRefresing] = useState(false);
+     const [isUrdu, setIsUrdu] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
      const [seq, setSeq] = useState<number | string>('');
 
      const counterApi = useGetCounterHandler();
+     const refetch = counterApi?.refetch;
      const { handleUpdate, isLoading } = useUpdateCounterHandler();
 
-     const onRefresh = () => {
+     const onRefresh = async () => {
           setRefresing(true);
-          setTimeout(() => {
-               setRefresing(false);
-          }, 2000);
+          await refetch?.();
+          setRefresing(false);
      };
 
      const handleUpdateCounter = () => {
@@ -47,7 +48,6 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <View style={styles.Overlay} />
                     </ImageBackground>
                     <View style={styles.HeroContainer}>
-                         {/* <Image source={require('../../../assets/durood.png')} /> */}
                          <Text style={{ fontSize: 18, color: 'white', textAlign: 'center' }}>
                               اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
                          </Text>
@@ -86,13 +86,12 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <View style={styles.DescBox}>
                               <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
                               <View style={{ flex: 1 }}>
-                                   <Text style={styles.Desc}>{message?.slice(0, Math.floor(windowWidth - 174) - 94)}</Text>
+                                   <Text style={[styles.Desc, isUrdu ? { textAlign: 'right' } : { textAlign: 'left' }]}>{isUrdu ? userMessage : message}</Text>
                               </View>
                          </View>
-                         <Text style={[styles.Desc, { letterSpacing: 0.8 }]}>{message?.slice(Math.floor(windowWidth - 174) - 94)}</Text>
                     </View>
                     <View style={{ width: 225 }}>
-                         <Button name="Translate to Urdu" iconRight icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />} />
+                         <Button name="Translate to Urdu" iconRight icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />} onPress={() => setIsUrdu(!isUrdu)} />
                     </View>
                     <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
                </View>
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
      DescContainer: {
           paddingHorizontal: 20,
           gap: 15,
-          paddingVertical: 10,
+          paddingVertical: 20,
           position: 'relative',
           borderRadius: 10,
           backgroundColor: '#fff', // Required for shadow on iOS
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
           marginHorizontal: 20,
      },
      DescBox: {
-          flexDirection: 'row',
+          flexDirection: 'column',
           gap: 15,
      },
      Desc: {
@@ -238,10 +237,11 @@ const styles = StyleSheet.create({
           borderBottomRightRadius: 15,
      },
      DescImage: {
-          height: 100,
-          width: 100,
+          height: 220,
+          width: '100%',
           borderRadius: 10,
           position: 'relative',
+          objectFit: 'fill',
      },
      ModalContainer: {
           justifyContent: 'center',
