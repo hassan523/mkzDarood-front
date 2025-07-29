@@ -4,14 +4,16 @@ import { windowHeight, windowWidth } from '../../utils/dimensions/dimensions';
 import colors from '../../utils/colors/colors';
 import Font from '../../utils/fonts/Font';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { useNavigation } from '@react-navigation/native';
 
 const AuthLayout = ({ children, heading = '', isBack = false, onBack = () => {} }: { children: ReactNode; heading?: string; isBack?: boolean; onBack?: () => void }) => {
+     const navigation = useNavigation();
      return (
           <View style={styles.Container}>
                {heading != '' && (
                     <View style={styles.HeaderContainer}>
                          {isBack && (
-                              <TouchableOpacity style={styles.Back} onPress={onBack}>
+                              <TouchableOpacity style={styles.Back} onPress={() => onBack()}>
                                    <FontAwesome6 name="arrow-left-long" size={20} color={colors.textColor} />
                               </TouchableOpacity>
                          )}
@@ -49,8 +51,9 @@ const styles = StyleSheet.create({
           color: colors.textColor,
      },
      Back: {
-          position: 'absolute',
           left: 20,
+          zIndex: 100000,
+          position: 'absolute',
      },
      ImgLeft: {
           position: 'absolute',

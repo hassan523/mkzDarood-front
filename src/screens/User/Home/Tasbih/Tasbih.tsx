@@ -47,7 +47,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
                                    <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
                               </TouchableOpacity>
                          </View>
-                         {seq != 0 && <Button name="Submit" onPress={() => (isLogin ? navigation.navigate('AsmaulHusna') : setIsOpen(true))} />}
+                         {seq != 0 && <Button name="Submit" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
                     </View>
                </View>
                <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -55,7 +55,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
                          <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
                               <Entypo name="cross" color={colors.textColor} size={25} />
                          </TouchableOpacity>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20, textAlign: 'center' }]}>You Want to Submit this tasbih to Durood?</Text>
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20, textAlign: 'center' }]}>You Want to Submit Durood?</Text>
 
                          <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
                     </View>
