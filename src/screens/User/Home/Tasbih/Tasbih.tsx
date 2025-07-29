@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
      const Token: string | undefined = selector?.data?.accessToken;
+     const isLogin: boolean = selector?.isLoggin;
 
      const [seq, setSeq] = useState<number | string>(0);
      const [isOpen, setIsOpen] = useState(false);
@@ -46,7 +47,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
                                    <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
                               </TouchableOpacity>
                          </View>
-                         {seq != 0 && <Button name="Submit" onPress={() => setIsOpen(true)} />}
+                         {seq != 0 && <Button name="Submit" onPress={() => (isLogin ? navigation.navigate('AsmaulHusna') : setIsOpen(true))} />}
                     </View>
                </View>
                <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>

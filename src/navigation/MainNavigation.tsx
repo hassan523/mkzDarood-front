@@ -20,6 +20,8 @@ import { logout } from '../redux/Features/authState';
 import ModalLayout from '../layout/ModalLayout/ModalLayout';
 import { useLogoutMutation } from '../redux/Auth/Auth';
 import ResToast from '../components/ResToast/ResToast';
+import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
+import AsmaunNabi from '../screens/User/Home/AsmaunNabi/AsmaunNabi';
 
 interface MainNavigation {
      initRoute: string;
@@ -57,11 +59,13 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
           >
                <HomeStack.Screen name="Home" component={Home} />
                <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
+               <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
+               <HomeStack.Screen name="AsmaunNabi" component={AsmaunNabi} options={{ headerShown: false }} />
                {!isLogin && (
                     <>
                          <HomeStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
                          <HomeStack.Screen name="Signup" component={Signup} options={{ headerShown: false }} />
-                         <HomeStack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
+                         <HomeStack.Screen name="Otp" component={Otp as any} options={{ headerShown: false }} />
                          <HomeStack.Screen name="NewPassword" component={NewPassword} options={{ headerShown: false }} />
                     </>
                )}
