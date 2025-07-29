@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { authState } from './Features/authState';
 import Auth from './Auth/Auth';
 import Counter from './Counter/Counter';
+import Profile from './Profile/Profile';
 
 const persistConfig = {
      key: 'root',
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
      userData: authState.reducer,
      [Auth.reducerPath]: Auth.reducer,
      [Counter.reducerPath]: Counter.reducer,
+     [Profile.reducerPath]: Profile.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -31,7 +33,8 @@ const store = configureStore({
                },
           })
                .concat(Auth.middleware)
-               .concat(Counter.middleware),
+               .concat(Counter.middleware)
+               .concat(Profile.middleware),
 });
 
 export default store;

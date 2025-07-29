@@ -70,12 +70,12 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <Text style={styles.IconText}>Tasbih</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.IconBox}>
+                    <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaunNabi')}>
                          <Image source={require('../../../assets/nabi.png')} />
                          <Text style={styles.IconText}>Asma un Nabi</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.IconBox}>
+                    <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
                          <Image source={require('../../../assets/Allah.png')} />
                          <Text style={styles.IconText}>Asma ul Husna</Text>
                     </TouchableOpacity>

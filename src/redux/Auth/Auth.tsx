@@ -57,20 +57,9 @@ const Auth = createApi({
                     body: data,
                }),
           }),
-
-          updateProfile: builder.mutation<{ user: User; message: string }, { id: string | undefined; Token: string | undefined; formData: FormData | { oldPassword: string; newPassword: string } }>({
-               query: ({ id, Token, formData }) => ({
-                    url: `/api/update-profile/${id}`,
-                    method: 'PATCH',
-                    body: formData,
-                    headers: {
-                         Authorization: `Bearer ${Token}`,
-                    },
-               }),
-          }),
      }),
 });
 
-export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation, useLogoutMutation, useUpdateProfileMutation } = Auth;
+export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation, useLogoutMutation } = Auth;
 
 export default Auth;

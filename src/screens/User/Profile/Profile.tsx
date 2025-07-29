@@ -13,7 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import API_BASE_URL from '../../../utils/Config';
-import { useUpdateProfile } from '../../../model/Auth/AuthModel';
+import { useUpdateProfile } from '../../../model/Profile/ProfileModel';
 
 interface DataTypes {
      profilePicture: string | undefined;
