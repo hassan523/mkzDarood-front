@@ -18,6 +18,7 @@ import Otp from '../screens/Auth/OtpScreen/Otp';
 import NewPassword from '../screens/Auth/NewPassword/NewPassword';
 import { logout } from '../redux/Features/authState';
 import ModalLayout from '../layout/ModalLayout/ModalLayout';
+import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
 
 interface MainNavigation {
    initRoute: string;
@@ -55,6 +56,7 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
       >
          <HomeStack.Screen name="Home" component={Home} />
          <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
+         <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
          {!isLogin && (
             <>
                <HomeStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
