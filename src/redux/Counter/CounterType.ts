@@ -1,4 +1,8 @@
 export interface GetCounterResponse {
-     _id: string;
      seq: number;
+}
+
+export interface UpdateCounterRequest{
+     seq: number;
+     Token: string;
 }

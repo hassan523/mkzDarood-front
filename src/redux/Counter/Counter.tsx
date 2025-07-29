@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import API_BASE_URL from '../../utils/Config';
-import { GetCounterResponse } from './CounterType';
+import { GetCounterResponse, UpdateCounterRequest } from './CounterType';
 
 const Counter = createApi({
      reducerPath: 'Counter',
@@ -13,6 +13,14 @@ const Counter = createApi({
                     method: 'GET',
                }),
                providesTags: ['counter'],
+          }),
+
+          updateCounter: builder.mutation<GetCounterResponse, UpdateCounterRequest>({
+               query: ({ seq, Token }) => ({
+                    url: `/api/counter/update-seq`,
+                    method: 'PATCH',
+               }),
+               invalidatesTags: ['counter'],
           }),
      }),
 });

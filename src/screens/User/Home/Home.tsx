@@ -1,4 +1,4 @@
-import { FlatList, Image, ImageBackground, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ImageBackground, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { windowWidth } from '../../../utils/dimensions/dimensions';
 import colors from '../../../utils/colors/colors';
@@ -14,7 +14,6 @@ import { RootState } from '../../../redux/store';
 import { useGetCounterHandler } from '../../../model/Counter/Counter';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
-     const count = 265265625;
      const message =
           'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
 
@@ -26,7 +25,6 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const [num, setNum] = useState('');
 
      const counterApi = useGetCounterHandler();
-     console.log(counterApi);
 
      const onRefresh = () => {
           setRefresing(true);
@@ -44,7 +42,13 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                     <View style={styles.HeroContainer}>
                          <Image source={require('../../../assets/durood.png')} />
                          <Text style={styles.Heading}>Global Darood Count</Text>
-                         <Text style={[styles.Count, { fontSize: count <= 9999999999 ? 50 : 40 }]}>{count.toLocaleString()}</Text>
+                         {counterApi?.isLoading ? (
+                              <ActivityIndicator color={colors.PrimaryColor} />
+                         ) : counterApi?.isError ? (
+                              <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
+                         ) : (
+                              counterApi?.data?.seq && <Text style={[styles.Count, { fontSize: counterApi?.data?.seq <= 9999999999 ? 50 : 40 }]}>{counterApi?.data?.seq.toLocaleString()}</Text>
+                         )}
                          <View style={{ minWidth: 'auto' }}>
                               <Button name="Submit Darood" onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))} />
                          </View>

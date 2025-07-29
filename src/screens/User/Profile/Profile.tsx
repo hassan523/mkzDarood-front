@@ -10,24 +10,30 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Asset, ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store';
+import API_BASE_URL from '../../../utils/Config';
 
 interface DataTypes {
-     profileImage: string | undefined;
+     profilePicture: string | undefined;
      username: string;
      email: string;
      phone: string;
 }
 
 const Profile = () => {
+     const selector = useSelector((state: RootState) => state?.userData);
+     const userData = selector?.data?.user;
+ 
      const [data, setData] = useState<DataTypes>({
-          profileImage: '',
+          profilePicture: '',
           username: 'Hasan',
           email: 'lorem@gmail.com',
           phone: '123456789',
      });
-     const { profileImage, username, email, phone } = data;
+     const { profilePicture, username, email, phone } = data;
      const [updateData, setUpdateData] = useState<DataTypes>({
-          profileImage: '',
+          profilePicture: '',
           username: '',
           email: '',
           phone: '',
@@ -53,12 +59,12 @@ const Profile = () => {
 
      const handleSave = () => {
           setData({
-               profileImage: updateData.profileImage || profileImage,
+               profilePicture: updateData.profilePicture || profilePicture,
                username: updateData.username || username,
                email: updateData.email || email,
                phone: updateData.phone || phone,
           });
-          setUpdateData({ profileImage: '', username: '', email: '', phone: '' });
+          setUpdateData({ profilePicture: '', username: '', email: '', phone: '' });
           setIsEdit(false);
      };
 
@@ -82,7 +88,7 @@ const Profile = () => {
                     const firstAsset: Asset = response.assets[0];
                     setUpdateData({
                          ...updateData,
-                         profileImage: firstAsset.uri || '',
+                         profilePicture: firstAsset.uri || '',
                     });
                }
           });
@@ -93,13 +99,13 @@ const Profile = () => {
                <ScrollView contentContainerStyle={[styles.ContainerWrapper, { paddingBottom: isFocused ? 400 : 0 }]} showsVerticalScrollIndicator={false}>
                     <Text style={styles.Heading}>Profile</Text>
                     <View style={styles.ImageContainer}>
-                         {isEdit && updateData.profileImage ? (
-                              <Image source={{ uri: updateData.profileImage }} style={styles.Image} />
-                         ) : profileImage ? (
-                              <Image source={{ uri: profileImage }} style={styles.Image} />
+                         {isEdit && updateData.profilePicture ? (
+                              <Image source={{ uri: updateData.profilePicture }} style={styles.Image} />
+                         ) : userData?.profilePicture ? (
+                              <Image source={{ uri: `${API_BASE_URL}/${userData?.profilePicture}` }} style={styles.Image} />
                          ) : (
                               <View style={styles.Avatar}>
-                                   <Text style={styles.AvatarText}>{username.charAt(0).toUpperCase()}</Text>
+                                   <Text style={styles.AvatarText}>{userData?.username.charAt(0).toUpperCase()}</Text>
                               </View>
                          )}
                          {isEdit && (
@@ -131,7 +137,7 @@ const Profile = () => {
                                         onBlur={() => setIsFocused(false)}
                                    />
                               ) : (
-                                   <Text style={styles.Value}>{username}</Text>
+                                   <Text style={styles.Value}>{userData?.username}</Text>
                               )}
                          </View>
                          <View style={styles.FieldContainer}>
@@ -147,7 +153,7 @@ const Profile = () => {
                                         onBlur={() => setIsFocused(false)}
                                    />
                               ) : (
-                                   <Text style={styles.Value}>{email}</Text>
+                                   <Text style={styles.Value}>{userData?.email}</Text>
                               )}
                          </View>
                          <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
@@ -163,7 +169,7 @@ const Profile = () => {
                                         onBlur={() => setIsFocused(false)}
                                    />
                               ) : (
-                                   <Text style={styles.Value}>{phone}</Text>
+                                   <Text style={styles.Value}>{userData?.phone}</Text>
                               )}
                          </View>
 

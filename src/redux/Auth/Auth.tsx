@@ -49,6 +49,14 @@ const Auth = createApi({
                     body: data,
                }),
           }),
+
+          //  updateProfile: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; newPassword: string }>({
+          //      query: data => ({
+          //           url: `/api/update-profile/:id`,
+          //           method: 'PATCH',
+          //           body: data,
+          //      }),
+          // }),
      }),
 });
 
