@@ -4,5 +4,5 @@ export interface GetCounterResponse {
 
 export interface UpdateCounterRequest{
      seq: number;
-     Token: string;
+     Token: string | undefined;
 }

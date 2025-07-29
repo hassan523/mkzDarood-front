@@ -9,7 +9,7 @@ import Counter from './Counter/Counter';
 const persistConfig = {
      key: 'root',
      storage: AsyncStorage,
-     blacklist: [],
+     blacklist: ['Counter'],
 };
 
 const rootReducer = combineReducers({

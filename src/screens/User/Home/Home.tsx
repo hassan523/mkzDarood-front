@@ -11,7 +11,8 @@ import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Field from '../../../components/Field/Field';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { useGetCounterHandler } from '../../../model/Counter/Counter';
+import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
+import ResToast from '../../../components/ResToast/ResToast';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
@@ -19,18 +20,24 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
+     const Token: string | undefined = selector?.data?.accessToken;
 
      const [refreshing, setRefresing] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
-     const [num, setNum] = useState('');
+     const [seq, setSeq] = useState<number | string>('');
 
      const counterApi = useGetCounterHandler();
+     const { handleUpdate, isLoading } = useUpdateCounterHandler();
 
      const onRefresh = () => {
           setRefresing(true);
           setTimeout(() => {
                setRefresing(false);
           }, 2000);
+     };
+
+     const handleUpdateCounter = () => {
+          handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq });
      };
 
      const renderItem = () => (
@@ -102,13 +109,13 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                />
                <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
                     <View style={styles.ModalContainer}>
-                         <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)}>
+                         <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
                               <Entypo name="cross" color={colors.textColor} size={25} />
                          </TouchableOpacity>
                          <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Durood</Text>
-                         <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={num} onChange={value => setNum(value)} />
+                         <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={seq} onChange={value => setSeq(value)} />
 
-                         <Button name="Submit" onPress={() => setIsOpen(false)} />
+                         <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
                     </View>
                </ModalLayout>
           </>
