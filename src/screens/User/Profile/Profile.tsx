@@ -13,6 +13,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import API_BASE_URL from '../../../utils/Config';
+import { useUpdateProfile } from '../../../model/Auth/AuthModel';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -24,14 +25,9 @@ interface DataTypes {
 const Profile = () => {
      const selector = useSelector((state: RootState) => state?.userData);
      const userData = selector?.data?.user;
- 
-     const [data, setData] = useState<DataTypes>({
-          profilePicture: '',
-          username: 'Hasan',
-          email: 'lorem@gmail.com',
-          phone: '123456789',
-     });
-     const { profilePicture, username, email, phone } = data;
+     const id: string | undefined = selector?.data?.user?._id;
+     const Token: string | undefined = selector?.data?.accessToken;
+     console.log(selector);
      const [updateData, setUpdateData] = useState<DataTypes>({
           profilePicture: '',
           username: '',
@@ -48,8 +44,10 @@ const Profile = () => {
      });
      const { password, newPass, reNewPass } = changePassword;
 
+     const { handleUpdateProfile, handleChangePassword, isLoading } = useUpdateProfile();
+
      const handleIsEdit = () => {
-          setUpdateData(data);
+          setUpdateData(userData);
           setIsEdit(true);
      };
 
@@ -58,14 +56,11 @@ const Profile = () => {
      };
 
      const handleSave = () => {
-          setData({
-               profilePicture: updateData.profilePicture || profilePicture,
-               username: updateData.username || username,
-               email: updateData.email || email,
-               phone: updateData.phone || phone,
-          });
-          setUpdateData({ profilePicture: '', username: '', email: '', phone: '' });
-          setIsEdit(false);
+          handleUpdateProfile({ id: id, Token: Token, profilePicture: updateData.profilePicture, setIsEdit: setIsEdit });
+     };
+
+     const handleChangePass = () => {
+          handleChangePassword({ id: id, Token: Token, oldPassword: password, newPassword: newPass, reEnter: reNewPass, setIsEdit: setIsOpen });
      };
 
      const pickImage = async () => {
@@ -100,12 +95,17 @@ const Profile = () => {
                     <Text style={styles.Heading}>Profile</Text>
                     <View style={styles.ImageContainer}>
                          {isEdit && updateData.profilePicture ? (
-                              <Image source={{ uri: updateData.profilePicture }} style={styles.Image} />
+                              <Image
+                                   source={{
+                                        uri: updateData.profilePicture === userData?.profilePicture ? `${API_BASE_URL}/${updateData.profilePicture}` : updateData.profilePicture,
+                                   }}
+                                   style={styles.Image}
+                              />
                          ) : userData?.profilePicture ? (
                               <Image source={{ uri: `${API_BASE_URL}/${userData?.profilePicture}` }} style={styles.Image} />
                          ) : (
                               <View style={styles.Avatar}>
-                                   <Text style={styles.AvatarText}>{userData?.username.charAt(0).toUpperCase()}</Text>
+                                   <Text style={styles.AvatarText}>{userData?.username?.charAt(0)?.toUpperCase()}</Text>
                               </View>
                          )}
                          {isEdit && (
@@ -126,7 +126,7 @@ const Profile = () => {
                          </View>
                          <View style={styles.FieldContainer}>
                               <Text style={styles.Label}>Username</Text>
-                              {isEdit ? (
+                              {false ? (
                                    <Field
                                         placeHolder="Enter Usename"
                                         type="text"
@@ -142,7 +142,7 @@ const Profile = () => {
                          </View>
                          <View style={styles.FieldContainer}>
                               <Text style={styles.Label}>Email</Text>
-                              {isEdit ? (
+                              {false ? (
                                    <Field
                                         placeHolder="Enter Email"
                                         type="email"
@@ -158,7 +158,7 @@ const Profile = () => {
                          </View>
                          <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
                               <Text style={styles.Label}>Phone Number</Text>
-                              {isEdit ? (
+                              {false ? (
                                    <Field
                                         placeHolder="Enter Phone Number"
                                         type="text"
@@ -214,6 +214,8 @@ const Profile = () => {
                                              fontSize: 15,
                                              fontFamily: Font.font600,
                                         }}
+                                        isLoading={isLoading}
+                                        disabled={isLoading}
                                    />
                               </View>
                          ) : (
@@ -249,7 +251,7 @@ const Profile = () => {
                          <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Change Password</Text>
                          <View style={styles.FieldContainer}>
                               <Text style={styles.Label}>Current Password</Text>
-                              <Field placeHolder="Enter Current Password" type="text" value={password} onChange={value => setChangePassword({ ...changePassword, password: value })} />
+                              <Field placeHolder="Enter Current Password" type="password" value={password} onChange={value => setChangePassword({ ...changePassword, password: value })} />
                          </View>
                          <View style={styles.FieldContainer}>
                               <Text style={styles.Label}>New Password</Text>
@@ -259,7 +261,7 @@ const Profile = () => {
                               <Text style={styles.Label}>Re-Enter New Password</Text>
                               <Field placeHolder="Re-Enter New Password" type="password" isIcon value={reNewPass} onChange={value => setChangePassword({ ...changePassword, reNewPass: value })} />
                          </View>
-                         <Button name="Save" />
+                         <Button name="Save" onPress={handleChangePass} isLoading={isLoading} disabled={isLoading} />
                     </View>
                </ModalLayout>
           </View>

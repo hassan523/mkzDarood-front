@@ -49,3 +49,23 @@ export interface RegisterResquest {
      deviceId: string;
      role: 'User';
 }
+
+export interface User {
+     _id: string;
+     username: string;
+     phone: string;
+     email: string;
+     password: string;
+     role: 'User';
+     profilePicture: string;
+     refreshTokens: [
+          {
+               token: string;
+               deviceId: string;
+               _id: string;
+          },
+     ];
+     createdAt: string;
+     updatedAt: string;
+     __v: 2;
+}

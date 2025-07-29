@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import API_BASE_URL from '../../utils/Config';
-import { LoginResponse, LoginResquest, RegisterResponse, RegisterResquest } from './AuthType';
+import { LoginResponse, LoginResquest, RegisterResponse, RegisterResquest, User } from './AuthType';
 
 const Auth = createApi({
      reducerPath: 'Auth',
@@ -50,16 +50,19 @@ const Auth = createApi({
                }),
           }),
 
-          //  updateProfile: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; newPassword: string }>({
-          //      query: data => ({
-          //           url: `/api/update-profile/:id`,
-          //           method: 'PATCH',
-          //           body: data,
-          //      }),
-          // }),
+          updateProfile: builder.mutation<{ user: User; message: string }, { id: string | undefined; Token: string | undefined; formData: FormData | { oldPassword: string; newPassword: string } }>({
+               query: ({ id, Token, formData }) => ({
+                    url: `/api/update-profile/${id}`,
+                    method: 'PATCH',
+                    body: formData,
+                    headers: {
+                         Authorization: `Bearer ${Token}`,
+                    },
+               }),
+          }),
      }),
 });
 
-export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation } = Auth;
+export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation, useUpdateProfileMutation } = Auth;
 
 export default Auth;
