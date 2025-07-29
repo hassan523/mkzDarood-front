@@ -40,7 +40,10 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <View style={styles.Overlay} />
                     </ImageBackground>
                     <View style={styles.HeroContainer}>
-                         <Image source={require('../../../assets/durood.png')} />
+                         {/* <Image source={require('../../../assets/durood.png')} /> */}
+                         <Text style={{ fontSize: 18, color: 'white', textAlign: 'center' }}>
+                              اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
+                         </Text>
                          <Text style={styles.Heading}>Global Darood Count</Text>
                          {counterApi?.isLoading ? (
                               <ActivityIndicator color={colors.PrimaryColor} />
@@ -122,7 +125,7 @@ const styles = StyleSheet.create({
           backgroundColor: 'white',
      },
      ImageBgContainer: {
-          height: 270,
+          height: 300,
           position: 'relative',
           width: windowWidth,
      },
