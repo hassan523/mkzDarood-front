@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import ResToast from '../../components/ResToast/ResToast'
+import ResToast from '../../components/ResToast/ResToast';
 import { authUser } from '../../redux/Features/authState';
 import { RootState } from '../../redux/store';
-import { useUpdateProfileMutation } from '../../redux/Profile/Profile';
+import { useGetProfileQuery, useUpdateProfileMutation } from '../../redux/Profile/Profile';
 
 export const useUpdateProfile = () => {
      const selector = useSelector((state: RootState) => state?.userData);
@@ -28,8 +28,16 @@ export const useUpdateProfile = () => {
                     });
                     return;
                }
+               const proofImgType = profilePicture?.split('.');
+               const imgType = proofImgType.pop();
+
                const formData = new FormData();
-               formData.append('profilePicture', profilePicture);
+               const imageBlob = {
+                    uri: profilePicture,
+                    type: `image/${imgType}`,
+                    name: `profileImg.${imgType}`,
+               } as any;
+               formData.append('profilePicture', imageBlob);
 
                const res = await updateProfile({ id, Token, formData });
 
@@ -117,4 +125,17 @@ export const useUpdateProfile = () => {
      };
 
      return { handleUpdateProfile, handleChangePassword, isLoading };
+};
+
+export const useProfileData = ({ Token, id }: { Token: string; id: string }) => {
+     try {
+          const { data, isLoading, refetch, isError, error } = useGetProfileQuery({ id, Token }, { skip: !id });
+
+          return { data, isLoading, refetch, isError, error };
+     } catch (error) {
+          ResToast({
+               title: 'Something Went Wrong!',
+               type: 'danger',
+          });
+     }
 };

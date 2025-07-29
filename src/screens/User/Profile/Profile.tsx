@@ -13,7 +13,8 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import API_BASE_URL from '../../../utils/Config';
-import { useUpdateProfile } from '../../../model/Profile/ProfileModel';
+import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
+import { user } from '../../../redux/Auth/AuthType';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -34,7 +35,6 @@ const Profile = () => {
      });
 
      const selector = useSelector((state: RootState) => state?.userData);
-     const userData = selector?.data?.user;
      const id: string | undefined = selector?.data?.user?._id;
      const Token: string | undefined = selector?.data?.accessToken;
 
@@ -42,8 +42,11 @@ const Profile = () => {
 
      const { handleUpdateProfile, handleChangePassword, isLoading } = useUpdateProfile();
 
+     const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
+     const userData = getProfile?.data?.profile;
+
      const handleIsEdit = () => {
-          setUpdateData(userData as DataTypes);
+          setUpdateData(userData as user);
           setIsEdit(true);
      };
 
@@ -84,7 +87,7 @@ const Profile = () => {
                }
           });
      };
-
+     console.log(updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${API_BASE_URL}/${updateData.profilePicture}` : updateData.profilePicture);
      return (
           <View style={styles.Container}>
                <ScrollView contentContainerStyle={[styles.ContainerWrapper, { paddingBottom: isFocused ? 400 : 0 }]} showsVerticalScrollIndicator={false}>

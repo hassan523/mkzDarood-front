@@ -1,25 +1,7 @@
 export interface LoginResponse {
      accessToken: string;
      refreshToken: string;
-     user: {
-          _id: string;
-          username: string;
-          phone: string;
-          email: string;
-          password: string;
-          role: 'User';
-          profilePicture: string;
-          refreshTokens: [
-               {
-                    token: string;
-                    deviceId: string;
-                    _id: string;
-               },
-          ];
-          createdAt: string;
-          updatedAt: string;
-          __v: 2;
-     };
+     user: user;
 }
 
 export interface LoginResquest {
@@ -51,6 +33,27 @@ export interface RegisterResquest {
 }
 
 export interface User {
+     _id: string;
+     username: string;
+     phone: string;
+     email: string;
+     password: string;
+     role: 'User';
+     profilePicture: string;
+     refreshTokens: [
+          {
+               token: string;
+               deviceId: string;
+               _id: string;
+          },
+     ];
+     createdAt: string;
+     updatedAt: string;
+     __v: 2;
+}
+
+// sub interface
+export interface user {
      _id: string;
      username: string;
      phone: string;
