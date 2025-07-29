@@ -50,6 +50,14 @@ const Auth = createApi({
                }),
           }),
 
+          logout: builder.mutation<{ message: string }, { token: string; deviceId: string }>({
+               query: data => ({
+                    url: `/api/logout`,
+                    method: 'POST',
+                    body: data,
+               }),
+          }),
+
           //  updateProfile: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; newPassword: string }>({
           //      query: data => ({
           //           url: `/api/update-profile/:id`,
@@ -60,6 +68,6 @@ const Auth = createApi({
      }),
 });
 
-export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation } = Auth;
+export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation, useLogoutMutation } = Auth;
 
 export default Auth;

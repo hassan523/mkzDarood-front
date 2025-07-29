@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
-import { useForgotPasswordMutation, useLoginMutation, useNewpasswordMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
+import { useForgotPasswordMutation, useLoginMutation, useLogoutMutation, useNewpasswordMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
 import ResToast from '../../components/ResToast/ResToast';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
-import { authUser } from '../../redux/Features/authState';
+import { authUser, logout } from '../../redux/Features/authState';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RegisterResponse } from '../../redux/Auth/AuthType';
 
@@ -233,7 +233,6 @@ export const useVerifyOTPHandler = () => {
 };
 
 export const useNewPasswordHandler = () => {
-     const dispatch = useDispatch();
      const [newPasswordAPI, { isLoading }] = useNewpasswordMutation();
 
      type RootStackParamList = {
