@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavigationContainer, NavigationProp, useNavigation } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
+import { CommonActions, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import colors from '../utils/colors/colors';
@@ -102,22 +102,28 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
      const [logoutAPI, { isLoading }] = useLogoutMutation();
+     const navigationRef = useRef<any>(null);
 
      const handleLogout = async () => {
           try {
-               const res = await logoutAPI({ token: (selector?.data?.user as any)?.refreshTokens[0]?.token || '' || '', deviceId: (selector?.data?.user as any)?.refreshTokens[0]?.deviceId || '' });
+               const res = await logoutAPI({
+                    token: (selector?.data?.user as any)?.refreshTokens[0]?.token || '',
+                    deviceId: (selector?.data?.user as any)?.refreshTokens[0]?.deviceId || '',
+               });
 
                if (!res.error) {
                     dispatch(logout());
+                    return true;
                } else {
-                    return ResToast({
-                         title: (res.error as any)?.data.message || 'Failed to logout please try agan.',
+                    ResToast({
+                         title: (res.error as any)?.data.message || 'Failed to logout please try again.',
                          type: 'danger',
                     });
+                    return false;
                }
           } catch (error) {
-               console.error('logout failed:', error);
-               throw error;
+               console.error('Logout failed:', error);
+               return false;
           }
      };
 
@@ -125,14 +131,17 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
      const [drawerNavigation, setDrawerNavigation] = useState<any>(null);
 
      const handleLogoutSubmit = async () => {
-          await handleLogout();
-          setShowLogoutModal(false);
-          drawerNavigation?.closeDrawer();
-          setDrawerNavigation(null);
+          const success = await handleLogout();
+          if (success) {
+               drawerNavigation?.closeDrawer();
+               setShowLogoutModal(false);
+               setDrawerNavigation(null);
+               navigationRef.current.navigate('Login');
+          }
      };
 
      return (
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
                <ModalLayout isOpen={showLogoutModal} setIsOpen={setShowLogoutModal}>
                     <View style={styles.modalContent}>
                          <Text style={styles.modalTitle}>Logout Confirmation</Text>
@@ -143,8 +152,8 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                                    <Text style={styles.buttonText}>Cancel</Text>
                               </TouchableOpacity>
 
-                              <TouchableOpacity style={[styles.button, styles.logoutBtn]} onPress={handleLogoutSubmit}>
-                                   <Text style={styles.buttonText}>Logout</Text>
+                              <TouchableOpacity style={[styles.button, styles.logoutBtn]} onPress={handleLogoutSubmit} disabled={isLoading}>
+                                   <Text style={styles.buttonText}>{isLoading ? 'Logging out...' : 'Logout'}</Text>
                               </TouchableOpacity>
                          </View>
                     </View>
