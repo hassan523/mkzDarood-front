@@ -13,10 +13,15 @@ import { useDispatch } from 'react-redux';
 import { authUser } from '../../../redux/Features/authState';
 import { useVerifyOTPHandler } from '../../../model/Auth/AuthModel';
 
-const Otp = ({ route, navigation }: { route: { params: { type: string; email: string } }; navigation: Navigation }) => {
-     const { type, email } = route.params;
-
-     const dispatch = useDispatch();
+const Otp = ({
+     route,
+     navigation,
+}: {
+     route: { params: { type: string; email: string; data: { username: string; email: string; phone: string; password: string; deviceId: string } } };
+     navigation: Navigation;
+}) => {
+     const { type, email, data } = route.params;
+     const { username, phone, password, deviceId, email: signupEmail } = data || {};
 
      const [isOpen, setIsOpen] = useState(false);
      const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '']);
@@ -28,13 +33,7 @@ const Otp = ({ route, navigation }: { route: { params: { type: string; email: st
           bottomSheetRef.current?.expand();
      };
 
-     const handleCloseSheet = () => {
-          if (isOpen) {
-               setIsOpen(false);
-               Keyboard.dismiss();
-               bottomSheetRef.current?.close();
-          }
-     };
+     console.log({ type, email, data }, 'datadatadata');
 
      const handleChangeCode = (text: string, index: number) => {
           const updatedCode = [...verificationCode];
@@ -63,15 +62,16 @@ const Otp = ({ route, navigation }: { route: { params: { type: string; email: st
 
      const { handleVerifyOTP, isLoading } = useVerifyOTPHandler();
 
-     const handleLogin = () => {
-          console.log('object');
-     };
-
      const handleForgot = async () => {
           await handleVerifyOTP({
-               identifier: email,
+               identifier: type === 'signup' ? data?.email : email,
                otp: verificationCode.join(''),
-               type: 'otp',
+               type: type === 'signup' ? 'signup' : 'otp',
+               username,
+               phone,
+               password,
+               deviceId,
+               email: signupEmail,
           });
           handleOpenSheet();
      };
@@ -136,7 +136,7 @@ const Otp = ({ route, navigation }: { route: { params: { type: string; email: st
                               ))}
                          </View>
                          <View style={styles.BtnContainer}>
-                              <Button name="Submit" onPress={() => (type == 'signup' ? handleLogin() : handleForgot())} isLoading={isLoading} />
+                              <Button name="Submit" onPress={handleForgot} isLoading={isLoading} />
                               <View style={styles.ResendContainer}>
                                    <Text
                                         style={{

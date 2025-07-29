@@ -1,9 +1,10 @@
 import { useDispatch } from 'react-redux';
-import { useForgotPasswordMutation, useLoginMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
+import { useForgotPasswordMutation, useLoginMutation, useNewpasswordMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
 import ResToast from '../../components/ResToast/ResToast';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { authUser } from '../../redux/Features/authState';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RegisterResponse } from '../../redux/Auth/AuthType';
 
 export const useLoginHandler = () => {
      const dispatch = useDispatch();
@@ -59,7 +60,7 @@ export const useRegisterHandler = () => {
      const [register, { isLoading }] = useSignupMutation();
 
      type RootStackParamList = {
-          Otp: { type: string };
+          Otp: { type: string; data: any };
      };
 
      const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -97,7 +98,17 @@ export const useRegisterHandler = () => {
                          title: 'Otp Send successfully',
                          type: 'success',
                     });
-                    navigation.navigate('Otp', { type: 'signup' });
+                    navigation.navigate('Otp', {
+                         type: 'signup',
+                         data: {
+                              username,
+                              email,
+                              phone,
+                              password,
+                              deviceId,
+                              role: 'User',
+                         },
+                    });
                } else {
                     ResToast({
                          title: (res.error as any).data.message || 'Failed to register.',
@@ -156,15 +167,35 @@ export const useForgotPasswordHandler = () => {
 };
 
 export const useVerifyOTPHandler = () => {
+     const dispatch = useDispatch();
      const [verifyOTP, { isLoading }] = useVerifyOtpMutation();
 
      type RootStackParamList = {
           NewPassword: { identifier: string; otp: string };
+          Home: undefined;
      };
 
      const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-     const handleVerifyOTP = async ({ identifier, otp, type }: { identifier: string; otp: string; type: string }) => {
+     const handleVerifyOTP = async ({
+          identifier,
+          otp,
+          type,
+          username,
+          phone,
+          password,
+          deviceId,
+          email,
+     }: {
+          identifier: string;
+          otp: string;
+          type: string;
+          username?: string;
+          email?: string;
+          phone?: string;
+          password?: string;
+          deviceId?: string;
+     }) => {
           try {
                if (!identifier || !otp) {
                     return ResToast({
@@ -173,15 +204,19 @@ export const useVerifyOTPHandler = () => {
                     });
                }
 
-               const res = await verifyOTP({ identifier, otp, type });
+               const res = await verifyOTP({ identifier, otp, type, username, phone, password, deviceId, email });
 
                if (!res.error) {
-                    // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
-                         title: 'Otp Verified successfully',
+                         title: type === 'signup' ? 'Account Created Successfully' : 'Otp Verified successfully',
                          type: 'success',
                     });
-                    navigation.navigate('NewPassword', { identifier, otp });
+                    if (type === 'signup') {
+                         navigation.navigate('Home');
+                         dispatch(authUser({ data: res.data as any }));
+                    } else {
+                         navigation.navigate('NewPassword', { identifier, otp });
+                    }
                } else {
                     ResToast({
                          title: (res.error as any).data.message || 'Failed to send OTP.',
@@ -195,4 +230,52 @@ export const useVerifyOTPHandler = () => {
      };
 
      return { handleVerifyOTP, isLoading };
+};
+
+export const useNewPasswordHandler = () => {
+     const dispatch = useDispatch();
+     const [newPasswordAPI, { isLoading }] = useNewpasswordMutation();
+
+     type RootStackParamList = {
+          Login: undefined;
+     };
+
+     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+     const handleNewPassword = async ({ email, otp, newPassword, reNewPassword }: { email: string; otp: string; newPassword: string; reNewPassword: string }) => {
+          try {
+               if (!newPassword || !reNewPassword) {
+                    return ResToast({
+                         title: 'Please fill all fields.',
+                         type: 'warning',
+                    });
+               }
+
+               if (newPassword !== reNewPassword) {
+                    return ResToast({
+                         title: 'Passwords do not match.',
+                         type: 'warning',
+                    });
+               }
+
+               const res = await newPasswordAPI({ identifier: email, otp, newPassword });
+               if (!res.error) {
+                    ResToast({
+                         title: 'Password changed successfully',
+                         type: 'success',
+                    });
+                    navigation.navigate('Login');
+               } else {
+                    ResToast({
+                         title: (res.error as any).data.message || 'Failed to change password.',
+                         type: 'danger',
+                    });
+               }
+          } catch (error) {
+               console.error('signup failed:', error);
+               throw error;
+          }
+     };
+
+     return { handleNewPassword, isLoading };
 };

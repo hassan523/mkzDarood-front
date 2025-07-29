@@ -31,9 +31,20 @@ const Auth = createApi({
                }),
           }),
 
-          verifyOtp: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; type: string }>({
+          verifyOtp: builder.mutation<
+               { message: string; identifier: string },
+               { identifier: string; otp: string; type: string; username?: string; email?: string; phone?: string; password?: string; confirmPassword?: string; deviceId?: string }
+          >({
                query: data => ({
                     url: `/api/verify-otp`,
+                    method: 'PATCH',
+                    body: data,
+               }),
+          }),
+
+          newpassword: builder.mutation<{ message: string; identifier: string }, { identifier: string; otp: string; newPassword: string }>({
+               query: data => ({
+                    url: `/api/change-password`,
                     method: 'PATCH',
                     body: data,
                }),
@@ -41,6 +52,6 @@ const Auth = createApi({
      }),
 });
 
-export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation } = Auth;
+export const { useLoginMutation, useSignupMutation, useForgotPasswordMutation, useVerifyOtpMutation, useNewpasswordMutation } = Auth;
 
 export default Auth;

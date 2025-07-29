@@ -7,20 +7,31 @@ import Field from '../../../components/Field/Field';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
+import { useNewPasswordHandler } from '../../../model/Auth/AuthModel';
 
-const NewPassword = ({ navigation }: { navigation: Navigation }) => {
-     const [data, setData] = useState<{
-          newPassword: string;
-          reNewPassword: string;
-     }>({
-          newPassword: '',
-          reNewPassword: '',
-     });
+const NewPassword = ({ navigation, route }: { navigation: Navigation; route: any }) => {
+     const [data, setData] = useState<{ newPassword: string; reNewPassword: string }>({ newPassword: '', reNewPassword: '' });
      const { newPassword, reNewPassword } = data;
 
      const handleData = ({ name, value }: { name: string; value: string }) => {
           setData({ ...data, [name]: value });
      };
+
+     const { identifier, otp } = route.params;
+
+     console.log({ identifier, otp, newPassword, reNewPassword });
+
+     const { handleNewPassword, isLoading } = useNewPasswordHandler();
+
+     const handleSubmit = () => {
+          handleNewPassword({
+               email: identifier,
+               otp,
+               newPassword,
+               reNewPassword,
+          });
+     };
+
      return (
           <AuthLayout heading="Setup New Password">
                <View style={styles.Container}>
@@ -47,7 +58,7 @@ const NewPassword = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'reNewPassword', value })}
                          />
                     </View>
-                    <Button name="Submit" onPress={() => navigation.navigate('Login')} />
+                    <Button name="Submit" onPress={handleSubmit} isLoading={isLoading} />
                </View>
           </AuthLayout>
      );
