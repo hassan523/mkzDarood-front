@@ -19,12 +19,16 @@ const Counter = createApi({
                query: ({ seq, Token }) => ({
                     url: `/api/counter/update-seq`,
                     method: 'PATCH',
+                    body: { seq },
+                    headers: {
+                         Authorization: `Bearer ${Token}`,
+                    },
                }),
                invalidatesTags: ['counter'],
           }),
      }),
 });
 
-export const { useGetCounterQuery } = Counter;
+export const { useGetCounterQuery, useUpdateCounterMutation } = Counter;
 
 export default Counter;

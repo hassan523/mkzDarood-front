@@ -1,4 +1,4 @@
-import { useGetCounterQuery } from '../../redux/Counter/Counter';
+import { useGetCounterQuery, useUpdateCounterMutation } from '../../redux/Counter/Counter';
 import ResToast from '../../components/ResToast/ResToast';
 
 export const useGetCounterHandler = () => {
@@ -12,4 +12,55 @@ export const useGetCounterHandler = () => {
                type: 'danger',
           });
      }
+};
+
+export const useUpdateCounterHandler = () => {
+     const [updateCounterApi, { isLoading }] = useUpdateCounterMutation();
+
+     const handleUpdate = async ({
+          seq,
+          Token,
+          setIsOpen,
+          setSeq,
+     }: {
+          seq: string | number;
+          Token: string | undefined;
+          setIsOpen: (arg0: boolean) => void;
+          setSeq: (arg0: string | number) => void;
+     }) => {
+          try {
+               if (seq == '') {
+                    ResToast({
+                         title: 'Please Enter Number',
+                         type: 'warning',
+                    });
+                    return;
+               }
+
+               const num = Number(seq);
+               const res = await updateCounterApi({ seq: num, Token });
+
+               if (res?.error) {
+                    ResToast({
+                         title: 'Something Went Wrong!',
+                         type: 'danger',
+                    });
+                    return;
+               }
+
+               if (typeof seq == 'number') {
+                    setSeq(0);
+               } else {
+                    setSeq('');
+               }
+               setIsOpen(false);
+          } catch (error) {
+               ResToast({
+                    title: 'Something Went Wrong!',
+                    type: 'danger',
+               });
+          }
+     };
+
+     return { handleUpdate, isLoading };
 };
