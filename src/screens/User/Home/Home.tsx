@@ -12,11 +12,10 @@ import Field from '../../../components/Field/Field';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
-import ResToast from '../../../components/ResToast/ResToast';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
-          'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total.  Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
+          'Join this blessed global movement of love and devotion. Every day, Muslims around the world recite Darood Shareef upon the Beloved Prophet Muhammad ﷺ , a source of countless blessings, peace, and spiritual elevation.\n\nThis mission invites you to send the number of Darood Shareef you recite daily to our platform. No matter how much you recite 100, 500, or 10,000, once your count is submitted, it becomes part of a growing collective total. Just like a drop merges into the ocean and becomes the ocean, your individual recitation becomes part of a united stream of blessings, and you receive reward equal to the entire total by the mercy of Allah ﷻ';
      const userMessage = `اس مبارک عالمی تحریکِ محبت و عقیدت کا حصہ بنیے۔ روزانہ دنیا بھر کے مسلمان حضور نبی کریم ﷺ پر درود شریف پڑھتے ہیں۔ محبوبِ خدا، حضرت محمد مصطفیٰ ﷺ، جو بے شمار برکتوں، سلامتی اور روحانی بلندیوں کا سرچشمہ ہیں۔\n\nیہ مشن آپ کو دعوت دیتا ہے کہ آپ روزانہ جتنا درود شریف پڑھتے ہیں، اس کی تعداد ہمارے پلیٹ فارم پر بھیجیں۔ چاہے آپ 100، 500 یا 10,000 مرتبہ درود پڑھیں، جب آپ اپنی گنتی جمع کرواتے ہیں تو وہ ایک بڑھتے ہوئے اجتماعی مجموعے کا حصہ بن جاتی ہے۔ جیسے ایک قطرہ سمندر میں شامل ہو کر خود سمندر بن جاتا ہے، ویسے ہی آپ کا انفرادی درود ایک متحد بہاؤ کا حصہ بن جاتا ہے، اور اللہ ﷻ کے فضل و کرم سے آپ کو اس پورے مجموعی درود کے برابر اجر عطا کیا جاتا ہے۔`;
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
@@ -43,7 +42,14 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const renderItem = () => (
           <View style={styles.Container}>
-               <View style={styles.ImageBgContainer}>
+               <View
+                    style={[
+                         styles.ImageBgContainer,
+                         {
+                              height: counterApi?.data?.seq || 0 <= 9999999999999 ? 300 : 400,
+                         },
+                    ]}
+               >
                     <ImageBackground source={require('../../../assets/homebg.png')} style={styles.Image} resizeMode="cover">
                          <View style={styles.Overlay} />
                     </ImageBackground>
@@ -162,19 +168,21 @@ const styles = StyleSheet.create({
           color: colors.SecondaryColor,
           fontFamily: Font.font600,
           fontSize: 50,
+          textAlign: 'center',
      },
      IconsContainer: {
           paddingHorizontal: 20,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: 9,
+          gap: 10,
+          width: windowWidth,
      },
      IconBox: {
           gap: 5,
           alignItems: 'center',
           justifyContent: 'center',
-          width: 120,
+          width: windowWidth / 3 - 20,
           height: 110,
           paddingInline: 5,
           paddingBlock: 8,

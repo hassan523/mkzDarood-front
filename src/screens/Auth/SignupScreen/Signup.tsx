@@ -40,8 +40,8 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
      };
 
      return (
-          <AuthLayout heading="Create Account" isBack onBack={() => navigation.goBack()}>
-               <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isFocused ? 500 : 0 }]} showsVerticalScrollIndicator={false}>
+          <AuthLayout heading="Create Account" isBack onBack={() => navigation.goBack()} isFooter={false}>
+               <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isFocused ? 500 : 250 }]} showsVerticalScrollIndicator={false}>
                     <View style={styles.FieldContainer}>
                          <Text style={styles.Label}>Usename</Text>
                          <Field

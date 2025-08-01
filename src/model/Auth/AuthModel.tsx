@@ -90,7 +90,7 @@ export const useRegisterHandler = () => {
                     deviceId,
                     role: 'User',
                });
-
+               console.log(res);
                if (!res.error) {
                     // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
@@ -110,8 +110,8 @@ export const useRegisterHandler = () => {
                     });
                } else {
                     ResToast({
-                         title: (res.error as any).data.message || 'Failed to register.',
-                         type: 'danger',
+                         res: res,
+                         type: 'warning',
                     });
                }
           } catch (error) {

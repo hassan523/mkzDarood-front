@@ -10,7 +10,7 @@ import Profile from './Profile/Profile';
 const persistConfig = {
      key: 'root',
      storage: AsyncStorage,
-     blacklist: ['Counter'],
+     blacklist: ['Counter', 'Profile'],
 };
 
 const rootReducer = combineReducers({

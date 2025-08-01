@@ -6,7 +6,19 @@ import Font from '../../utils/fonts/Font';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import { useNavigation } from '@react-navigation/native';
 
-const AuthLayout = ({ children, heading = '', isBack = false, onBack = () => {} }: { children: ReactNode; heading?: string; isBack?: boolean; onBack?: () => void }) => {
+const AuthLayout = ({
+     children,
+     heading = '',
+     isBack = false,
+     onBack = () => {},
+     isFooter = true,
+}: {
+     children: ReactNode;
+     heading?: string;
+     isBack?: boolean;
+     onBack?: () => void;
+     isFooter?: boolean;
+}) => {
      const navigation = useNavigation();
      return (
           <View style={styles.Container}>
@@ -22,8 +34,12 @@ const AuthLayout = ({ children, heading = '', isBack = false, onBack = () => {} 
                )}
 
                {children}
-               <Image source={require('../../assets/bg1.png')} style={styles.ImgLeft} />
-               <Image source={require('../../assets/bg2.png')} style={styles.ImgRight} />
+               {isFooter && (
+                    <>
+                         <Image source={require('../../assets/bg1.png')} style={styles.ImgLeft} />
+                         <Image source={require('../../assets/bg2.png')} style={styles.ImgRight} />
+                    </>
+               )}
           </View>
      );
 };

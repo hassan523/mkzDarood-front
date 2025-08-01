@@ -49,7 +49,8 @@ const Profile = () => {
           setUpdateData(userData as user);
           setIsEdit(true);
      };
-
+     console.log(userData?.profilePicture, 'profile picture');
+     console.log(userData, 'Daaa');
      const handleData = ({ name, value }: { name: string; value: string }) => {
           setUpdateData({ ...updateData, [name]: value });
      };
@@ -87,7 +88,7 @@ const Profile = () => {
                }
           });
      };
-     console.log(updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${API_BASE_URL}/${updateData.profilePicture}` : updateData.profilePicture);
+
      return (
           <View style={styles.Container}>
                <ScrollView contentContainerStyle={[styles.ContainerWrapper, { paddingBottom: isFocused ? 400 : 0 }]} showsVerticalScrollIndicator={false}>
@@ -96,12 +97,12 @@ const Profile = () => {
                          {isEdit && updateData.profilePicture ? (
                               <Image
                                    source={{
-                                        uri: updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${API_BASE_URL}/${updateData.profilePicture}` : updateData.profilePicture,
+                                        uri: updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${updateData.profilePicture}` : updateData.profilePicture,
                                    }}
                                    style={styles.Image}
                               />
                          ) : (userData as DataTypes)?.profilePicture ? (
-                              <Image source={{ uri: `${API_BASE_URL}/${(userData as DataTypes)?.profilePicture}` }} style={styles.Image} />
+                              <Image source={{ uri: `${(userData as DataTypes)?.profilePicture}` }} style={styles.Image} />
                          ) : (
                               <View style={styles.Avatar}>
                                    <Text style={styles.AvatarText}>{userData?.username?.charAt(0)?.toUpperCase()}</Text>

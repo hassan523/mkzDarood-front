@@ -115,11 +115,12 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                     dispatch(logout());
                     return true;
                } else {
-                    ResToast({
-                         title: (res.error as any)?.data.message || 'Failed to logout please try again.',
-                         type: 'danger',
-                    });
-                    return false;
+                    dispatch(logout());
+                    // ResToast({
+                    //      title: (res.error as any)?.data.message || 'Failed to logout please try again.',
+                    //      type: 'danger',
+                    // });
+                    return true;
                }
           } catch (error) {
                console.error('Logout failed:', error);

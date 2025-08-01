@@ -40,13 +40,12 @@ export const useUpdateProfile = () => {
                formData.append('profilePicture', imageBlob);
 
                const res = await updateProfile({ id, Token, formData });
-
+               console.log(res);
                if (res?.error) {
-                    ResToast({
+                    return ResToast({
                          title: (res.error as any).data.message || 'Failed to Update.',
                          type: 'danger',
                     });
-                    return;
                }
 
                if (Token && selector?.data?.refreshToken && res?.data?.user) {
