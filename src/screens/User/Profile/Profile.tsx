@@ -177,71 +177,27 @@ const Profile = () => {
 
                               {isEdit ? (
                                    <View style={styles.BtnContainer}>
-                                        <Button
-                                             name="Cancel"
-                                             onPress={() => setIsEdit(false)}
-                                             customWidth={80}
-                                             customHeight={40}
-                                             mainStyle={{
-                                                  backgroundColor: colors.SecondaryColor,
-                                                  justifyContent: 'center',
-                                                  alignItems: 'center',
-                                                  borderRadius: 10,
-                                                  paddingHorizontal: 5,
-                                                  borderWidth: 2,
-                                                  borderColor: colors.PrimaryColor,
-                                             }}
-                                             textStyle={{
-                                                  color: colors.PrimaryColor,
-                                                  fontSize: 15,
-                                                  fontFamily: Font.font600,
-                                             }}
-                                        />
-                                        <Button
-                                             name="Save"
-                                             onPress={handleSave}
-                                             customWidth={80}
-                                             customHeight={40}
-                                             mainStyle={{
-                                                  backgroundColor: colors.PrimaryColor,
-                                                  justifyContent: 'center',
-                                                  alignItems: 'center',
-                                                  borderRadius: 10,
-                                                  paddingHorizontal: 5,
-                                                  borderWidth: 2,
-                                                  borderColor: colors.PrimaryColor,
-                                             }}
-                                             textStyle={{
-                                                  color: 'white',
-                                                  fontSize: 15,
-                                                  fontFamily: Font.font600,
-                                             }}
-                                             isLoading={isLoading}
-                                             disabled={isLoading}
-                                        />
+                                        <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.SecondaryColor }]} onPress={() => setIsEdit(false)}>
+                                             <Text style={[styles.Value, { color: colors.PrimaryColor }]}>Cancel</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={handleSave}>
+                                             <Text style={[styles.Value]}>Save</Text>
+                                        </TouchableOpacity>
                                    </View>
                               ) : (
-                                   <Button
-                                        name="Change Password"
-                                        customWidth={150}
-                                        textStyle={{
-                                             color: colors.SecondaryColor,
-                                             fontSize: 15,
-                                             fontFamily: Font.font600,
-                                             textDecorationLine: 'underline',
-                                             textDecorationColor: colors.SecondaryColor,
-                                        }}
-                                        mainStyle={{
-                                             backgroundColor: colors.PrimaryColor,
-                                             justifyContent: 'center',
-                                             alignItems: 'center',
-                                             borderRadius: 10,
-                                             paddingHorizontal: 5,
-                                             borderWidth: 2,
-                                             borderColor: colors.SecondaryColor,
-                                        }}
-                                        onPress={() => setIsOpen(true)}
-                                   />
+                                   <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setIsOpen(true)}>
+                                        <Text
+                                             style={{
+                                                  color: colors.SecondaryColor,
+                                                  fontSize: 15,
+                                                  fontFamily: Font.font600,
+                                                  textDecorationLine: 'underline',
+                                                  textDecorationColor: colors.SecondaryColor,
+                                             }}
+                                        >
+                                             Change Password
+                                        </Text>
+                                   </TouchableOpacity>
                               )}
                          </View>
                     </View>
@@ -366,12 +322,6 @@ const styles = StyleSheet.create({
           fontSize: 15,
           color: colors.SecondaryColor,
      },
-     BtnContainer: {
-          width: '100%',
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 15,
-     },
      ModalContainer: {
           justifyContent: 'center',
           alignItems: 'center',
@@ -382,5 +332,20 @@ const styles = StyleSheet.create({
           position: 'absolute',
           right: 5,
           top: 5,
+     },
+     BtnContainer: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 20,
+          flexDirection: 'row',
+     },
+     Btn: {
+          width: 150,
+          height: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderWidth: 2,
+          borderColor: colors.SecondaryColor,
+          borderRadius: 400,
      },
 });
