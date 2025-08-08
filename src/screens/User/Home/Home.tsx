@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
 import GradientBG from '../../../components/GradientBG/GradientBG';
+import RadiusButton from '../../../components/RadiusButton/RadiusButton';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
@@ -29,6 +30,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const counterApi = useGetCounterHandler();
      const refetch = counterApi?.refetch;
+     const GetLoading = counterApi?.isLoading;
+
      const { handleUpdate, isLoading } = useUpdateCounterHandler();
 
      const onRefresh = async () => {
@@ -42,30 +45,36 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const renderItem = () => (
-          <GradientBG style={styles.gradient} isBackgroundImage>
-               <View style={styles.Container}>
+          <View style={styles.Container}>
+               <GradientBG style={styles.gradient} isBackgroundImage>
                     <View
                          style={[
                               styles.ImageBgContainer,
                               {
-                                   height: counterApi?.data?.seq || 0 <= 9999999999999 ? 300 : 400,
+                                   height: !GetLoading ? ((counterApi?.data as any)?.seq <= 9999999999999 ? 320 : 400) : 320,
                               },
                          ]}
                     >
                          <View style={styles.HeroContainer}>
-                              <Text style={{ fontSize: 18, color: 'white', textAlign: 'center' }}>
-                                   اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
-                              </Text>
-                              <Text style={styles.Heading}>Global Darood Count</Text>
-                              {counterApi?.isLoading ? (
-                                   <ActivityIndicator color={colors.PrimaryColor} />
-                              ) : counterApi?.isError ? (
-                                   <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
-                              ) : (
-                                   counterApi?.data?.seq && <Text style={[styles.Count, { fontSize: counterApi?.data?.seq <= 9999999999 ? 50 : 40 }]}>{counterApi?.data?.seq.toLocaleString()}</Text>
-                              )}
+                              <View style={styles.heroHeading}>
+                                   <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>
+                                        اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
+                                   </Text>
+                                   <Text style={styles.Heading}>Global Darood Count</Text>
+                                   {counterApi?.isLoading ? (
+                                        <ActivityIndicator color={colors.PrimaryColor} />
+                                   ) : counterApi?.isError ? (
+                                        <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
+                                   ) : (
+                                        counterApi?.data?.seq && (
+                                             <Text style={[styles.Count, { fontSize: !GetLoading ? (counterApi?.data?.seq <= 9999999999 ? 50 : 35) : 50 }]}>
+                                                  {counterApi?.data?.seq.toLocaleString()}
+                                             </Text>
+                                        )
+                                   )}
+                              </View>
                               <View style={{ minWidth: 'auto' }}>
-                                   <Button name="Submit Darood" onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))} />
+                                   <RadiusButton name="Submit Darood" onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))} />
                               </View>
                          </View>
                     </View>
@@ -82,7 +91,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
-                                   <Image source={require('../../../assets/Allah.png')} />
+                                   <Image source={require('../../../assets/allah.png')} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
                               </TouchableOpacity>
                          </View>
@@ -97,13 +106,18 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                    </View>
                               </View>
                               <View style={{ width: 225 }}>
-                                   <Button name="Translate to Urdu" iconRight icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />} onPress={() => setIsUrdu(!isUrdu)} />
+                                   <RadiusButton
+                                        name="Translate to Urdu"
+                                        iconRight
+                                        icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />}
+                                        onPress={() => setIsUrdu(!isUrdu)}
+                                   />
                               </View>
                               <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
                          </View>
                     </View>
-               </View>
-          </GradientBG>
+               </GradientBG>
+          </View>
      );
 
      return (
@@ -137,12 +151,15 @@ const styles = StyleSheet.create({
           flex: 1,
           gap: 25,
           paddingBottom: 30,
+          backgroundColor: 'transparent',
      },
      ImageBgContainer: {
           height: 300,
           position: 'relative',
           width: windowWidth,
           borderRadius: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
      },
      Overlay: {
           ...StyleSheet.absoluteFillObject,
@@ -167,16 +184,28 @@ const styles = StyleSheet.create({
           height: '100%',
           width: '100%',
           gap: 15,
-          borderRadius: 0,
      },
+     heroHeading: {
+          borderRadius: 20,
+          borderColor: 'white',
+          borderWidth: 2,
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 10,
+          paddingHorizontal: 20,
+          paddingVertical: 15,
+          backgroundColor: colors.lightGreen,
+          marginTop: 10,
+     },
+
      Heading: {
           color: colors.SecondaryColor,
           fontFamily: Font.font600,
-          fontSize: 20,
+          fontSize: 18,
      },
      Count: {
           color: colors.SecondaryColor,
-          fontFamily: Font.font600,
+          fontFamily: Font.font700,
           fontSize: 50,
           textAlign: 'center',
      },
@@ -187,7 +216,6 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           gap: 10,
           width: windowWidth,
-          backgroundColor: 'white',
      },
      IconBox: {
           gap: 5,
