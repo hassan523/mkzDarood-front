@@ -56,13 +56,12 @@ const styles = StyleSheet.create({
           gap: 25,
           width: '100%',
           paddingBottom: 20,
-          backgroundColor: 'transparent',
           overflow: 'hidden',
           marginTop: 15,
           borderRadius: 15,
-          borderWidth: 1,
+          borderWidth: 2,
           borderColor: colors.SecondaryColor,
-
+          backgroundColor: colors.lightGreen,
           shadowColor: '#fff',
           shadowOffset: {
                width: 2,

@@ -15,6 +15,7 @@ import { RootState } from '../../../redux/store';
 import API_BASE_URL from '../../../utils/Config';
 import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
 import { user } from '../../../redux/Auth/AuthType';
+import GradientBG from '../../../components/GradientBG/GradientBG';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -49,8 +50,7 @@ const Profile = () => {
           setUpdateData(userData as user);
           setIsEdit(true);
      };
-     console.log(userData?.profilePicture, 'profile picture');
-     console.log(userData, 'Daaa');
+
      const handleData = ({ name, value }: { name: string; value: string }) => {
           setUpdateData({ ...updateData, [name]: value });
      };
@@ -91,115 +91,146 @@ const Profile = () => {
 
      return (
           <View style={styles.Container}>
-               <ScrollView contentContainerStyle={[styles.ContainerWrapper, { paddingBottom: isFocused ? 400 : 0 }]} showsVerticalScrollIndicator={false}>
-                    <Text style={styles.Heading}>Profile</Text>
+               <GradientBG style={styles.gradient} isBackgroundImage>
                     <View style={styles.ImageContainer}>
-                         {isEdit && updateData.profilePicture ? (
-                              <Image
-                                   source={{
-                                        uri: updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${updateData.profilePicture}` : updateData.profilePicture,
-                                   }}
-                                   style={styles.Image}
-                              />
-                         ) : (userData as DataTypes)?.profilePicture ? (
-                              <Image source={{ uri: `${(userData as DataTypes)?.profilePicture}` }} style={styles.Image} />
-                         ) : (
-                              <View style={styles.Avatar}>
-                                   <Text style={styles.AvatarText}>{userData?.username?.charAt(0)?.toUpperCase()}</Text>
-                              </View>
-                         )}
-                         {isEdit && (
-                              <TouchableOpacity style={styles.ImageEdit} onPress={pickImage}>
-                                   <MaterialIcons name="edit" color={colors.PrimaryColor} size={20} />
-                              </TouchableOpacity>
-                         )}
-                    </View>
-                    <View style={styles.DataContainer}>
-                         <View style={styles.HeaderContainer}>
-                              <Text style={styles.Value}>Profile Details</Text>
-                              {!isEdit && (
-                                   <TouchableOpacity style={styles.Edit} onPress={handleIsEdit}>
-                                        <Text style={[styles.Value, { fontFamily: Font.font700 }]}>Edit</Text>
+                         <View style={styles.ImageWrapper}>
+                              {isEdit && updateData.profilePicture ? (
+                                   <Image
+                                        source={{
+                                             uri: updateData.profilePicture === (userData as DataTypes)?.profilePicture ? `${updateData.profilePicture}` : updateData.profilePicture,
+                                        }}
+                                        style={styles.Image}
+                                   />
+                              ) : (userData as DataTypes)?.profilePicture ? (
+                                   <Image source={{ uri: `${(userData as DataTypes)?.profilePicture}` }} style={styles.Image} />
+                              ) : (
+                                   <View style={styles.Avatar}>
+                                        <Text style={styles.AvatarText}>{userData?.username?.charAt(0)?.toUpperCase()}</Text>
+                                   </View>
+                              )}
+                              {isEdit && (
+                                   <TouchableOpacity style={styles.ImageEdit} onPress={pickImage}>
                                         <MaterialIcons name="edit" color={colors.PrimaryColor} size={20} />
                                    </TouchableOpacity>
                               )}
                          </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Username</Text>
-                              {false ? (
-                                   <Field
-                                        placeHolder="Enter Usename"
-                                        type="text"
-                                        isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.PrimaryColor} />}
-                                        value={updateData.username}
-                                        onChange={value => handleData({ name: 'username', value })}
-                                        onFocus={() => setIsFocused(true)}
-                                        onBlur={() => setIsFocused(false)}
-                                   />
-                              ) : (
-                                   <Text style={styles.Value}>{userData?.username}</Text>
-                              )}
-                         </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Email</Text>
-                              {false ? (
-                                   <Field
-                                        placeHolder="Enter Email"
-                                        type="email"
-                                        isIcon
-                                        value={updateData.email}
-                                        onChange={value => handleData({ name: 'email', value })}
-                                        onFocus={() => setIsFocused(true)}
-                                        onBlur={() => setIsFocused(false)}
-                                   />
-                              ) : (
-                                   <Text style={styles.Value}>{userData?.email}</Text>
-                              )}
-                         </View>
-                         <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
-                              <Text style={styles.Label}>Phone Number</Text>
-                              {false ? (
-                                   <Field
-                                        placeHolder="Enter Phone Number"
-                                        type="text"
-                                        isIcon={<FontAwesome name="phone" size={20} color={colors.PrimaryColor} />}
-                                        value={updateData.phone}
-                                        onChange={value => handleData({ name: 'phone', value })}
-                                        onFocus={() => setIsFocused(true)}
-                                        onBlur={() => setIsFocused(false)}
-                                   />
-                              ) : (
-                                   <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
-                              )}
-                         </View>
+                    </View>
+                    <View style={{ width: '100%', paddingHorizontal: 20 }}>
+                         <View style={styles.DataContainer}>
+                              <View style={styles.HeaderContainer}>
+                                   <Text style={styles.Value}>Profile Details</Text>
+                                   {!isEdit && (
+                                        <TouchableOpacity style={styles.Edit} onPress={handleIsEdit}>
+                                             <Text style={[styles.Value, { fontFamily: Font.font700 }]}>Edit</Text>
+                                             <MaterialIcons name="edit" color={colors.SecondaryColor} size={20} />
+                                        </TouchableOpacity>
+                                   )}
+                              </View>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Username</Text>
+                                   {false ? (
+                                        <Field
+                                             placeHolder="Enter Usename"
+                                             type="text"
+                                             isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.PrimaryColor} />}
+                                             value={updateData.username}
+                                             onChange={value => handleData({ name: 'username', value })}
+                                             onFocus={() => setIsFocused(true)}
+                                             onBlur={() => setIsFocused(false)}
+                                        />
+                                   ) : (
+                                        <Text style={styles.Value}>{userData?.username}</Text>
+                                   )}
+                              </View>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Email</Text>
+                                   {false ? (
+                                        <Field
+                                             placeHolder="Enter Email"
+                                             type="email"
+                                             isIcon
+                                             value={updateData.email}
+                                             onChange={value => handleData({ name: 'email', value })}
+                                             onFocus={() => setIsFocused(true)}
+                                             onBlur={() => setIsFocused(false)}
+                                        />
+                                   ) : (
+                                        <Text style={styles.Value}>{userData?.email}</Text>
+                                   )}
+                              </View>
+                              <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
+                                   <Text style={styles.Label}>Phone Number</Text>
+                                   {false ? (
+                                        <Field
+                                             placeHolder="Enter Phone Number"
+                                             type="text"
+                                             isIcon={<FontAwesome name="phone" size={20} color={colors.PrimaryColor} />}
+                                             value={updateData.phone}
+                                             onChange={value => handleData({ name: 'phone', value })}
+                                             onFocus={() => setIsFocused(true)}
+                                             onBlur={() => setIsFocused(false)}
+                                        />
+                                   ) : (
+                                        <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
+                                   )}
+                              </View>
 
-                         {isEdit ? (
-                              <View style={styles.BtnContainer}>
+                              {isEdit ? (
+                                   <View style={styles.BtnContainer}>
+                                        <Button
+                                             name="Cancel"
+                                             onPress={() => setIsEdit(false)}
+                                             customWidth={80}
+                                             customHeight={40}
+                                             mainStyle={{
+                                                  backgroundColor: colors.SecondaryColor,
+                                                  justifyContent: 'center',
+                                                  alignItems: 'center',
+                                                  borderRadius: 10,
+                                                  paddingHorizontal: 5,
+                                                  borderWidth: 2,
+                                                  borderColor: colors.PrimaryColor,
+                                             }}
+                                             textStyle={{
+                                                  color: colors.PrimaryColor,
+                                                  fontSize: 15,
+                                                  fontFamily: Font.font600,
+                                             }}
+                                        />
+                                        <Button
+                                             name="Save"
+                                             onPress={handleSave}
+                                             customWidth={80}
+                                             customHeight={40}
+                                             mainStyle={{
+                                                  backgroundColor: colors.PrimaryColor,
+                                                  justifyContent: 'center',
+                                                  alignItems: 'center',
+                                                  borderRadius: 10,
+                                                  paddingHorizontal: 5,
+                                                  borderWidth: 2,
+                                                  borderColor: colors.PrimaryColor,
+                                             }}
+                                             textStyle={{
+                                                  color: 'white',
+                                                  fontSize: 15,
+                                                  fontFamily: Font.font600,
+                                             }}
+                                             isLoading={isLoading}
+                                             disabled={isLoading}
+                                        />
+                                   </View>
+                              ) : (
                                    <Button
-                                        name="Cancel"
-                                        onPress={() => setIsEdit(false)}
-                                        customWidth={80}
-                                        customHeight={40}
-                                        mainStyle={{
-                                             backgroundColor: colors.SecondaryColor,
-                                             justifyContent: 'center',
-                                             alignItems: 'center',
-                                             borderRadius: 10,
-                                             paddingHorizontal: 5,
-                                             borderWidth: 2,
-                                             borderColor: colors.PrimaryColor,
-                                        }}
+                                        name="Change Password"
+                                        customWidth={150}
                                         textStyle={{
-                                             color: colors.PrimaryColor,
+                                             color: colors.SecondaryColor,
                                              fontSize: 15,
                                              fontFamily: Font.font600,
+                                             textDecorationLine: 'underline',
+                                             textDecorationColor: colors.SecondaryColor,
                                         }}
-                                   />
-                                   <Button
-                                        name="Save"
-                                        onPress={handleSave}
-                                        customWidth={80}
-                                        customHeight={40}
                                         mainStyle={{
                                              backgroundColor: colors.PrimaryColor,
                                              justifyContent: 'center',
@@ -207,63 +238,35 @@ const Profile = () => {
                                              borderRadius: 10,
                                              paddingHorizontal: 5,
                                              borderWidth: 2,
-                                             borderColor: colors.PrimaryColor,
+                                             borderColor: colors.SecondaryColor,
                                         }}
-                                        textStyle={{
-                                             color: 'white',
-                                             fontSize: 15,
-                                             fontFamily: Font.font600,
-                                        }}
-                                        isLoading={isLoading}
-                                        disabled={isLoading}
+                                        onPress={() => setIsOpen(true)}
                                    />
+                              )}
+                         </View>
+                    </View>
+                    <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
+                         <View style={styles.ModalContainer}>
+                              <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)}>
+                                   <Entypo name="cross" color={colors.textColor} size={25} />
+                              </TouchableOpacity>
+                              <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Change Password</Text>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Current Password</Text>
+                                   <Field placeHolder="Enter Current Password" type="password" value={password} onChange={value => setChangePassword({ ...changePassword, password: value })} />
                               </View>
-                         ) : (
-                              <Button
-                                   name="Change Password"
-                                   customWidth={150}
-                                   textStyle={{
-                                        color: colors.SecondaryColor,
-                                        fontSize: 15,
-                                        fontFamily: Font.font600,
-                                        textDecorationLine: 'underline',
-                                        textDecorationColor: colors.SecondaryColor,
-                                   }}
-                                   mainStyle={{
-                                        backgroundColor: colors.PrimaryColor,
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        borderRadius: 10,
-                                        paddingHorizontal: 5,
-                                        borderWidth: 2,
-                                        borderColor: colors.SecondaryColor,
-                                   }}
-                                   onPress={() => setIsOpen(true)}
-                              />
-                         )}
-                    </View>
-               </ScrollView>
-               <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
-                    <View style={styles.ModalContainer}>
-                         <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)}>
-                              <Entypo name="cross" color={colors.textColor} size={25} />
-                         </TouchableOpacity>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Change Password</Text>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Current Password</Text>
-                              <Field placeHolder="Enter Current Password" type="password" value={password} onChange={value => setChangePassword({ ...changePassword, password: value })} />
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>New Password</Text>
+                                   <Field placeHolder="Enter New Password" type="password" isIcon value={newPass} onChange={value => setChangePassword({ ...changePassword, newPass: value })} />
+                              </View>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Re-Enter New Password</Text>
+                                   <Field placeHolder="Re-Enter New Password" type="password" isIcon value={reNewPass} onChange={value => setChangePassword({ ...changePassword, reNewPass: value })} />
+                              </View>
+                              <Button name="Save" onPress={handleChangePass} isLoading={isLoading} disabled={isLoading} />
                          </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>New Password</Text>
-                              <Field placeHolder="Enter New Password" type="password" isIcon value={newPass} onChange={value => setChangePassword({ ...changePassword, newPass: value })} />
-                         </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Re-Enter New Password</Text>
-                              <Field placeHolder="Re-Enter New Password" type="password" isIcon value={reNewPass} onChange={value => setChangePassword({ ...changePassword, reNewPass: value })} />
-                         </View>
-                         <Button name="Save" onPress={handleChangePass} isLoading={isLoading} disabled={isLoading} />
-                    </View>
-               </ModalLayout>
+                    </ModalLayout>
+               </GradientBG>
           </View>
      );
 };
@@ -273,14 +276,13 @@ export default Profile;
 const styles = StyleSheet.create({
      Container: {
           flex: 1,
-          paddingHorizontal: 20,
-          backgroundColor: 'white',
-     },
-     ContainerWrapper: {
-          width: '100%',
-          gap: 35,
           alignItems: 'center',
-          paddingTop: 30,
+          justifyContent: 'center',
+     },
+     gradient: {
+          borderRadius: 0,
+          width: '100%',
+          height: '100%',
      },
      Heading: {
           fontFamily: Font.font600,
@@ -288,6 +290,13 @@ const styles = StyleSheet.create({
           color: colors.textColor,
      },
      ImageContainer: {
+          marginBottom: 35,
+          width: '100%',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: 35,
+     },
+     ImageWrapper: {
           height: 120,
           width: 120,
           position: 'relative',
@@ -331,10 +340,11 @@ const styles = StyleSheet.create({
           borderWidth: 1,
           borderColor: 'lightgray',
           borderRadius: 10,
+          backgroundColor: colors.lightGreen,
      },
      Value: {
           fontFamily: Font.font600,
-          color: colors.textColor,
+          color: colors.SecondaryColor,
           fontSize: 16,
      },
      HeaderContainer: {
@@ -354,7 +364,7 @@ const styles = StyleSheet.create({
      Label: {
           fontFamily: Font.font600,
           fontSize: 15,
-          color: colors.SecTextColor,
+          color: colors.SecondaryColor,
      },
      BtnContainer: {
           width: '100%',
