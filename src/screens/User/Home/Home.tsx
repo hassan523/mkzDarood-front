@@ -78,7 +78,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               </View>
                          </View>
                     </View>
-                    <View style={{ backgroundColor: 'white', width: '100%', gap: 20, paddingTop: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                    <View style={{ backgroundColor: 'white', width: '100%', gap: 20, paddingTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                          <View style={styles.IconsContainer}>
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('Tasbih')}>
                                    <Image source={require('../../../assets/tasbih.png')} />

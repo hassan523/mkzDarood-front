@@ -1,30 +1,50 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import Navigation from '../../../../utils/NavigationProps/NavigationProps';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import colors from '../../../../utils/colors/colors';
 import Font from '../../../../utils/fonts/Font';
 import data from '../../../../utils/Data/data.json';
-import { windowWidth } from '../../../../utils/dimensions/dimensions';
+import GradientBG from '../../../../components/GradientBG/GradientBG';
+import { windowHeight, windowWidth } from '../../../../utils/dimensions/dimensions';
 
 const AsmaunNabi = ({ navigation }: { navigation: Navigation }) => {
+     const renderItem = ({ item }: { item: any }) => {
+          return (
+               <View style={{ width: windowWidth, flexDirection: 'row' }}>
+                    <View style={styles.NameBox}>
+                         <Text style={styles.ArabicText}>{item?.arabic}</Text>
+                         <Text style={styles.NameText}>{item?.transliteration}</Text>
+                         <Text style={styles.NameText}>{item?.meaning}</Text>
+                    </View>
+                    <View style={styles.NameBox}>
+                         <Text style={styles.ArabicText}>{item?.arabic}</Text>
+                         <Text style={styles.NameText}>{item?.transliteration}</Text>
+                         <Text style={styles.NameText}>{item?.meaning}</Text>
+                    </View>
+               </View>
+          );
+     };
+
      return (
           <View style={styles.Container}>
-               <View style={styles.HeaderContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
-                         <FontAwesome6 name="arrow-left-long" size={20} color={colors.textColor} />
-                    </TouchableOpacity>
-                    <Text style={styles.Heading}>Asma un Nabi</Text>
-               </View>
-               <ScrollView contentContainerStyle={styles.NameContainer} showsVerticalScrollIndicator={false}>
-                    {data.names_of_prophet_muhammad.map((name, index) => (
-                         <View key={index} style={styles.NameBox}>
-                              <Text style={styles.ArabicText}>{name.arabic}</Text>
-                              <Text style={styles.NameText}>{name.transliteration}</Text>
-                              <Text style={styles.NameText}>{name.meaning}</Text>
+               <GradientBG style={styles.gradient} isBackgroundImage>
+                    <View style={{ gap: 35 }}>
+                         <View style={styles.HeaderContainer}>
+                              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
+                                   <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
+                              </TouchableOpacity>
+                              <Text style={styles.Heading}>Asma un Nabi</Text>
                          </View>
-                    ))}
-               </ScrollView>
+                         <FlatList
+                              data={data.names_of_prophet_muhammad}
+                              renderItem={(item: any) => renderItem(item)}
+                              keyExtractor={item => item.name.toString()}
+                              showsVerticalScrollIndicator={false}
+                              contentContainerStyle={styles.NameContainer}
+                         />
+                    </View>
+               </GradientBG>
           </View>
      );
 };
@@ -38,10 +58,15 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           backgroundColor: 'white',
      },
+     gradient: {
+          borderRadius: 0,
+          width: '100%',
+          height: '100%',
+     },
      Heading: {
           fontFamily: Font.font600,
-          fontSize: 18,
-          color: colors.textColor,
+          fontSize: 24,
+          color: colors.SecondaryColor,
      },
      HeaderContainer: {
           flexDirection: 'row',
@@ -58,11 +83,11 @@ const styles = StyleSheet.create({
      },
      NameContainer: {
           flexDirection: 'row-reverse',
-          gap: 20,
+          gap: 0,
           flexWrap: 'wrap',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingBottom: 50,
+          paddingBottom: 200,
           paddingHorizontal: 10,
      },
      NameBox: {
@@ -71,29 +96,31 @@ const styles = StyleSheet.create({
           justifyContent: 'center',
           paddingInline: 5,
           paddingBlock: 8,
-          borderRadius: 10,
-          backgroundColor: '#fff',
-          width: '45%',
+          borderRadius: 0,
+          backgroundColor: 'transparent',
+          width: '50%',
+          borderColor: 'white',
+          borderWidth: 1,
 
-          shadowColor: '#000',
+          shadowColor: '#fff',
           shadowOffset: {
-               width: 0,
+               width: 2,
                height: 2,
           },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
-          elevation: 4,
+          elevation: 40,
      },
      ArabicText: {
           fontFamily: Font.font700,
           fontSize: 35,
-          color: colors.PrimaryColor,
+          color: colors.SecondaryColor,
           textAlign: 'center',
      },
      NameText: {
           fontFamily: Font.font500,
           fontSize: 16,
-          color: colors.textColor,
+          color: colors.SecondaryColor,
           textAlign: 'center',
      },
 });
