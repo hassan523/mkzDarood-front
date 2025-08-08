@@ -51,7 +51,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          style={[
                               styles.ImageBgContainer,
                               {
-                                   height: !GetLoading ? ((counterApi?.data as any)?.seq <= 9999999999999 ? 320 : 400) : 320,
+                                   height: !GetLoading ? ((counterApi?.data as any)?.seq <= 9999999999999 ? 380 : 460) : 320,
                               },
                          ]}
                     >

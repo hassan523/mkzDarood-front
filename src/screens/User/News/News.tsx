@@ -35,7 +35,7 @@ const News = () => {
                          showsVerticalScrollIndicator={false}
                          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />}
                          contentContainerStyle={{ width: '100%', paddingHorizontal: 20, paddingBottom: 20 }}
-                         ListHeaderComponent={<Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600 }}>NEWS</Text>}
+                         ListHeaderComponent={<Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600, paddingTop: 60 }}>NEWS</Text>}
                     />
                </GradientBG>
           </View>

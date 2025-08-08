@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
           width: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingTop: 35,
+          paddingTop: 95,
      },
      ImageWrapper: {
           height: 120,
