@@ -91,7 +91,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
-                                   <Image source={require('../../../assets/allah.png')} />
+                                   <Image source={require('../../../assets/Allah.png')} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
                               </TouchableOpacity>
                          </View>
