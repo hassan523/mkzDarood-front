@@ -8,10 +8,11 @@ import Font from '../../../../utils/fonts/Font';
 import Navigation from '../../../../utils/NavigationProps/NavigationProps';
 import Button from '../../../../components/Button/Button';
 import ModalLayout from '../../../../layout/ModalLayout/ModalLayout';
-import Field from '../../../../components/Field/Field';
 import { useUpdateCounterHandler } from '../../../../model/Counter/Counter';
 import { RootState } from '../../../../redux/store';
 import { useSelector } from 'react-redux';
+import GradientBG from '../../../../components/GradientBG/GradientBG';
+import { windowHeight } from '../../../../utils/dimensions/dimensions';
 
 const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
@@ -29,26 +30,33 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      return (
           <>
                <View style={styles.Container}>
-                    <View style={styles.HeaderContainer}>
-                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
-                              <FontAwesome6 name="arrow-left-long" size={20} color={colors.textColor} />
-                         </TouchableOpacity>
-                         <Text style={styles.Heading}>Tasbih</Text>
-                    </View>
-                    <View style={styles.CounterContainer}>
-                         <View style={styles.Counter}>
-                              <Text style={[styles.CounterText, { fontSize: typeof seq == 'number' && seq <= 999999 ? 50 : 40 }]}>{seq}</Text>
+                    <GradientBG style={styles.gradient} isBackgroundImage>
+                         <View style={{ gap: 35 }}>
+                              <View style={styles.HeaderContainer}>
+                                   <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
+                                        <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
+                                   </TouchableOpacity>
+                                   <Text style={styles.Heading}>Tasbih</Text>
+                              </View>
+                              <View style={styles.CounterContainer}>
+                                   <View style={styles.Counter}>
+                                        <Text style={[styles.CounterText, { fontSize: typeof seq == 'number' && seq <= 999999 ? 50 : 40 }]}>{seq}</Text>
+                                   </View>
+                                   <View style={styles.BtnContainer}>
+                                        <TouchableOpacity
+                                             style={[styles.Btn, { backgroundColor: colors.SecondaryColor }]}
+                                             onPress={() => seq != 0 && setSeq(prev => (typeof prev == 'number' ? prev - 1 : ''))}
+                                        >
+                                             <AntDesign name="minus" size={50} color={colors.PrimaryColor} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setSeq(prev => (typeof prev == 'number' ? prev + 1 : ''))}>
+                                             <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
+                                        </TouchableOpacity>
+                                   </View>
+                                   {seq != 0 && <Button name="Submit" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
+                              </View>
                          </View>
-                         <View style={styles.BtnContainer}>
-                              <TouchableOpacity style={styles.Btn} onPress={() => seq != 0 && setSeq(prev => (typeof prev == 'number' ? prev - 1 : ''))}>
-                                   <AntDesign name="minus" size={50} color={colors.PrimaryColor} />
-                              </TouchableOpacity>
-                              <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.PrimaryColor }]} onPress={() => setSeq(prev => (typeof prev == 'number' ? prev + 1 : ''))}>
-                                   <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
-                              </TouchableOpacity>
-                         </View>
-                         {seq != 0 && <Button name="Submit" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
-                    </View>
+                    </GradientBG>
                </View>
                <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
                     <View style={styles.ModalContainer}>
@@ -67,16 +75,20 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
 export default Tasbih;
 
 const styles = StyleSheet.create({
+     gradient: {
+          borderRadius: 0,
+          width: '100%',
+          height: '100%',
+     },
      Container: {
           flex: 1,
           gap: 35,
           alignItems: 'center',
-          backgroundColor: 'white',
      },
      Heading: {
           fontFamily: Font.font600,
           fontSize: 18,
-          color: colors.textColor,
+          color: colors.SecondaryColor,
      },
      HeaderContainer: {
           flexDirection: 'row',
@@ -94,17 +106,32 @@ const styles = StyleSheet.create({
      CounterContainer: {
           gap: 20,
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           paddingHorizontal: 20,
           width: '100%',
+          height: windowHeight,
      },
      Counter: {
           height: 225,
           width: 225,
           borderRadius: 1000,
-          backgroundColor: colors.PrimaryColor,
+          backgroundColor: colors.lightGreen,
           justifyContent: 'center',
           alignItems: 'center',
+          borderWidth: 2,
+          borderColor: 'white',
+
+          // iOS shadow
+          shadowColor: '#fff',
+          shadowOffset: {
+               width: 0,
+               height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          // Android shadow
+          elevation: 50,
      },
      CounterText: {
           fontFamily: Font.font600,
@@ -123,7 +150,7 @@ const styles = StyleSheet.create({
           justifyContent: 'center',
           alignItems: 'center',
           borderWidth: 2,
-          borderColor: colors.PrimaryColor,
+          borderColor: colors.SecondaryColor,
           borderRadius: 400,
      },
      ModalContainer: {

@@ -13,16 +13,7 @@ const GradientBG = ({ style, children, isBackgroundImage }: { style?: CSSPropert
                          end={{ x: 1, y: 0 }}
                          style={style || { justifyContent: 'center', alignItems: 'center', borderRadius: 10, width: '100%' }}
                     >
-                         <ImageBackground
-                              source={require('../../assets/bgVector.png')}
-                              resizeMode="cover"
-                              style={{ opacity: 1 }}
-                              imageStyle={{
-                                   borderRadius: 10,
-                                   width: '100%',
-                                   height: '100%',
-                              }}
-                         >
+                         <ImageBackground source={require('../../assets/bgVector.png')} resizeMode="cover" style={{ opacity: 1 }}>
                               {children}
                          </ImageBackground>
                     </LinearGradient>
