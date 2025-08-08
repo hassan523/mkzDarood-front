@@ -42,7 +42,7 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
                ) : (
                     <View style={styles.menuButton} />
                )}
-               <Text style={styles.headerTitle}>MKZ Darood</Text>
+               <Image source={require('../assets/logo2.png')} style={{ width: 100, height: 40 }} resizeMode="contain" />
                <View style={styles.rightHeaderPlaceholder} />
           </View>
      );
