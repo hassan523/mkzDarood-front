@@ -38,7 +38,7 @@ const AsmaulHusna = ({ navigation }: { navigation: Navigation }) => {
                          <FlatList
                               data={data.names_of_Allah}
                               renderItem={(item: any) => renderItem(item)}
-                              keyExtractor={item => item.name.toString()}
+                              keyExtractor={(item, index) => index.toString()}
                               showsVerticalScrollIndicator={false}
                               contentContainerStyle={styles.NameContainer}
                          />
@@ -57,16 +57,19 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           backgroundColor: 'white',
      },
+
      gradient: {
           borderRadius: 0,
           width: '100%',
           height: '100%',
      },
+
      Heading: {
           fontFamily: Font.font600,
           fontSize: 24,
           color: colors.SecondaryColor,
      },
+
      HeaderContainer: {
           flexDirection: 'row',
           alignItems: 'center',
@@ -76,13 +79,13 @@ const styles = StyleSheet.create({
           position: 'relative',
           marginTop: 20,
      },
+
      MenuButton: {
           position: 'absolute',
           left: 20,
      },
      NameContainer: {
-          flexDirection: 'row-reverse',
-          flexWrap: 'wrap',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
           paddingBottom: 200,

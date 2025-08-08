@@ -2,8 +2,9 @@ import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import React, { CSSProperties, ReactNode } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import colors from '../../utils/colors/colors';
+import { windowHeight, windowWidth } from '../../utils/dimensions/dimensions';
 
-const GradientBG = ({ style, children, isBackgroundImage }: { style?: CSSProperties | any; children: ReactNode; isBackgroundImage?: boolean }) => {
+const GradientBG = ({ style, children, isBackgroundImage, imgStyle }: { style?: CSSProperties | any; imgStyle?: CSSProperties | any; children: ReactNode; isBackgroundImage?: boolean }) => {
      return (
           <>
                {isBackgroundImage ? (
@@ -13,7 +14,7 @@ const GradientBG = ({ style, children, isBackgroundImage }: { style?: CSSPropert
                          end={{ x: 1, y: 0 }}
                          style={style || { justifyContent: 'center', alignItems: 'center', borderRadius: 10, width: '100%' }}
                     >
-                         <ImageBackground source={require('../../assets/bgVector.png')} resizeMode="cover" style={{ opacity: 1 }}>
+                         <ImageBackground source={require('../../assets/bgVector.png')} resizeMode="cover" style={imgStyle || { opacity: 1 }}>
                               {children}
                          </ImageBackground>
                     </LinearGradient>

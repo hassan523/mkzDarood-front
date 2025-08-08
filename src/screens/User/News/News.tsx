@@ -28,15 +28,14 @@ const News = () => {
      return (
           <View style={styles.MainContainer}>
                <GradientBG style={styles.gradient} isBackgroundImage>
-                    <Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600 }}>NEWS</Text>
-
                     <FlatList
                          data={[1, 2, 3, 4, 5]}
                          renderItem={renderItem}
                          keyExtractor={item => item.toString()}
                          showsVerticalScrollIndicator={false}
                          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />}
-                         contentContainerStyle={{ width: '100%' }}
+                         contentContainerStyle={{ width: '100%', paddingHorizontal: 20, paddingBottom: 20 }}
+                         ListHeaderComponent={<Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600, paddingTop: 60 }}>NEWS</Text>}
                     />
                </GradientBG>
           </View>
@@ -49,22 +48,20 @@ const styles = StyleSheet.create({
      MainContainer: {
           flex: 1,
           alignItems: 'center',
-          backgroundColor: 'red',
           justifyContent: 'center',
      },
      Container: {
           paddingHorizontal: 20,
           paddingTop: 15,
           gap: 25,
-          width: '95%',
+          width: '100%',
           paddingBottom: 20,
-          backgroundColor: 'transparent',
           overflow: 'hidden',
           marginTop: 15,
           borderRadius: 15,
-          borderWidth: 1,
+          borderWidth: 2,
           borderColor: colors.SecondaryColor,
-
+          backgroundColor: colors.lightGreen,
           shadowColor: '#fff',
           shadowOffset: {
                width: 2,

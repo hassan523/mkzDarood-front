@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
           justifyContent: 'center',
           alignItems: 'center',
           height: windowHeight,
+          zIndex: 9999999,
      },
      overlayPressable: {
           position: 'absolute',

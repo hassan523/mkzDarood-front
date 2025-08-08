@@ -42,6 +42,7 @@ const AsmaunNabi = ({ navigation }: { navigation: Navigation }) => {
                               keyExtractor={item => item.name.toString()}
                               showsVerticalScrollIndicator={false}
                               contentContainerStyle={styles.NameContainer}
+                              ListHeaderComponent={<Text style={{ textAlign: 'center', color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600, paddingBlock: 10 }}>Asma un Nabi</Text>}
                          />
                     </View>
                </GradientBG>
@@ -82,9 +83,8 @@ const styles = StyleSheet.create({
           left: 20,
      },
      NameContainer: {
-          flexDirection: 'row-reverse',
+          flexDirection: 'column',
           gap: 0,
-          flexWrap: 'wrap',
           justifyContent: 'center',
           alignItems: 'center',
           paddingBottom: 200,

@@ -4,22 +4,8 @@ import { windowHeight, windowWidth } from '../../utils/dimensions/dimensions';
 import colors from '../../utils/colors/colors';
 import Font from '../../utils/fonts/Font';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
-import { useNavigation } from '@react-navigation/native';
 
-const AuthLayout = ({
-     children,
-     heading = '',
-     isBack = false,
-     onBack = () => {},
-     isFooter = true,
-}: {
-     children: ReactNode;
-     heading?: string;
-     isBack?: boolean;
-     onBack?: () => void;
-     isFooter?: boolean;
-}) => {
-     const navigation = useNavigation();
+const AuthLayout = ({ children, heading = '', isBack = false, onBack = () => {} }: { children: ReactNode; heading?: string; isBack?: boolean; onBack?: () => void }) => {
      return (
           <View style={styles.Container}>
                {heading != '' && (
@@ -34,12 +20,6 @@ const AuthLayout = ({
                )}
 
                {children}
-               {isFooter && (
-                    <>
-                         <Image source={require('../../assets/bg1.png')} style={styles.ImgLeft} />
-                         <Image source={require('../../assets/bg2.png')} style={styles.ImgRight} />
-                    </>
-               )}
           </View>
      );
 };

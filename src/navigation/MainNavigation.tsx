@@ -42,7 +42,7 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
                ) : (
                     <View style={styles.menuButton} />
                )}
-               <Text style={styles.headerTitle}>MKZ Darood</Text>
+               <Image source={require('../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
                <View style={styles.rightHeaderPlaceholder} />
           </View>
      );
@@ -58,7 +58,7 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
                }}
           >
                <HomeStack.Screen name="Home" component={Home} />
-               <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
+               <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: true }} />
                <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaunNabi" component={AsmaunNabi} options={{ headerShown: false }} />
                {!isLogin && (
@@ -245,9 +245,14 @@ const styles = StyleSheet.create({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          backgroundColor: colors.PrimaryColor,
+          backgroundColor: 'transparent',
           height: 60,
           paddingHorizontal: 15,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 100,
      },
      menuButton: {
           padding: 10,
