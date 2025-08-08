@@ -49,8 +49,7 @@ const Profile = () => {
           setUpdateData(userData as user);
           setIsEdit(true);
      };
-     console.log(userData?.profilePicture, 'profile picture');
-     console.log(userData, 'Daaa');
+
      const handleData = ({ name, value }: { name: string; value: string }) => {
           setUpdateData({ ...updateData, [name]: value });
      };
