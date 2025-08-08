@@ -3,6 +3,8 @@ import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewSty
 import colors from '../../utils/colors/colors';
 import Font from '../../utils/fonts/Font';
 import Entypo from 'react-native-vector-icons/Entypo';
+import LinearGradient from 'react-native-linear-gradient';
+import GradientBG from '../GradientBG/GradientBG';
 
 interface ButtonProps {
      name?: string;
@@ -22,38 +24,53 @@ interface ButtonProps {
 const Button: React.FC<ButtonProps> = props => {
      const { name, onPress, isLoading, loadingName, icon, iconLeft, iconRight = false, mainStyle, textStyle, customWidth, customHeight, disabled } = props;
      return icon ? (
-          <TouchableOpacity
-               style={[mainStyle ? mainStyle : styles.ContainerIcon, { width: customWidth ? customWidth : '100%', height: customHeight ? customHeight : 50 }]}
-               onPress={isLoading ? () => {} : onPress}
-               disabled={disabled}
+          <LinearGradient
+               colors={['#ff7e5f', '#feb47b']} // Start → End colors
+               start={{ x: 0, y: 0 }} // Gradient start point
+               end={{ x: 1, y: 1 }} // Gradient end point
+               style={styles.gradient}
           >
-               {iconRight ? iconRight && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
+               <TouchableOpacity
+                    style={[mainStyle ? mainStyle : styles.ContainerIcon, { width: customWidth ? customWidth : '100%', height: customHeight ? customHeight : 50 }]}
+                    onPress={isLoading ? () => {} : onPress}
+                    disabled={disabled}
+               >
+                    {iconRight ? iconRight && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
 
-               {isLoading ? (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font500 }}>{loadingName ? loadingName : 'Loading...'}</Text>
-               ) : (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
-               )}
-               {iconLeft ? iconLeft && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
-          </TouchableOpacity>
+                    {isLoading ? (
+                         <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font500 }}>{loadingName ? loadingName : 'Loading...'}</Text>
+                    ) : (
+                         <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
+                    )}
+                    {iconLeft ? iconLeft && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
+               </TouchableOpacity>
+          </LinearGradient>
      ) : (
-          <TouchableOpacity
-               style={[mainStyle ? mainStyle : styles.Container, { width: customWidth ? customWidth : '100%', height: customHeight ? customHeight : 50 }]}
-               onPress={isLoading ? () => {} : onPress}
-               disabled={disabled}
-          >
-               {isLoading ? (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{loadingName ? loadingName : 'Loading...'}</Text>
-               ) : (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
-               )}
-          </TouchableOpacity>
+          <GradientBG>
+               <TouchableOpacity
+                    style={[mainStyle ? mainStyle : styles.Container, { width: customWidth ? customWidth : '100%', height: customHeight ? customHeight : 50 }]}
+                    onPress={isLoading ? () => {} : onPress}
+                    disabled={disabled}
+               >
+                    {isLoading ? (
+                         <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{loadingName ? loadingName : 'Loading...'}</Text>
+                    ) : (
+                         <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
+                    )}
+               </TouchableOpacity>
+          </GradientBG>
      );
 };
 
 const styles = StyleSheet.create({
+     gradient: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 10,
+          width: '100%',
+     },
      Container: {
-          backgroundColor: colors.PrimaryColor,
+          // backgroundColor: colors.PrimaryColor,
           justifyContent: 'center',
           alignItems: 'center',
           // margin: 10,
