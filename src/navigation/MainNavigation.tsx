@@ -58,7 +58,7 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
                }}
           >
                <HomeStack.Screen name="Home" component={Home} />
-               <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: true }} />
+               <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaunNabi" component={AsmaunNabi} options={{ headerShown: false }} />
                {!isLogin && (

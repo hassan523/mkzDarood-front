@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import colors from '../../../../utils/colors/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
@@ -31,12 +31,12 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
           <>
                <View style={styles.Container}>
                     <GradientBG style={styles.gradient} isBackgroundImage>
-                         <View style={{ gap: 35 }}>
+                         <View style={{gap: 45}}>
                               <View style={styles.HeaderContainer}>
                                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
                                         <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
                                    </TouchableOpacity>
-                                   <Text style={styles.Heading}>Tasbih</Text>
+                                   <Image source={require('../../../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
                               </View>
                               <View style={styles.CounterContainer}>
                                    <View style={styles.Counter}>
