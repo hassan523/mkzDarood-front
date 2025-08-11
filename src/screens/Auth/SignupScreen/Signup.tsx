@@ -40,7 +40,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
      };
 
      return (
-          <AuthLayout heading="Create Account" isBack onBack={() => navigation.goBack()} isFooter={false}>
+          <AuthLayout heading="Create Account" isBack onBack={() => navigation.goBack()}>
                <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isFocused ? 500 : 250 }]} showsVerticalScrollIndicator={false}>
                     <View style={styles.FieldContainer}>
                          <Text style={styles.Label}>Usename</Text>
@@ -103,13 +103,13 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                          />
                     </View>
                     <Button name="Create Account" onPress={handleSubmit} isLoading={isLoading} />
+                    <View style={styles.BottomLine}>
+                         <Text style={styles.BottomText}>Already have account?</Text>
+                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                              <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Login</Text>
+                         </TouchableOpacity>
+                    </View>
                </ScrollView>
-               <View style={styles.BottomLine}>
-                    <Text style={styles.BottomText}>Already have account?</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                         <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Login</Text>
-                    </TouchableOpacity>
-               </View>
           </AuthLayout>
      );
 };
@@ -136,14 +136,11 @@ const styles = StyleSheet.create({
           color: colors.textColor,
      },
      BottomLine: {
-          position: 'absolute',
-          bottom: 25,
-          left: 0,
-          right: 0,
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',
           gap: 4,
+          paddingTop: 25,
      },
      BottomText: {
           color: colors.textColor,

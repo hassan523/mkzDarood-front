@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { CommonActions, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import colors from '../utils/colors/colors';
@@ -19,7 +19,6 @@ import NewPassword from '../screens/Auth/NewPassword/NewPassword';
 import { logout } from '../redux/Features/authState';
 import ModalLayout from '../layout/ModalLayout/ModalLayout';
 import { useLogoutMutation } from '../redux/Auth/Auth';
-import ResToast from '../components/ResToast/ResToast';
 import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
 import AsmaunNabi from '../screens/User/Home/AsmaunNabi/AsmaunNabi';
 

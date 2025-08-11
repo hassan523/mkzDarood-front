@@ -66,34 +66,36 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
           <>
                <AuthLayout>
                     <View style={styles.Container}>
-                         <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Email or Phone Number</Text>
-                              <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={email} onChange={value => handleData({ name: 'email', value })} disabled={isOpen} />
+                         <View style={styles.ContainerWrapper}>
+                              <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Email or Phone Number</Text>
+                                   <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={email} onChange={value => handleData({ name: 'email', value })} disabled={isOpen} />
+                              </View>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Password</Text>
+                                   <Field
+                                        placeHolder="Enter Password"
+                                        type="password"
+                                        isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
+                                        value={password}
+                                        onChange={value => handleData({ name: 'password', value })}
+                                        disabled={isOpen}
+                                   />
+                              </View>
+                              <View style={styles.Forget}>
+                                   <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen}>
+                                        <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                                   </TouchableOpacity>
+                              </View>
+                              <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
                          </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Password</Text>
-                              <Field
-                                   placeHolder="Enter Password"
-                                   type="password"
-                                   isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
-                                   value={password}
-                                   onChange={value => handleData({ name: 'password', value })}
-                                   disabled={isOpen}
-                              />
-                         </View>
-                         <View style={styles.Forget}>
-                              <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen}>
-                                   <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                         <View style={styles.BottomLine}>
+                              <Text style={styles.BottomText}>Don't have account?</Text>
+                              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                                   <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                               </TouchableOpacity>
                          </View>
-                         <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
-                    </View>
-                    <View style={styles.BottomLine}>
-                         <Text style={styles.BottomText}>Don't have account?</Text>
-                         <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                              <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
-                         </TouchableOpacity>
                     </View>
                </AuthLayout>
 
@@ -118,8 +120,13 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           width: '100%',
           paddingHorizontal: 20,
-          gap: 25,
           marginTop: 100,
+          justifyContent: 'space-between',
+     },
+     ContainerWrapper: {
+          alignItems: 'center',
+          width: '100%',
+          gap: 25,
      },
      FieldContainer: {
           width: '100%',
@@ -135,10 +142,7 @@ const styles = StyleSheet.create({
           alignItems: 'flex-end',
      },
      BottomLine: {
-          position: 'absolute',
-          bottom: 25,
-          left: 0,
-          right: 0,
+          paddingBottom: 25,
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',
