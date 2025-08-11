@@ -10,7 +10,7 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
           <View style={styles.headerContainer}>
                {showDrawerButton ? (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.menuButton}>
-                         <Ionicons name="menu" size={24} color={colors.SecondaryColor} />
+                         <Ionicons name="menu" size={30} color={colors.SecondaryColor} />
                     </TouchableOpacity>
                ) : (
                     <View style={styles.menuButton} />

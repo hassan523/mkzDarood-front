@@ -93,8 +93,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
 
      return (
           <View style={styles.Container}>
-               <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ height: windowHeight }}>
-                    <CustomHeader navigation={navigation} />
+               <CustomHeader navigation={navigation} />
+               <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ height: windowHeight, justifyContent: 'center' }}>
                     <View style={styles.ImageContainer}>
                          <View style={styles.ImageWrapper}>
                               {isEdit && updateData.profilePicture ? (
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
      gradient: {
           borderRadius: 0,
           width: '100%',
-          height: windowHeight,
+          justifyContent: 'center',
      },
      Heading: {
           fontFamily: Font.font600,
@@ -253,7 +253,6 @@ const styles = StyleSheet.create({
           width: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          paddingTop: 95,
      },
      ImageWrapper: {
           height: 120,

@@ -47,6 +47,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const renderItem = () => (
           <View style={styles.Container}>
+               <CustomHeader navigation={navigation} />
+
                <GradientBG style={styles.gradient} isBackgroundImage>
                     <View
                          style={[
@@ -56,7 +58,6 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               },
                          ]}
                     >
-                         <CustomHeader navigation={navigation} />
                          <View style={styles.HeroContainer}>
                               <View style={styles.heroHeading}>
                                    <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>
@@ -101,7 +102,15 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               <Text style={[styles.Heading, { color: colors.PrimaryColor }]}>A Drop in the Ocean of Mercy</Text>
                               <View>
                                    <View style={styles.DescBox}>
-                                        <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
+                                        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', width: '100%' }}>
+                                             <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
+                                             <View style={{ width: '60%', flexDirection: 'column', gap: 5 }}>
+                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 18, color: colors.PrimaryColor, lineHeight: 25 }}>
+                                                       Under the spiritual guidance of
+                                                  </Text>
+                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 18, color: colors.PrimaryColor, lineHeight: 25 }}>Pir Sultan Fiaz ul Hassan</Text>
+                                             </View>
+                                        </View>
                                         <View style={{ flex: 1 }}>
                                              <Text style={[styles.Desc, isUrdu ? { textAlign: 'right' } : { textAlign: 'left' }]}>{isUrdu ? userMessage : message}</Text>
                                         </View>
@@ -275,6 +284,7 @@ const styles = StyleSheet.create({
           color: colors.terTextColor,
           fontSize: 16,
           letterSpacing: 0.8,
+          lineHeight: 25,
      },
      IconText: {
           fontFamily: Font.font500,
@@ -287,8 +297,8 @@ const styles = StyleSheet.create({
           borderBottomRightRadius: 15,
      },
      DescImage: {
-          height: 220,
-          width: '100%',
+          height: 120,
+          width: '40%',
           borderRadius: 20,
           position: 'relative',
           objectFit: 'fill',
