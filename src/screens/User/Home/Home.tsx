@@ -1,6 +1,6 @@
-import { ActivityIndicator, FlatList, Image, ImageBackground, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
-import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions';
+import { windowWidth } from '../../../utils/dimensions/dimensions';
 import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import Button from '../../../components/Button/Button';
@@ -14,6 +14,7 @@ import { RootState } from '../../../redux/store';
 import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
 import GradientBG from '../../../components/GradientBG/GradientBG';
 import RadiusButton from '../../../components/RadiusButton/RadiusButton';
+import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
@@ -55,6 +56,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               },
                          ]}
                     >
+                         <CustomHeader navigation={navigation} />
                          <View style={styles.HeroContainer}>
                               <View style={styles.heroHeading}>
                                    <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>

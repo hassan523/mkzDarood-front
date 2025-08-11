@@ -4,8 +4,10 @@ import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import { windowWidth } from '../../../utils/dimensions/dimensions';
 import GradientBG from '../../../components/GradientBG/GradientBG';
+import CustomHeader from '../../../components/CustomHeader/CustomHeader';
+import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
-const News = () => {
+const News = ({ navigation }: { navigation: Navigation }) => {
      const [refreshing, setRefresing] = useState(false);
 
      const onRefresh = () => {
@@ -34,8 +36,13 @@ const News = () => {
                          keyExtractor={item => item.toString()}
                          showsVerticalScrollIndicator={false}
                          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />}
-                         contentContainerStyle={{ width: '100%', paddingHorizontal: 20, paddingBottom: 20 }}
-                         ListHeaderComponent={<Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600, paddingTop: 60 }}>NEWS</Text>}
+                         contentContainerStyle={{ width: '100%', paddingBottom: 20 }}
+                         ListHeaderComponent={
+                              <>
+                                   <CustomHeader navigation={navigation} />
+                                   <Text style={{ textAlign: 'center', marginTop: 20, color: colors.SecondaryColor, fontSize: 25, fontFamily: Font.font600, paddingTop: 60 }}>NEWS</Text>
+                              </>
+                         }
                     />
                </GradientBG>
           </View>
@@ -54,7 +61,7 @@ const styles = StyleSheet.create({
           paddingHorizontal: 20,
           paddingTop: 15,
           gap: 25,
-          width: '100%',
+          width: windowWidth - 40,
           paddingBottom: 20,
           overflow: 'hidden',
           marginTop: 15,
@@ -70,6 +77,7 @@ const styles = StyleSheet.create({
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 180,
+          marginLeft: 20,
      },
      gradient: {
           borderRadius: 0,

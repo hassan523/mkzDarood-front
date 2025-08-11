@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import colors from '../../../utils/colors/colors';
@@ -12,11 +12,12 @@ import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import API_BASE_URL from '../../../utils/Config';
 import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
 import { user } from '../../../redux/Auth/AuthType';
 import GradientBG from '../../../components/GradientBG/GradientBG';
 import { windowHeight } from '../../../utils/dimensions/dimensions';
+import CustomHeader from '../../../components/CustomHeader/CustomHeader';
+import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -25,7 +26,7 @@ interface DataTypes {
      phone: string;
 }
 
-const Profile = () => {
+const Profile = ({ navigation }: { navigation: Navigation }) => {
      const [updateData, setUpdateData] = useState<DataTypes>({ profilePicture: '', username: '', email: '', phone: '' });
      const [isEdit, setIsEdit] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
@@ -93,6 +94,7 @@ const Profile = () => {
      return (
           <View style={styles.Container}>
                <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ height: windowHeight }}>
+                    <CustomHeader navigation={navigation} />
                     <View style={styles.ImageContainer}>
                          <View style={styles.ImageWrapper}>
                               {isEdit && updateData.profilePicture ? (
