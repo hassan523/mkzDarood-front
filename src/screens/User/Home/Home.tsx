@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
           height: '100%',
           width: '100%',
           gap: 15,
+          paddingTop: 30,
      },
      heroHeading: {
           borderRadius: 20,
