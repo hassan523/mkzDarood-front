@@ -1,4 +1,4 @@
-import { Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
@@ -11,6 +11,7 @@ import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
+import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
@@ -62,10 +63,12 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
           handleForgotPassword({ email: forgotEmail });
      };
 
+     const isKeyboardVisible = useKeyboardStatus();
+
      return (
           <>
                <AuthLayout>
-                    <View style={styles.Container}>
+                    <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
                          <View style={styles.ContainerWrapper}>
                               <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
                               <View style={styles.FieldContainer}>
@@ -96,7 +99,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                                    <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                               </TouchableOpacity>
                          </View>
-                    </View>
+                    </ScrollView>
                </AuthLayout>
 
                <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet}>
@@ -116,12 +119,12 @@ export default Login;
 
 const styles = StyleSheet.create({
      Container: {
-          flex: 1,
           alignItems: 'center',
           width: '100%',
           paddingHorizontal: 20,
-          marginTop: 100,
-          justifyContent: 'space-between',
+          gap: 25,
+          marginTop: 125,
+          backgroundColor: 'white',
      },
      ContainerWrapper: {
           alignItems: 'center',

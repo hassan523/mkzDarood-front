@@ -10,6 +10,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import { useRegisterHandler } from '../../../model/Auth/AuthModel';
+import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 
 const Signup = ({ navigation }: { navigation: Navigation }) => {
      const [data, setData] = useState({
@@ -39,9 +40,11 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
           });
      };
 
+     const isKeyboardVisible = useKeyboardStatus();
+
      return (
           <AuthLayout heading="Create Account" isBack onBack={() => navigation.goBack()}>
-               <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isFocused ? 500 : 250 }]} showsVerticalScrollIndicator={false}>
+               <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
                     <View style={styles.FieldContainer}>
                          <Text style={styles.Label}>Usename</Text>
                          <Field

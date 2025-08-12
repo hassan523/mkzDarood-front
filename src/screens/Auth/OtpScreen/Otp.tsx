@@ -1,4 +1,4 @@
-import { StyleSheet, View, TextInput, NativeSyntheticEvent, Text, TouchableOpacity, Keyboard } from 'react-native';
+import { StyleSheet, View, TextInput, NativeSyntheticEvent, Text, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
 import React, { useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
@@ -12,6 +12,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { authUser } from '../../../redux/Features/authState';
 import { useVerifyOTPHandler } from '../../../model/Auth/AuthModel';
+import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 
 const Otp = ({
      route,
@@ -32,8 +33,6 @@ const Otp = ({
           setIsOpen(true);
           bottomSheetRef.current?.expand();
      };
-
-     console.log({ type, email, data }, 'datadatadata');
 
      const handleChangeCode = (text: string, index: number) => {
           const updatedCode = [...verificationCode];
@@ -76,10 +75,12 @@ const Otp = ({
           handleOpenSheet();
      };
 
+     const isKeyboardVisible = useKeyboardStatus();
+
      return (
           <>
                <AuthLayout heading="Verification" isBack onBack={() => navigation.goBack()}>
-                    <View style={styles.Container}>
+                    <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
                          <View style={styles.IconContainer}>
                               <View style={styles.IconSecContainer}>
                                    <Fontisto name="locked" size={40} color={colors.SecondaryColor} />
@@ -160,7 +161,7 @@ const Otp = ({
                                    </TouchableOpacity>
                               </View>
                          </View>
-                    </View>
+                    </ScrollView>
                </AuthLayout>
                {/* <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet} snapPoints={type == 'signup' ? ['50%', '50%'] : ['40%', '40%']}>
                     <View style={styles.CheckContainer}>
@@ -205,12 +206,12 @@ export default Otp;
 
 const styles = StyleSheet.create({
      Container: {
-          flex: 1,
           alignItems: 'center',
           width: '100%',
           paddingHorizontal: 20,
           gap: 25,
           marginTop: 125,
+          backgroundColor: 'white',
      },
      codeContainer: {
           flexDirection: 'row',
