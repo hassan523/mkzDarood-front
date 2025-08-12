@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
      },
      NameContainer: {
           paddingBottom: 60,
-          paddingHorizontal: 10,
+          paddingHorizontal: 0,
      },
      NameBox: {
           gap: 5,

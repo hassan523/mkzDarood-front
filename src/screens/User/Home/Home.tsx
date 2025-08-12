@@ -289,6 +289,7 @@ const styles = StyleSheet.create({
      IconText: {
           fontFamily: Font.font500,
           color: colors.textColor,
+          textAlign: 'center',
      },
      BgIcon: {
           position: 'absolute',

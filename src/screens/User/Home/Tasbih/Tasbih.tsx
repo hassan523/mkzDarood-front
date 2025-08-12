@@ -13,6 +13,7 @@ import { RootState } from '../../../../redux/store';
 import { useSelector } from 'react-redux';
 import GradientBG from '../../../../components/GradientBG/GradientBG';
 import { windowHeight } from '../../../../utils/dimensions/dimensions';
+import RadiusButton from '../../../../components/RadiusButton/RadiusButton';
 
 const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
@@ -31,7 +32,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
           <>
                <View style={styles.Container}>
                     <GradientBG style={styles.gradient} isBackgroundImage>
-                         <View style={{gap: 45}}>
+                         <View style={{ gap: 45 }}>
                               <View style={styles.HeaderContainer}>
                                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
                                         <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
@@ -53,7 +54,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
                                              <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
                                         </TouchableOpacity>
                                    </View>
-                                   {seq != 0 && <Button name="Submit" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
+                                   {seq != 0 && <RadiusButton name="Submit Darood" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
                               </View>
                          </View>
                     </GradientBG>
