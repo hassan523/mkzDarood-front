@@ -21,13 +21,6 @@ export const useUpdateProfile = () => {
           setIsEdit: (arg0: boolean) => void;
      }) => {
           try {
-               if (!profilePicture || profilePicture == '') {
-                    ResToast({
-                         title: 'Please Add Picture',
-                         type: 'warning',
-                    });
-                    return;
-               }
                const proofImgType = profilePicture?.split('.');
                const imgType = proofImgType.pop();
 
@@ -40,7 +33,7 @@ export const useUpdateProfile = () => {
                formData.append('profilePicture', imageBlob);
 
                const res = await updateProfile({ id, Token, formData });
-               console.log(res);
+               console.log(res, 'dasdsadsadsa');
                if (res?.error) {
                     return ResToast({
                          title: (res.error as any).data.message || 'Failed to Update.',
@@ -48,11 +41,18 @@ export const useUpdateProfile = () => {
                     });
                }
 
-               if (Token && selector?.data?.refreshToken && res?.data?.user) {
+               if (!res?.error) {
+                    return ResToast({
+                         title: 'profile updated successfuly.',
+                         type: 'success',
+                    });
+               }
+
+               if (Token && selector?.data?.refreshToken && (res as any)?.data?.user) {
                     const newData = {
                          accessToken: Token,
                          refreshToken: selector?.data?.refreshToken,
-                         user: res?.data?.user,
+                         user: (res as any)?.data?.user,
                     };
                     dispatch(authUser({ data: newData }));
                }

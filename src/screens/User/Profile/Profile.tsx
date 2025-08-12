@@ -15,7 +15,7 @@ import { RootState } from '../../../redux/store';
 import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
 import { user } from '../../../redux/Auth/AuthType';
 import GradientBG from '../../../components/GradientBG/GradientBG';
-import { windowHeight } from '../../../utils/dimensions/dimensions';
+import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions';
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 
@@ -47,6 +47,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
 
      const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
      const userData = getProfile?.data?.profile;
+     const isLoadingProfile = getProfile?.isLoading;
 
      const handleIsEdit = () => {
           setUpdateData(userData as user);
@@ -58,6 +59,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const handleSave = () => {
+          console.log(updateData?.profilePicture, 'profilePicture');
+
           handleUpdateProfile({ id: id, Token: Token, profilePicture: updateData?.profilePicture || '', setIsEdit: setIsEdit });
      };
 
@@ -112,7 +115,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                    </View>
                               )}
                               {isEdit && (
-                                   <TouchableOpacity style={styles.ImageEdit} onPress={pickImage}>
+                                   <TouchableOpacity style={styles.ImageEdit} onPress={pickImage} disabled={isLoadingProfile}>
                                         <MaterialIcons name="edit" color={colors.PrimaryColor} size={20} />
                                    </TouchableOpacity>
                               )}
@@ -123,7 +126,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               <View style={styles.HeaderContainer}>
                                    <Text style={styles.Value}>Profile Details</Text>
                                    {!isEdit && (
-                                        <TouchableOpacity style={styles.Edit} onPress={handleIsEdit}>
+                                        <TouchableOpacity style={styles.Edit} onPress={handleIsEdit} disabled={isLoadingProfile}>
                                              <Text style={[styles.Value, { fontFamily: Font.font700 }]}>Edit</Text>
                                              <MaterialIcons name="edit" color={colors.SecondaryColor} size={20} />
                                         </TouchableOpacity>
@@ -131,15 +134,25 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               </View>
                               <View style={styles.FieldContainer}>
                                    <Text style={styles.Label}>Username</Text>
-                                   {false ? (
+                                   {isEdit ? (
                                         <Field
                                              placeHolder="Enter Usename"
                                              type="text"
-                                             isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.PrimaryColor} />}
+                                             isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.SecondaryColor} />}
                                              value={updateData.username}
                                              onChange={value => handleData({ name: 'username', value })}
                                              onFocus={() => setIsFocused(true)}
                                              onBlur={() => setIsFocused(false)}
+                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                             customClass={{
+                                                  backgroundColor: colors.lightGreen,
+                                                  borderColor: colors.SecondaryColor,
+                                                  borderWidth: 0,
+                                                  color: colors.SecondaryColor,
+                                                  fontFamily: Font.font600,
+                                                  fontSize: 16,
+                                             }}
+                                             iconColor="white"
                                         />
                                    ) : (
                                         <Text style={styles.Value}>{userData?.username}</Text>
@@ -147,7 +160,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               </View>
                               <View style={styles.FieldContainer}>
                                    <Text style={styles.Label}>Email</Text>
-                                   {false ? (
+                                   {isEdit ? (
                                         <Field
                                              placeHolder="Enter Email"
                                              type="email"
@@ -156,6 +169,16 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                              onChange={value => handleData({ name: 'email', value })}
                                              onFocus={() => setIsFocused(true)}
                                              onBlur={() => setIsFocused(false)}
+                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                             customClass={{
+                                                  backgroundColor: colors.lightGreen,
+                                                  borderColor: colors.SecondaryColor,
+                                                  borderWidth: 0,
+                                                  color: colors.SecondaryColor,
+                                                  fontFamily: Font.font600,
+                                                  fontSize: 16,
+                                             }}
+                                             iconColor="white"
                                         />
                                    ) : (
                                         <Text style={styles.Value}>{userData?.email}</Text>
@@ -163,15 +186,25 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               </View>
                               <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
                                    <Text style={styles.Label}>Phone Number</Text>
-                                   {false ? (
+                                   {isEdit ? (
                                         <Field
                                              placeHolder="Enter Phone Number"
                                              type="text"
-                                             isIcon={<FontAwesome name="phone" size={20} color={colors.PrimaryColor} />}
+                                             isIcon={<FontAwesome name="phone" size={20} color={colors.SecondaryColor} />}
                                              value={updateData.phone}
                                              onChange={value => handleData({ name: 'phone', value })}
                                              onFocus={() => setIsFocused(true)}
                                              onBlur={() => setIsFocused(false)}
+                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                             customClass={{
+                                                  backgroundColor: colors.lightGreen,
+                                                  borderColor: colors.SecondaryColor,
+                                                  borderWidth: 0,
+                                                  color: colors.SecondaryColor,
+                                                  fontFamily: Font.font600,
+                                                  fontSize: 16,
+                                             }}
+                                             iconColor="white"
                                         />
                                    ) : (
                                         <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
@@ -184,11 +217,11 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                              <Text style={[styles.Value, { color: colors.PrimaryColor }]}>Cancel</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={handleSave}>
-                                             <Text style={[styles.Value]}>Save</Text>
+                                             {isLoading ? <Text style={[styles.Value]}>Saving...</Text> : <Text style={[styles.Value]}>Save</Text>}
                                         </TouchableOpacity>
                                    </View>
                               ) : (
-                                   <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setIsOpen(true)}>
+                                   <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setIsOpen(true)} disabled={isLoadingProfile}>
                                         <Text
                                              style={{
                                                   color: colors.SecondaryColor,
@@ -340,9 +373,10 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           gap: 20,
           flexDirection: 'row',
+          paddingHorizontal: 20,
      },
      Btn: {
-          width: 150,
+          width: windowWidth / 2 - 50,
           height: 50,
           justifyContent: 'center',
           alignItems: 'center',

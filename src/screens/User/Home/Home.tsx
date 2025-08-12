@@ -77,24 +77,29 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                    )}
                               </View>
                               <View style={{ minWidth: 'auto' }}>
-                                   <RadiusButton name="Submit Darood" onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))} />
+                                   <RadiusButton
+                                        name="Submit Darood"
+                                        customWidth={windowWidth - 40}
+                                        textStyle={{ fontFamily: Font.font700, fontSize: 20, color: 'white' }}
+                                        onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))}
+                                   />
                               </View>
                          </View>
                     </View>
                     <View style={{ backgroundColor: 'white', width: '100%', gap: 20, paddingTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                          <View style={styles.IconsContainer}>
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('Tasbih')}>
-                                   <Image source={require('../../../assets/tasbih.png')} />
+                                   <Image source={require('../../../assets/tasbih.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Tasbih</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaunNabi')}>
-                                   <Image source={require('../../../assets/nabi.png')} />
+                                   <Image source={require('../../../assets/nabi.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Asma un Nabi</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
-                                   <Image source={require('../../../assets/Allah.png')} />
+                                   <Image source={require('../../../assets/Allah.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
                               </TouchableOpacity>
                          </View>
@@ -124,7 +129,6 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                         onPress={() => setIsUrdu(!isUrdu)}
                                    />
                               </View>
-                              <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
                          </View>
                     </View>
                </GradientBG>
