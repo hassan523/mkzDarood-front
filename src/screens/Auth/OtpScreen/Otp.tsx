@@ -74,7 +74,7 @@ const Otp = ({
           });
           handleOpenSheet();
      };
-
+     console.log(email);
      const isKeyboardVisible = useKeyboardStatus();
 
      return (
@@ -105,7 +105,7 @@ const Otp = ({
                                              color: colors.SecTextColor,
                                         }}
                                    >
-                                        lorem@example.com
+                                        {signupEmail || email || ''}
                                    </Text>
                               </View>
                          </View>
@@ -132,7 +132,7 @@ const Otp = ({
                                                   inputs.current[index + 1]?.focus();
                                              }
                                         }}
-                                        editable={!isOpen}
+                                        editable={!isOpen || isLoading}
                                    />
                               ))}
                          </View>

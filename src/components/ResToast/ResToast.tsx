@@ -22,7 +22,7 @@ const ResToast = ({ title, type, res }: ResToastProps) => {
                                    style={{
                                         padding: 20,
                                         backgroundColor: 'white',
-                                        marginTop: 10,
+                                        marginTop: 50,
                                         width: windowWidth - 20,
                                         borderRadius: 10,
                                         elevation: 5,
@@ -42,7 +42,7 @@ const ResToast = ({ title, type, res }: ResToastProps) => {
                               style={{
                                    padding: 20,
                                    backgroundColor: 'white',
-                                   marginTop: 10,
+                                   marginTop: 50,
                                    width: windowWidth - 20,
                                    borderRadius: 10,
                                    elevation: 5,
@@ -62,7 +62,7 @@ const ResToast = ({ title, type, res }: ResToastProps) => {
                          style={{
                               padding: 20,
                               backgroundColor: 'white',
-                              marginTop: 10,
+                              marginTop: 50,
                               width: windowWidth - 20,
                               borderRadius: 10,
                               elevation: 5,

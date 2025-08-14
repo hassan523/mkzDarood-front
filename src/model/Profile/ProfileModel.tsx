@@ -13,11 +13,19 @@ export const useUpdateProfile = () => {
           id,
           Token,
           profilePicture,
+          country,
+          city,
+          username,
+          phone,
           setIsEdit,
      }: {
           id: string | undefined;
           Token: string | undefined;
           profilePicture: string;
+          country?: string;
+          city?: string;
+          username?: string;
+          phone?: string;
           setIsEdit: (arg0: boolean) => void;
      }) => {
           try {
@@ -31,6 +39,10 @@ export const useUpdateProfile = () => {
                     name: `profileImg.${imgType}`,
                } as any;
                formData.append('profilePicture', imageBlob);
+               formData.append('country', country);
+               formData.append('city', city);
+               formData.append('username', username);
+               formData.append('phone', phone);
 
                const res = await updateProfile({ id, Token, formData });
                console.log(res, 'dasdsadsadsa');
@@ -42,6 +54,7 @@ export const useUpdateProfile = () => {
                }
 
                if (!res?.error) {
+                    setIsEdit(false);
                     return ResToast({
                          title: 'profile updated successfuly.',
                          type: 'success',
@@ -56,7 +69,6 @@ export const useUpdateProfile = () => {
                     };
                     dispatch(authUser({ data: newData }));
                }
-               setIsEdit(false);
           } catch (error) {
                ResToast({
                     title: 'Something Went Wrong!',

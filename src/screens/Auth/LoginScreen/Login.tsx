@@ -73,7 +73,14 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                               <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
                               <View style={styles.FieldContainer}>
                                    <Text style={styles.Label}>Email or Phone Number</Text>
-                                   <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={email} onChange={value => handleData({ name: 'email', value })} disabled={isOpen} />
+                                   <Field
+                                        placeHolder="Enter Email or Phone Number"
+                                        type="email"
+                                        isIcon
+                                        value={email}
+                                        onChange={value => handleData({ name: 'email', value })}
+                                        disabled={isOpen || isLoading}
+                                   />
                               </View>
                               <View style={styles.FieldContainer}>
                                    <Text style={styles.Label}>Password</Text>
@@ -83,11 +90,11 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                                         isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
                                         value={password}
                                         onChange={value => handleData({ name: 'password', value })}
-                                        disabled={isOpen}
+                                        disabled={isOpen || isLoading}
                                    />
                               </View>
                               <View style={styles.Forget}>
-                                   <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen}>
+                                   <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen || isLoading}>
                                         <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
                                    </TouchableOpacity>
                               </View>
@@ -95,7 +102,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                          </View>
                          <View style={styles.BottomLine}>
                               <Text style={styles.BottomText}>Don't have account?</Text>
-                              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                              <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isOpen || isLoading}>
                                    <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                               </TouchableOpacity>
                          </View>
@@ -107,7 +114,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                     <Text style={styles.InnerText}>Enter your Email or Phone Number</Text>
                     <View style={[styles.FieldContainer, { marginBottom: 25 }]}>
                          <Text style={styles.Label}>Email or Phone Number</Text>
-                         <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={forgotEmail} onChange={setForgotEmail} />
+                         <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={forgotEmail} onChange={setForgotEmail} disabled={forgotLoading} />
                     </View>
                     <Button name="Send Code" onPress={handleForgot} isLoading={forgotLoading} />
                </BtSheets>

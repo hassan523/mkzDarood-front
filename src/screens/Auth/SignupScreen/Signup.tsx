@@ -55,6 +55,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'username', value })}
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
+                              disabled={isLoading}
                          />
                     </View>
                     <View style={styles.FieldContainer}>
@@ -67,6 +68,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'email', value })}
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
+                              disabled={isLoading}
                          />
                     </View>
                     <View style={styles.FieldContainer}>
@@ -79,6 +81,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'phone', value })}
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
+                              disabled={isLoading}
                          />
                     </View>
                     <View style={styles.FieldContainer}>
@@ -91,6 +94,7 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'password', value })}
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
+                              disabled={isLoading}
                          />
                     </View>
                     <View style={styles.FieldContainer}>
@@ -103,12 +107,13 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                               onChange={value => handleData({ name: 'confirmPassword', value })}
                               onFocus={() => setIsFocused(true)}
                               onBlur={() => setIsFocused(false)}
+                              disabled={isLoading}
                          />
                     </View>
                     <Button name="Create Account" onPress={handleSubmit} isLoading={isLoading} />
                     <View style={styles.BottomLine}>
                          <Text style={styles.BottomText}>Already have account?</Text>
-                         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                         <TouchableOpacity onPress={() => navigation.navigate('Login')} disabled={isLoading}>
                               <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Login</Text>
                          </TouchableOpacity>
                     </View>

@@ -149,7 +149,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
                               <Entypo name="cross" color={colors.textColor} size={25} />
                          </TouchableOpacity>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Durood</Text>
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Darood</Text>
                          <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={seq} onChange={value => setSeq(value)} />
 
                          <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
