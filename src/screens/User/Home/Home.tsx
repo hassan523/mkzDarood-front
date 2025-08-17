@@ -1,6 +1,6 @@
-import { ActivityIndicator, FlatList, Image, ImageBackground, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
-import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions';
+import { windowWidth } from '../../../utils/dimensions/dimensions';
 import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import Button from '../../../components/Button/Button';
@@ -14,6 +14,7 @@ import { RootState } from '../../../redux/store';
 import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
 import GradientBG from '../../../components/GradientBG/GradientBG';
 import RadiusButton from '../../../components/RadiusButton/RadiusButton';
+import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 
 const Home = ({ navigation }: { navigation: Navigation }) => {
      const message =
@@ -46,6 +47,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
      const renderItem = () => (
           <View style={styles.Container}>
+               <CustomHeader navigation={navigation} />
+
                <GradientBG style={styles.gradient} isBackgroundImage>
                     <View
                          style={[
@@ -74,24 +77,29 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                    )}
                               </View>
                               <View style={{ minWidth: 'auto' }}>
-                                   <RadiusButton name="Submit Darood" onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))} />
+                                   <RadiusButton
+                                        name="Submit Darood"
+                                        customWidth={windowWidth - 40}
+                                        textStyle={{ fontFamily: Font.font700, fontSize: 20, color: 'white' }}
+                                        onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))}
+                                   />
                               </View>
                          </View>
                     </View>
                     <View style={{ backgroundColor: 'white', width: '100%', gap: 20, paddingTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                          <View style={styles.IconsContainer}>
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('Tasbih')}>
-                                   <Image source={require('../../../assets/tasbih.png')} />
+                                   <Image source={require('../../../assets/tasbih.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Tasbih</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaunNabi')}>
-                                   <Image source={require('../../../assets/nabi.png')} />
+                                   <Image source={require('../../../assets/nabi.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Asma un Nabi</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
-                                   <Image source={require('../../../assets/Allah.png')} />
+                                   <Image source={require('../../../assets/Allah.png')} style={{ width: 45, height: 45 }} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
                               </TouchableOpacity>
                          </View>
@@ -99,7 +107,15 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               <Text style={[styles.Heading, { color: colors.PrimaryColor }]}>A Drop in the Ocean of Mercy</Text>
                               <View>
                                    <View style={styles.DescBox}>
-                                        <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
+                                        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', width: '100%' }}>
+                                             <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
+                                             <View style={{ width: '60%', flexDirection: 'column', gap: 5 }}>
+                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 18, color: colors.PrimaryColor, lineHeight: 25 }}>
+                                                       Under the spiritual guidance of
+                                                  </Text>
+                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 18, color: colors.PrimaryColor, lineHeight: 25 }}>Pir Sultan Fiaz ul Hassan</Text>
+                                             </View>
+                                        </View>
                                         <View style={{ flex: 1 }}>
                                              <Text style={[styles.Desc, isUrdu ? { textAlign: 'right' } : { textAlign: 'left' }]}>{isUrdu ? userMessage : message}</Text>
                                         </View>
@@ -113,7 +129,6 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                         onPress={() => setIsUrdu(!isUrdu)}
                                    />
                               </View>
-                              <Image source={require('../../../assets/bg3.png')} style={styles.BgIcon} />
                          </View>
                     </View>
                </GradientBG>
@@ -134,7 +149,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
                               <Entypo name="cross" color={colors.textColor} size={25} />
                          </TouchableOpacity>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Durood</Text>
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Darood</Text>
                          <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={seq} onChange={value => setSeq(value)} />
 
                          <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
@@ -184,6 +199,7 @@ const styles = StyleSheet.create({
           height: '100%',
           width: '100%',
           gap: 15,
+          paddingTop: 30,
      },
      heroHeading: {
           borderRadius: 20,
@@ -272,10 +288,12 @@ const styles = StyleSheet.create({
           color: colors.terTextColor,
           fontSize: 16,
           letterSpacing: 0.8,
+          lineHeight: 25,
      },
      IconText: {
           fontFamily: Font.font500,
           color: colors.textColor,
+          textAlign: 'center',
      },
      BgIcon: {
           position: 'absolute',
@@ -284,8 +302,8 @@ const styles = StyleSheet.create({
           borderBottomRightRadius: 15,
      },
      DescImage: {
-          height: 220,
-          width: '100%',
+          height: 120,
+          width: '40%',
           borderRadius: 20,
           position: 'relative',
           objectFit: 'fill',

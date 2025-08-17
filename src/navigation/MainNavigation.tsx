@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { CommonActions, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerItemList } from '@react-navigation/drawer';
 import colors from '../utils/colors/colors';
@@ -19,7 +19,6 @@ import NewPassword from '../screens/Auth/NewPassword/NewPassword';
 import { logout } from '../redux/Features/authState';
 import ModalLayout from '../layout/ModalLayout/ModalLayout';
 import { useLogoutMutation } from '../redux/Auth/Auth';
-import ResToast from '../components/ResToast/ResToast';
 import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
 import AsmaunNabi from '../screens/User/Home/AsmaunNabi/AsmaunNabi';
 
@@ -32,32 +31,12 @@ const NewsStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButton?: boolean; navigation: any }) => {
-     return (
-          <View style={styles.headerContainer}>
-               {showDrawerButton ? (
-                    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.menuButton}>
-                         <Ionicons name="menu" size={24} color={colors.SecondaryColor} />
-                    </TouchableOpacity>
-               ) : (
-                    <View style={styles.menuButton} />
-               )}
-               <Image source={require('../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
-               <View style={styles.rightHeaderPlaceholder} />
-          </View>
-     );
-};
-
-function HomeStackScreen({ navigation }: { navigation: any }) {
+function HomeStackScreen() {
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
      return (
-          <HomeStack.Navigator
-               screenOptions={{
-                    header: ({ route }) => <CustomHeader navigation={navigation} showDrawerButton={route.name === 'Home'} />,
-               }}
-          >
-               <HomeStack.Screen name="Home" component={Home} />
+          <HomeStack.Navigator>
+               <HomeStack.Screen name="Home" component={Home} options={{ headerShown: false }} />
                <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaunNabi" component={AsmaunNabi} options={{ headerShown: false }} />
@@ -73,26 +52,18 @@ function HomeStackScreen({ navigation }: { navigation: any }) {
      );
 }
 
-function NewsStackScreen({ navigation }: { navigation: any }) {
+function NewsStackScreen() {
      return (
-          <NewsStack.Navigator
-               screenOptions={{
-                    header: ({ route }) => <CustomHeader navigation={navigation} showDrawerButton={route.name === 'News'} />,
-               }}
-          >
-               <NewsStack.Screen name="News" component={News} />
+          <NewsStack.Navigator>
+               <NewsStack.Screen name="News" component={News} options={{ headerShown: false }} />
           </NewsStack.Navigator>
      );
 }
 
-function ProfileStackScreen({ navigation }: { navigation: any }) {
+function ProfileStackScreen() {
      return (
-          <ProfileStack.Navigator
-               screenOptions={{
-                    header: ({ route }) => <CustomHeader navigation={navigation} showDrawerButton={route.name === 'Profile'} />,
-               }}
-          >
-               <ProfileStack.Screen name="Profile" component={Profile} />
+          <ProfileStack.Navigator>
+               <ProfileStack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
           </ProfileStack.Navigator>
      );
 }
@@ -149,12 +120,12 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                          <Text style={styles.modalText}>Are you sure you want to logout?</Text>
 
                          <View style={styles.buttonContainer}>
-                              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLogoutModal(false)}>
+                              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLogoutModal(false)} disabled={isLoading}>
                                    <Text style={styles.buttonText}>Cancel</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={[styles.button, styles.logoutBtn]} onPress={handleLogoutSubmit} disabled={isLoading}>
-                                   <Text style={styles.buttonText}>{isLoading ? 'Logging out...' : 'Logout'}</Text>
+                                   <Text style={styles.buttonText}>{isLoading ? 'Loading...' : 'Logout'}</Text>
                               </TouchableOpacity>
                          </View>
                     </View>
@@ -241,42 +212,6 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
 };
 
 const styles = StyleSheet.create({
-     headerContainer: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          backgroundColor: 'transparent',
-          height: 60,
-          paddingHorizontal: 15,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-     },
-     menuButton: {
-          padding: 10,
-          width: 44,
-     },
-     headerTitle: {
-          color: colors.SecondaryColor,
-          fontFamily: Font.font600,
-          fontSize: 18,
-          flex: 1,
-          textAlign: 'center',
-     },
-     rightHeaderPlaceholder: {
-          width: 44,
-     },
-     tab: {
-          alignItems: 'center',
-          width: 100,
-     },
-     focusedTab: {
-          marginBottom: 5,
-          alignItems: 'center',
-          width: 100,
-     },
      drawerContainer: {
           flex: 1,
      },

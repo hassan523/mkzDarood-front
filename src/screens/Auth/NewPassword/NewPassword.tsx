@@ -19,8 +19,6 @@ const NewPassword = ({ navigation, route }: { navigation: Navigation; route: any
 
      const { identifier, otp } = route.params;
 
-     console.log({ identifier, otp, newPassword, reNewPassword });
-
      const { handleNewPassword, isLoading } = useNewPasswordHandler();
 
      const handleSubmit = () => {
@@ -46,6 +44,7 @@ const NewPassword = ({ navigation, route }: { navigation: Navigation; route: any
                               isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
                               value={newPassword}
                               onChange={value => handleData({ name: 'newPassword', value })}
+                              disabled={isLoading}
                          />
                     </View>
                     <View style={styles.FieldContainer}>
@@ -56,6 +55,7 @@ const NewPassword = ({ navigation, route }: { navigation: Navigation; route: any
                               isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
                               value={reNewPassword}
                               onChange={value => handleData({ name: 'reNewPassword', value })}
+                              disabled={isLoading}
                          />
                     </View>
                     <Button name="Submit" onPress={handleSubmit} isLoading={isLoading} />

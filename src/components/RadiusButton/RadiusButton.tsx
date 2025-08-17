@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
           alignItems: 'center',
           borderRadius: 100,
           paddingHorizontal: 40,
-          borderWidth: 1.5,
+          borderWidth: 2,
           borderColor: 'white',
           backgroundColor: colors.lightGreen,
      },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
           paddingVertical: 12,
           paddingHorizontal: 35,
           gap: 20,
-          borderWidth: 1.5,
+          borderWidth: 2,
           borderColor: 'white',
      },
 });

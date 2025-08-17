@@ -1,4 +1,4 @@
-import { Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
@@ -11,6 +11,7 @@ import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
+import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
@@ -62,39 +63,50 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
           handleForgotPassword({ email: forgotEmail });
      };
 
+     const isKeyboardVisible = useKeyboardStatus();
+
      return (
           <>
                <AuthLayout>
-                    <View style={styles.Container}>
-                         <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Email or Phone Number</Text>
-                              <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={email} onChange={value => handleData({ name: 'email', value })} disabled={isOpen} />
+                    <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
+                         <View style={styles.ContainerWrapper}>
+                              <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Email or Phone Number</Text>
+                                   <Field
+                                        placeHolder="Enter Email or Phone Number"
+                                        type="email"
+                                        isIcon
+                                        value={email}
+                                        onChange={value => handleData({ name: 'email', value })}
+                                        disabled={isOpen || isLoading}
+                                   />
+                              </View>
+                              <View style={styles.FieldContainer}>
+                                   <Text style={styles.Label}>Password</Text>
+                                   <Field
+                                        placeHolder="Enter Password"
+                                        type="password"
+                                        isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
+                                        value={password}
+                                        onChange={value => handleData({ name: 'password', value })}
+                                        disabled={isOpen || isLoading}
+                                   />
+                              </View>
+                              <View style={styles.Forget}>
+                                   <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen || isLoading}>
+                                        <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                                   </TouchableOpacity>
+                              </View>
+                              <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
                          </View>
-                         <View style={styles.FieldContainer}>
-                              <Text style={styles.Label}>Password</Text>
-                              <Field
-                                   placeHolder="Enter Password"
-                                   type="password"
-                                   isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
-                                   value={password}
-                                   onChange={value => handleData({ name: 'password', value })}
-                                   disabled={isOpen}
-                              />
-                         </View>
-                         <View style={styles.Forget}>
-                              <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen}>
-                                   <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                         <View style={styles.BottomLine}>
+                              <Text style={styles.BottomText}>Don't have account?</Text>
+                              <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isOpen || isLoading}>
+                                   <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                               </TouchableOpacity>
                          </View>
-                         <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
-                    </View>
-                    <View style={styles.BottomLine}>
-                         <Text style={styles.BottomText}>Don't have account?</Text>
-                         <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-                              <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
-                         </TouchableOpacity>
-                    </View>
+                    </ScrollView>
                </AuthLayout>
 
                <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet}>
@@ -102,7 +114,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                     <Text style={styles.InnerText}>Enter your Email or Phone Number</Text>
                     <View style={[styles.FieldContainer, { marginBottom: 25 }]}>
                          <Text style={styles.Label}>Email or Phone Number</Text>
-                         <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={forgotEmail} onChange={setForgotEmail} />
+                         <Field placeHolder="Enter Email or Phone Number" type="email" isIcon value={forgotEmail} onChange={setForgotEmail} disabled={forgotLoading} />
                     </View>
                     <Button name="Send Code" onPress={handleForgot} isLoading={forgotLoading} />
                </BtSheets>
@@ -114,12 +126,17 @@ export default Login;
 
 const styles = StyleSheet.create({
      Container: {
-          flex: 1,
           alignItems: 'center',
           width: '100%',
           paddingHorizontal: 20,
           gap: 25,
-          marginTop: 100,
+          marginTop: 125,
+          backgroundColor: 'white',
+     },
+     ContainerWrapper: {
+          alignItems: 'center',
+          width: '100%',
+          gap: 25,
      },
      FieldContainer: {
           width: '100%',
@@ -135,10 +152,7 @@ const styles = StyleSheet.create({
           alignItems: 'flex-end',
      },
      BottomLine: {
-          position: 'absolute',
-          bottom: 25,
-          left: 0,
-          right: 0,
+          paddingBottom: 25,
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'row',

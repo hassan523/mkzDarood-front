@@ -43,6 +43,7 @@ const Field: React.FC<FieldProps> = props => {
           textAlignVertical = 'auto',
           onFocus = () => {},
           onBlur = () => {},
+          iconColor,
      } = props;
 
      const [isPass, setIsPass] = useState<boolean>(true);
@@ -79,12 +80,12 @@ const Field: React.FC<FieldProps> = props => {
                               onBlur={onBlur}
                          />
                          <TouchableOpacity onPress={() => setIsPass(!isPass)} disabled={disabled}>
-                              <Icon name={isPass ? 'eye-slash' : 'eye'} size={20} color={colors.PrimaryColor} />
+                              <Icon name={isPass ? 'eye-slash' : 'eye'} size={20} color={iconColor ? iconColor : colors.PrimaryColor} />
                          </TouchableOpacity>
                     </View>
                ) : type === 'email' && isIcon ? (
                     <View style={[styles.div, { width: divWidth }, customDivClass]}>
-                         <EmailIcon name="email" size={20} color={colors.PrimaryColor} />
+                         <EmailIcon name="email" size={20} color={iconColor ? iconColor : colors.PrimaryColor} />
                          <TextInput
                               style={[styles.input, { width: '90%' }, customClass]}
                               placeholder={placeHolder || 'Email'}

@@ -13,21 +13,22 @@ export const useUpdateProfile = () => {
           id,
           Token,
           profilePicture,
+          country,
+          city,
+          username,
+          phone,
           setIsEdit,
      }: {
           id: string | undefined;
           Token: string | undefined;
           profilePicture: string;
+          country?: string;
+          city?: string;
+          username?: string;
+          phone?: string;
           setIsEdit: (arg0: boolean) => void;
      }) => {
           try {
-               if (!profilePicture || profilePicture == '') {
-                    ResToast({
-                         title: 'Please Add Picture',
-                         type: 'warning',
-                    });
-                    return;
-               }
                const proofImgType = profilePicture?.split('.');
                const imgType = proofImgType.pop();
 
@@ -38,9 +39,13 @@ export const useUpdateProfile = () => {
                     name: `profileImg.${imgType}`,
                } as any;
                formData.append('profilePicture', imageBlob);
+               formData.append('country', country);
+               formData.append('city', city);
+               formData.append('username', username);
+               formData.append('phone', phone);
 
                const res = await updateProfile({ id, Token, formData });
-               console.log(res);
+               console.log(res, 'dasdsadsadsa');
                if (res?.error) {
                     return ResToast({
                          title: (res.error as any).data.message || 'Failed to Update.',
@@ -48,15 +53,22 @@ export const useUpdateProfile = () => {
                     });
                }
 
-               if (Token && selector?.data?.refreshToken && res?.data?.user) {
+               if (!res?.error) {
+                    setIsEdit(false);
+                    return ResToast({
+                         title: 'profile updated successfuly.',
+                         type: 'success',
+                    });
+               }
+
+               if (Token && selector?.data?.refreshToken && (res as any)?.data?.user) {
                     const newData = {
                          accessToken: Token,
                          refreshToken: selector?.data?.refreshToken,
-                         user: res?.data?.user,
+                         user: (res as any)?.data?.user,
                     };
                     dispatch(authUser({ data: newData }));
                }
-               setIsEdit(false);
           } catch (error) {
                ResToast({
                     title: 'Something Went Wrong!',
