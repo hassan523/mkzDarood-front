@@ -58,6 +58,8 @@ export interface user {
      username: string;
      phone: string;
      email: string;
+     country: string;
+     city: string;
      password: string;
      role: 'User';
      profilePicture: string;

@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
           shadowOffset: { width: 2, height: 2 },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
-          elevation: 40,
+          elevation: 80,
      },
      ArabicText: {
           fontFamily: Font.font700,

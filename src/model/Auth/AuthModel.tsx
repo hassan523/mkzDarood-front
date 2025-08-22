@@ -94,7 +94,7 @@ export const useRegisterHandler = () => {
                if (!res.error) {
                     // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
-                         title: 'Otp Send successfully',
+                         title: 'Otp Sent successfully',
                          type: 'success',
                     });
                     navigation.navigate('Otp', {
@@ -146,7 +146,7 @@ export const useForgotPasswordHandler = () => {
                if (!res.error) {
                     // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
-                         title: 'Otp Send successfully',
+                         title: 'Otp Sent successfully',
                          type: 'success',
                     });
                     navigation.navigate('Otp', { type: 'forgot', email });

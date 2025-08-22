@@ -120,12 +120,12 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                          <Text style={styles.modalText}>Are you sure you want to logout?</Text>
 
                          <View style={styles.buttonContainer}>
-                              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLogoutModal(false)}>
+                              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={() => setShowLogoutModal(false)} disabled={isLoading}>
                                    <Text style={styles.buttonText}>Cancel</Text>
                               </TouchableOpacity>
 
                               <TouchableOpacity style={[styles.button, styles.logoutBtn]} onPress={handleLogoutSubmit} disabled={isLoading}>
-                                   <Text style={styles.buttonText}>{isLoading ? 'Logging out...' : 'Logout'}</Text>
+                                   <Text style={styles.buttonText}>{isLoading ? 'Loading...' : 'Logout'}</Text>
                               </TouchableOpacity>
                          </View>
                     </View>
@@ -173,6 +173,8 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                               borderRadius: 8,
                               marginHorizontal: 8,
                               marginVertical: 4,
+                              borderWidth: 1,
+                              borderColor: '#006860',
                          },
                          drawerContentContainerStyle: {
                               paddingTop: 0,
@@ -217,6 +219,11 @@ const styles = StyleSheet.create({
      },
      logoContainer: {
           padding: 20,
+          paddingBottom: 30,
+          borderBottomColor: '#00685fff',
+          borderBottomWidth: 1,
+          marginHorizontal: 10,
+          marginBottom: 20,
      },
      logo: {
           width: '100%',

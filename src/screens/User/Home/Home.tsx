@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ImageBackground, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import { windowWidth } from '../../../utils/dimensions/dimensions';
 import colors from '../../../utils/colors/colors';
@@ -54,34 +54,36 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          style={[
                               styles.ImageBgContainer,
                               {
-                                   height: !GetLoading ? ((counterApi?.data as any)?.seq <= 9999999999999 ? 380 : 460) : 320,
+                                   height: !GetLoading ? ((counterApi?.data as any)?.seq <= 9999999999999 ? 400 : 480) : 320,
                               },
                          ]}
                     >
                          <View style={styles.HeroContainer}>
-                              <View style={styles.heroHeading}>
-                                   <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>
-                                        اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
-                                   </Text>
-                                   <Text style={styles.Heading}>Global Darood Count</Text>
-                                   {counterApi?.isLoading ? (
-                                        <ActivityIndicator color={colors.PrimaryColor} />
-                                   ) : counterApi?.isError ? (
-                                        <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
-                                   ) : (
-                                        counterApi?.data?.seq && (
-                                             <Text style={[styles.Count, { fontSize: !GetLoading ? (counterApi?.data?.seq <= 9999999999 ? 50 : 35) : 50 }]}>
-                                                  {counterApi?.data?.seq.toLocaleString()}
-                                             </Text>
-                                        )
-                                   )}
+                              <View style={{ overflow: 'hidden', borderRadius: 10, borderWidth: 2, borderColor: 'white' }}>
+                                   <ImageBackground source={require('../../../assets/MasjidImage.png')} style={styles.heroHeading}>
+                                        <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>
+                                             اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
+                                        </Text>
+                                        <Text style={styles.Heading}>Global Darood Count</Text>
+                                        {counterApi?.isLoading ? (
+                                             <ActivityIndicator color={colors.PrimaryColor} />
+                                        ) : counterApi?.isError ? (
+                                             <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
+                                        ) : (
+                                             counterApi?.data?.seq && (
+                                                  <Text style={[styles.Count, { fontSize: !GetLoading ? (counterApi?.data?.seq <= 9999999999 ? 50 : 35) : 50 }]}>
+                                                       {counterApi?.data?.seq.toLocaleString()}
+                                                  </Text>
+                                             )
+                                        )}
+                                   </ImageBackground>
                               </View>
                               <View style={{ minWidth: 'auto' }}>
                                    <RadiusButton
                                         name="Submit Darood"
                                         customWidth={windowWidth - 40}
                                         textStyle={{ fontFamily: Font.font700, fontSize: 20, color: 'white' }}
-                                        onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Login'))}
+                                        onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Signup'))}
                                    />
                               </View>
                          </View>
@@ -121,9 +123,9 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                         </View>
                                    </View>
                               </View>
-                              <View style={{ width: 225 }}>
+                              <View style={{ width: 250 }}>
                                    <RadiusButton
-                                        name="Translate to Urdu"
+                                        name={isUrdu ? 'Translate to English' : 'Translate to Urdu'}
                                         iconRight
                                         icon={<MaterialIcons name="translate" color={colors.SecondaryColor} size={25} />}
                                         onPress={() => setIsUrdu(!isUrdu)}
@@ -149,8 +151,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
                               <Entypo name="cross" color={colors.textColor} size={25} />
                          </TouchableOpacity>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Durood</Text>
-                         <Field placeHolder="Enter Number of Recited Darood Shareef" type="number" value={seq} onChange={value => setSeq(value)} />
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Submit Darood</Text>
+                         <Field placeHolder="Enter Darood Count" type="number" value={seq} onChange={value => setSeq(value)} />
 
                          <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
                     </View>
@@ -202,16 +204,15 @@ const styles = StyleSheet.create({
           paddingTop: 30,
      },
      heroHeading: {
-          borderRadius: 20,
-          borderColor: 'white',
-          borderWidth: 2,
+          // borderRadius: 20,
+          // borderColor: 'white',
+          // borderWidth: 2,
           justifyContent: 'center',
           alignItems: 'center',
           gap: 10,
-          paddingHorizontal: 20,
-          paddingVertical: 15,
           backgroundColor: colors.lightGreen,
-          marginTop: 10,
+          paddingVertical: 15,
+          paddingHorizontal: 20,
      },
 
      Heading: {

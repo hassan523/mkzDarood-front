@@ -8,16 +8,14 @@ import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 const AuthLayout = ({ children, heading = '', isBack = false, onBack = () => {} }: { children: ReactNode; heading?: string; isBack?: boolean; onBack?: () => void }) => {
      return (
           <View style={styles.Container}>
-               {heading != '' && (
-                    <View style={styles.HeaderContainer}>
-                         {isBack && (
-                              <TouchableOpacity style={styles.Back} onPress={() => onBack()}>
-                                   <FontAwesome6 name="arrow-left-long" size={20} color={colors.textColor} />
-                              </TouchableOpacity>
-                         )}
-                         <Text style={styles.Heading}>{heading}</Text>
-                    </View>
-               )}
+               <View style={styles.HeaderContainer}>
+                    {isBack && (
+                         <TouchableOpacity style={styles.Back} onPress={() => onBack()}>
+                              <FontAwesome6 name="arrow-left-long" size={20} color={colors.textColor} />
+                         </TouchableOpacity>
+                    )}
+                    <Text style={styles.Heading}>{heading || ''}</Text>
+               </View>
 
                {children}
           </View>
