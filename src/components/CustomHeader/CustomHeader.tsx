@@ -4,8 +4,14 @@ import colors from '../../utils/colors/colors';
 import Font from '../../utils/fonts/Font';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
+import { RootState } from 'src/redux/store';
+import { useSelector } from 'react-redux';
 
 const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButton?: boolean; navigation: Navigation }) => {
+     const selector = useSelector((state: RootState) => state?.userData);
+     const profileImg = (selector?.data?.user as any)?.profilePicture;
+     const isLoggin = selector?.isLoggin;
+     console.log(isLoggin);
      return (
           <View style={styles.headerContainer}>
                {showDrawerButton ? (
@@ -15,8 +21,15 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
                ) : (
                     <View style={styles.menuButton} />
                )}
+
                <Image source={require('../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
-               <View style={styles.rightHeaderPlaceholder} />
+               {isLoggin ? (
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                         <Image src={profileImg} style={{ width: 45, height: 45, borderRadius: 1000 }} />
+                    </TouchableOpacity>
+               ) : (
+                    <View style={styles.rightHeaderPlaceholder} />
+               )}
           </View>
      );
 };

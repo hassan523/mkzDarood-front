@@ -148,148 +148,206 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                              <Text style={styles.Value}>Profile Details</Text>
                                              {!isEdit && (
                                                   <TouchableOpacity style={styles.Edit} onPress={handleIsEdit} disabled={isLoadingProfile}>
-                                                       <Text style={[styles.Value, { fontFamily: Font.font700 }]}>Edit</Text>
+                                                       <Text style={[styles.Value, { fontFamily: Font.font700, fontSize: 16 }]}>Edit</Text>
                                                        <MaterialIcons name="edit" color={colors.SecondaryColor} size={20} />
                                                   </TouchableOpacity>
                                              )}
                                         </View>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>Username :</Text>
-                                             {isEdit ? (
-                                                  <Field
-                                                       placeHolder="Enter Usename"
-                                                       type="text"
-                                                       isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.SecondaryColor} />}
-                                                       value={updateData.username}
-                                                       onChange={value => handleData({ name: 'username', value })}
-                                                       onFocus={() => setIsFocused(true)}
-                                                       onBlur={() => setIsFocused(false)}
-                                                       customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
-                                                       customClass={{
-                                                            backgroundColor: colors.lightGreen,
-                                                            borderColor: colors.SecondaryColor,
-                                                            borderWidth: 0,
-                                                            color: colors.SecondaryColor,
-                                                            fontFamily: Font.font600,
-                                                            fontSize: 16,
-                                                       }}
-                                                       iconColor="white"
-                                                       disabled={isLoading}
-                                                  />
-                                             ) : (
-                                                  <Text style={styles.Value}>{userData?.username}</Text>
-                                             )}
-                                        </View>
-
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>Country :</Text>
-                                             {isEdit ? (
-                                                  <Field
-                                                       placeHolder="Add your country"
-                                                       placeHolderTextColor="white"
-                                                       type="text"
-                                                       isIcon={<Fontisto name="world-o" size={20} color={colors.SecondaryColor} />}
-                                                       value={updateData.country}
-                                                       onChange={value => handleData({ name: 'country', value })}
-                                                       onFocus={() => setIsFocused(true)}
-                                                       onBlur={() => setIsFocused(false)}
-                                                       customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
-                                                       customClass={{
-                                                            backgroundColor: colors.lightGreen,
-                                                            borderColor: colors.SecondaryColor,
-                                                            borderWidth: 0,
-                                                            color: colors.SecondaryColor,
-                                                            fontFamily: Font.font600,
-                                                            fontSize: 16,
-                                                       }}
-                                                       iconColor="white"
-                                                       disabled={isLoading}
-                                                  />
-                                             ) : (
-                                                  <Text style={styles.Value}>{userData?.country || 'Add Country'}</Text>
-                                             )}
-                                        </View>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>City :</Text>
-                                             {isEdit ? (
-                                                  <Field
-                                                       placeHolder="Add your city"
-                                                       type="text"
-                                                       isIcon={<Fontisto name="world-o" size={20} color={colors.SecondaryColor} />}
-                                                       placeHolderTextColor="white"
-                                                       value={updateData.city}
-                                                       onChange={value => handleData({ name: 'city', value })}
-                                                       onFocus={() => setIsFocused(true)}
-                                                       onBlur={() => setIsFocused(false)}
-                                                       customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
-                                                       customClass={{
-                                                            backgroundColor: colors.lightGreen,
-                                                            borderColor: colors.SecondaryColor,
-                                                            borderWidth: 0,
-                                                            color: colors.SecondaryColor,
-                                                            fontFamily: Font.font600,
-                                                            fontSize: 16,
-                                                       }}
-                                                       iconColor="white"
-                                                       disabled={isLoading}
-                                                  />
-                                             ) : (
-                                                  <Text style={styles.Value}>{userData?.city || 'Add City'}</Text>
-                                             )}
-                                        </View>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>Email :</Text>
-                                             {isEdit ? (
-                                                  <Field
-                                                       placeHolder="Enter Email"
-                                                       type="email"
-                                                       isIcon
-                                                       value={updateData.email}
-                                                       onChange={value => handleData({ name: 'email', value })}
-                                                       onFocus={() => setIsFocused(true)}
-                                                       onBlur={() => setIsFocused(false)}
-                                                       customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
-                                                       customClass={{
-                                                            backgroundColor: colors.lightGreen,
-                                                            borderColor: colors.SecondaryColor,
-                                                            borderWidth: 0,
-                                                            color: colors.SecondaryColor,
-                                                            fontFamily: Font.font600,
-                                                            fontSize: 16,
-                                                       }}
-                                                       iconColor="white"
-                                                       disabled
-                                                  />
-                                             ) : (
-                                                  <Text style={styles.Value}>{userData?.email}</Text>
-                                             )}
-                                        </View>
-                                        <View style={[styles.FieldContainer, { marginBottom: 15 }]}>
-                                             <Text style={styles.Label}>Phone Number :</Text>
-                                             {isEdit ? (
-                                                  <Field
-                                                       placeHolder="Enter Phone Number"
-                                                       type="text"
-                                                       isIcon={<FontAwesome name="phone" size={20} color={colors.SecondaryColor} />}
-                                                       value={updateData.phone}
-                                                       onChange={value => handleData({ name: 'phone', value })}
-                                                       onFocus={() => setIsFocused(true)}
-                                                       onBlur={() => setIsFocused(false)}
-                                                       customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
-                                                       customClass={{
-                                                            backgroundColor: colors.lightGreen,
-                                                            borderColor: colors.SecondaryColor,
-                                                            borderWidth: 0,
-                                                            color: colors.SecondaryColor,
-                                                            fontFamily: Font.font600,
-                                                            fontSize: 16,
-                                                       }}
-                                                       iconColor="white"
-                                                       disabled={isLoading}
-                                                  />
-                                             ) : (
-                                                  <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
-                                             )}
+                                        <View>
+                                             <View
+                                                  style={[
+                                                       styles.FieldContainer,
+                                                       {
+                                                            flexDirection: isEdit ? 'column' : 'row',
+                                                            justifyContent: 'space-between',
+                                                            borderTopWidth: isEdit ? 0 : 1,
+                                                            borderColor: 'lightgray',
+                                                            paddingBlock: isEdit ? 5 : 15,
+                                                       },
+                                                  ]}
+                                             >
+                                                  <Text style={styles.FieldLabel}>Username :</Text>
+                                                  {isEdit ? (
+                                                       <Field
+                                                            placeHolder="Enter Usename"
+                                                            type="text"
+                                                            isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.SecondaryColor} />}
+                                                            value={updateData.username}
+                                                            onChange={value => handleData({ name: 'username', value })}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => setIsFocused(false)}
+                                                            customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                                            customClass={{
+                                                                 backgroundColor: colors.lightGreen,
+                                                                 borderColor: colors.SecondaryColor,
+                                                                 borderWidth: 0,
+                                                                 color: colors.SecondaryColor,
+                                                                 fontFamily: Font.font600,
+                                                                 fontSize: 16,
+                                                            }}
+                                                            iconColor="white"
+                                                            disabled={isLoading}
+                                                       />
+                                                  ) : (
+                                                       <Text style={styles.Value}>{userData?.username}</Text>
+                                                  )}
+                                             </View>
+                                             <View
+                                                  style={[
+                                                       styles.FieldContainer,
+                                                       {
+                                                            flexDirection: isEdit ? 'column' : 'row',
+                                                            justifyContent: 'space-between',
+                                                            borderTopWidth: isEdit ? 0 : 1,
+                                                            borderColor: 'lightgray',
+                                                            paddingBlock: isEdit ? 5 : 15,
+                                                       },
+                                                  ]}
+                                             >
+                                                  <Text style={styles.FieldLabel}>Country :</Text>
+                                                  {isEdit ? (
+                                                       <Field
+                                                            placeHolder="Add your country"
+                                                            placeHolderTextColor="white"
+                                                            type="text"
+                                                            isIcon={<Fontisto name="world-o" size={20} color={colors.SecondaryColor} />}
+                                                            value={updateData.country}
+                                                            onChange={value => handleData({ name: 'country', value })}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => setIsFocused(false)}
+                                                            customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                                            customClass={{
+                                                                 backgroundColor: colors.lightGreen,
+                                                                 borderColor: colors.SecondaryColor,
+                                                                 borderWidth: 0,
+                                                                 color: colors.SecondaryColor,
+                                                                 fontFamily: Font.font600,
+                                                                 fontSize: 16,
+                                                            }}
+                                                            iconColor="white"
+                                                            disabled={isLoading}
+                                                       />
+                                                  ) : (
+                                                       <Text style={styles.Value}>{userData?.country || 'Add Country'}</Text>
+                                                  )}
+                                             </View>
+                                             <View
+                                                  style={[
+                                                       styles.FieldContainer,
+                                                       {
+                                                            flexDirection: isEdit ? 'column' : 'row',
+                                                            justifyContent: 'space-between',
+                                                            borderTopWidth: isEdit ? 0 : 1,
+                                                            borderColor: 'lightgray',
+                                                            paddingBlock: isEdit ? 5 : 15,
+                                                       },
+                                                  ]}
+                                             >
+                                                  <Text style={styles.FieldLabel}>City :</Text>
+                                                  {isEdit ? (
+                                                       <Field
+                                                            placeHolder="Add your city"
+                                                            type="text"
+                                                            isIcon={<Fontisto name="world-o" size={20} color={colors.SecondaryColor} />}
+                                                            placeHolderTextColor="white"
+                                                            value={updateData.city}
+                                                            onChange={value => handleData({ name: 'city', value })}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => setIsFocused(false)}
+                                                            customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                                            customClass={{
+                                                                 backgroundColor: colors.lightGreen,
+                                                                 borderColor: colors.SecondaryColor,
+                                                                 borderWidth: 0,
+                                                                 color: colors.SecondaryColor,
+                                                                 fontFamily: Font.font600,
+                                                                 fontSize: 16,
+                                                            }}
+                                                            iconColor="white"
+                                                            disabled={isLoading}
+                                                       />
+                                                  ) : (
+                                                       <Text style={styles.Value}>{userData?.city || 'Add City'}</Text>
+                                                  )}
+                                             </View>
+                                             <View
+                                                  style={[
+                                                       styles.FieldContainer,
+                                                       {
+                                                            flexDirection: isEdit ? 'column' : 'row',
+                                                            justifyContent: 'space-between',
+                                                            borderTopWidth: isEdit ? 0 : 1,
+                                                            borderColor: 'lightgray',
+                                                            paddingBlock: isEdit ? 5 : 15,
+                                                       },
+                                                  ]}
+                                             >
+                                                  <Text style={styles.FieldLabel}>Email :</Text>
+                                                  {isEdit ? (
+                                                       <Field
+                                                            placeHolder="Enter Email"
+                                                            type="email"
+                                                            isIcon
+                                                            value={updateData.email}
+                                                            onChange={value => handleData({ name: 'email', value })}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => setIsFocused(false)}
+                                                            customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                                            customClass={{
+                                                                 backgroundColor: colors.lightGreen,
+                                                                 borderColor: colors.SecondaryColor,
+                                                                 borderWidth: 0,
+                                                                 color: colors.SecondaryColor,
+                                                                 fontFamily: Font.font600,
+                                                                 fontSize: 16,
+                                                            }}
+                                                            iconColor="white"
+                                                            disabled
+                                                       />
+                                                  ) : (
+                                                       <Text style={styles.Value}>{userData?.email}</Text>
+                                                  )}
+                                             </View>
+                                             <View
+                                                  style={[
+                                                       styles.FieldContainer,
+                                                       {
+                                                            marginBottom: 15,
+                                                            flexDirection: isEdit ? 'column' : 'row',
+                                                            justifyContent: 'space-between',
+                                                            borderTopWidth: isEdit ? 0 : 1,
+                                                            borderBottomWidth: isEdit ? 0 : 1,
+                                                            borderColor: 'lightgray',
+                                                            paddingBlock: isEdit ? 5 : 15,
+                                                       },
+                                                  ]}
+                                             >
+                                                  <Text style={styles.FieldLabel}>Phone Number :</Text>
+                                                  {isEdit ? (
+                                                       <Field
+                                                            placeHolder="Enter Phone Number"
+                                                            type="text"
+                                                            isIcon={<FontAwesome name="phone" size={20} color={colors.SecondaryColor} />}
+                                                            value={updateData.phone}
+                                                            onChange={value => handleData({ name: 'phone', value })}
+                                                            onFocus={() => setIsFocused(true)}
+                                                            onBlur={() => setIsFocused(false)}
+                                                            customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
+                                                            customClass={{
+                                                                 backgroundColor: colors.lightGreen,
+                                                                 borderColor: colors.SecondaryColor,
+                                                                 borderWidth: 0,
+                                                                 color: colors.SecondaryColor,
+                                                                 fontFamily: Font.font600,
+                                                                 fontSize: 16,
+                                                            }}
+                                                            iconColor="white"
+                                                            disabled={isLoading}
+                                                       />
+                                                  ) : (
+                                                       <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
+                                                  )}
+                                             </View>
                                         </View>
 
                                         {isEdit ? (
@@ -320,41 +378,43 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               </View>
                               <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
                                    <View style={styles.ModalContainer}>
-                                        <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
-                                             <Entypo name="cross" color={colors.textColor} size={25} />
-                                        </TouchableOpacity>
-                                        <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20 }]}>Change Password</Text>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>Current Password</Text>
-                                             <Field
-                                                  placeHolder="Enter Current Password"
-                                                  type="password"
-                                                  value={password}
-                                                  onChange={value => setChangePassword({ ...changePassword, password: value })}
-                                                  disabled={isLoading}
-                                             />
+                                        <View style={{ flexDirection: 'row', position: 'relative', width: '100%', justifyContent: 'space-between' }}>
+                                             <Entypo name="cross" color={'white'} size={25} />
+                                             <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 10 }]}>Change Password</Text>
+                                             <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
+                                                  <Entypo name="cross" color={colors.textColor} size={25} />
+                                             </TouchableOpacity>
                                         </View>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>New Password</Text>
-                                             <Field
-                                                  placeHolder="Enter New Password"
-                                                  type="password"
-                                                  isIcon
-                                                  value={newPass}
-                                                  onChange={value => setChangePassword({ ...changePassword, newPass: value })}
-                                                  disabled={isLoading}
-                                             />
-                                        </View>
-                                        <View style={styles.FieldContainer}>
-                                             <Text style={styles.Label}>Re-Enter New Password</Text>
-                                             <Field
-                                                  placeHolder="Re-Enter New Password"
-                                                  type="password"
-                                                  isIcon
-                                                  value={reNewPass}
-                                                  onChange={value => setChangePassword({ ...changePassword, reNewPass: value })}
-                                                  disabled={isLoading}
-                                             />
+                                        <View style={{ width: '100%', gap: 20 }}>
+                                             <View style={styles.FieldContainer}>
+                                                  <Field
+                                                       placeHolder="Enter Current Password"
+                                                       type="password"
+                                                       value={password}
+                                                       onChange={value => setChangePassword({ ...changePassword, password: value })}
+                                                       disabled={isLoading}
+                                                  />
+                                             </View>
+                                             <View style={styles.FieldContainer}>
+                                                  <Field
+                                                       placeHolder="Enter New Password"
+                                                       type="password"
+                                                       isIcon
+                                                       value={newPass}
+                                                       onChange={value => setChangePassword({ ...changePassword, newPass: value })}
+                                                       disabled={isLoading}
+                                                  />
+                                             </View>
+                                             <View style={styles.FieldContainer}>
+                                                  <Field
+                                                       placeHolder="Re-Enter New Password"
+                                                       type="password"
+                                                       isIcon
+                                                       value={reNewPass}
+                                                       onChange={value => setChangePassword({ ...changePassword, reNewPass: value })}
+                                                       disabled={isLoading}
+                                                  />
+                                             </View>
                                         </View>
                                         <Button name="Save" onPress={handleChangePass} isLoading={isLoading} disabled={isLoading} />
                                    </View>
@@ -440,7 +500,7 @@ const styles = StyleSheet.create({
      Value: {
           fontFamily: Font.font600,
           color: colors.SecondaryColor,
-          fontSize: 16,
+          fontSize: 18,
      },
      HeaderContainer: {
           flexDirection: 'row',
@@ -448,17 +508,28 @@ const styles = StyleSheet.create({
           alignItems: 'center',
      },
      Edit: {
-          gap: 10,
+          gap: 5,
           flexDirection: 'row',
           alignItems: 'center',
+          borderWidth: 1,
+          paddingInline: 20,
+          paddingBlock: 8,
+          borderColor: 'white',
+          borderRadius: 1000,
      },
      FieldContainer: {
           width: '100%',
           gap: 10,
+          borderBlockColor: 'white',
      },
      Label: {
           fontFamily: Font.font700,
           fontSize: 15,
+          color: colors.terTextColor,
+     },
+     FieldLabel: {
+          fontFamily: Font.font700,
+          fontSize: 17,
           color: colors.SecondaryColor,
      },
      ModalContainer: {
@@ -468,8 +539,7 @@ const styles = StyleSheet.create({
           gap: 20,
      },
      Cross: {
-          position: 'absolute',
-          right: 5,
+          left: 5,
           top: 5,
      },
      BtnContainer: {
