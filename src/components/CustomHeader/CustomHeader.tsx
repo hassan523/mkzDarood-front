@@ -24,7 +24,7 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
 
                <Image source={require('../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
                {isLoggin ? (
-                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ProfileStackScreen')}>
                          <Image src={profileImg} style={{ width: 45, height: 45, borderRadius: 1000 }} />
                     </TouchableOpacity>
                ) : (
