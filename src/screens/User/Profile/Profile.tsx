@@ -20,6 +20,7 @@ import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions'
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
+import Skeleton from '../../../components/SkeletonComp/Skeleton';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -166,7 +167,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        },
                                                   ]}
                                              >
-                                                  <Text style={styles.FieldLabel}>Username :</Text>
+                                                  <Text style={styles.FieldLabel}>Name</Text>
                                                   {isEdit ? (
                                                        <Field
                                                             placeHolder="Enter Usename"
@@ -188,8 +189,10 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             iconColor="white"
                                                             disabled={isLoading}
                                                        />
+                                                  ) : isLoadingProfile ? (
+                                                       <Skeleton width={120} height={10} borderRadius={5} />
                                                   ) : (
-                                                       <Text style={styles.Value}>{userData?.username}</Text>
+                                                       <Text style={styles.Value}>{userData?.username || 'Name'}</Text>
                                                   )}
                                              </View>
                                              <View
@@ -204,7 +207,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        },
                                                   ]}
                                              >
-                                                  <Text style={styles.FieldLabel}>Country :</Text>
+                                                  <Text style={styles.FieldLabel}>Country</Text>
                                                   {isEdit ? (
                                                        <Field
                                                             placeHolder="Add your country"
@@ -227,6 +230,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             iconColor="white"
                                                             disabled={isLoading}
                                                        />
+                                                  ) : isLoadingProfile ? (
+                                                       <Skeleton width={120} height={10} borderRadius={5} />
                                                   ) : (
                                                        <Text style={styles.Value}>{userData?.country || 'Add Country'}</Text>
                                                   )}
@@ -243,7 +248,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        },
                                                   ]}
                                              >
-                                                  <Text style={styles.FieldLabel}>City :</Text>
+                                                  <Text style={styles.FieldLabel}>City</Text>
                                                   {isEdit ? (
                                                        <Field
                                                             placeHolder="Add your city"
@@ -266,6 +271,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             iconColor="white"
                                                             disabled={isLoading}
                                                        />
+                                                  ) : isLoadingProfile ? (
+                                                       <Skeleton width={120} height={10} borderRadius={5} />
                                                   ) : (
                                                        <Text style={styles.Value}>{userData?.city || 'Add City'}</Text>
                                                   )}
@@ -279,10 +286,11 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: 'center',
                                                        },
                                                   ]}
                                              >
-                                                  <Text style={styles.FieldLabel}>Email :</Text>
+                                                  <Text style={styles.FieldLabel}>Email</Text>
                                                   {isEdit ? (
                                                        <Field
                                                             placeHolder="Enter Email"
@@ -304,6 +312,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             iconColor="white"
                                                             disabled
                                                        />
+                                                  ) : isLoadingProfile ? (
+                                                       <Skeleton width={120} height={10} borderRadius={5} />
                                                   ) : (
                                                        <Text style={styles.Value}>{userData?.email}</Text>
                                                   )}
@@ -322,7 +332,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        },
                                                   ]}
                                              >
-                                                  <Text style={styles.FieldLabel}>Phone Number :</Text>
+                                                  <Text style={styles.FieldLabel}>Phone Number</Text>
                                                   {isEdit ? (
                                                        <Field
                                                             placeHolder="Enter Phone Number"
@@ -344,6 +354,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             iconColor="white"
                                                             disabled={isLoading}
                                                        />
+                                                  ) : isLoadingProfile ? (
+                                                       <Skeleton width={120} height={10} borderRadius={5} />
                                                   ) : (
                                                        <Text style={styles.Value}>{(userData as DataTypes)?.phone}</Text>
                                                   )}
@@ -529,7 +541,7 @@ const styles = StyleSheet.create({
      },
      FieldLabel: {
           fontFamily: Font.font700,
-          fontSize: 17,
+          fontSize: 18,
           color: colors.SecondaryColor,
      },
      ModalContainer: {
