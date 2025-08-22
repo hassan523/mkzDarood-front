@@ -47,7 +47,10 @@ export const useUpdateCounterHandler = () => {
                     });
                     return;
                }
-
+               ResToast({
+                    title: 'Darood submitted successfully',
+                    type: 'success',
+               });
                if (typeof seq == 'number') {
                     setSeq(0);
                } else {

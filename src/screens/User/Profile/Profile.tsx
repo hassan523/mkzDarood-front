@@ -234,7 +234,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        disabled={isLoading}
                                                   />
                                              ) : (
-                                                  <Text style={styles.Value}>{userData?.city}</Text>
+                                                  <Text style={styles.Value}>{userData?.city || 'Add City'}</Text>
                                              )}
                                         </View>
                                         <View style={styles.FieldContainer}>

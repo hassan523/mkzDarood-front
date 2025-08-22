@@ -12,6 +12,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const dispatch = useDispatch();
@@ -67,7 +68,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
 
      return (
           <>
-               <AuthLayout>
+               <AuthLayout isBack onBack={() => navigation.goBack()}>
                     <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
                          <View style={styles.ContainerWrapper}>
                               <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
