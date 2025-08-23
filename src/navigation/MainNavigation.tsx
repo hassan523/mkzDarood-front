@@ -173,6 +173,8 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                               borderRadius: 8,
                               marginHorizontal: 8,
                               marginVertical: 4,
+                              borderWidth: 1,
+                              borderColor: '#006860',
                          },
                          drawerContentContainerStyle: {
                               paddingTop: 0,
@@ -217,6 +219,11 @@ const styles = StyleSheet.create({
      },
      logoContainer: {
           padding: 20,
+          paddingBottom: 30,
+          borderBottomColor: '#00685fff',
+          borderBottomWidth: 1,
+          marginHorizontal: 10,
+          marginBottom: 20,
      },
      logo: {
           width: '100%',

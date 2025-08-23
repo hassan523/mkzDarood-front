@@ -38,6 +38,7 @@ export const useUpdateCounterHandler = () => {
                }
 
                const num = Number(seq);
+               setIsOpen(false);
                const res = await updateCounterApi({ seq: num, Token });
 
                if (res?.error) {
@@ -47,13 +48,15 @@ export const useUpdateCounterHandler = () => {
                     });
                     return;
                }
-
+               ResToast({
+                    title: 'Darood submitted successfully',
+                    type: 'success',
+               });
                if (typeof seq == 'number') {
                     setSeq(0);
                } else {
                     setSeq('');
                }
-               setIsOpen(false);
           } catch (error) {
                ResToast({
                     title: 'Something Went Wrong!',
