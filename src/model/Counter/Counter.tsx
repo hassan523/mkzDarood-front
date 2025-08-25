@@ -15,18 +15,20 @@ export const useGetCounterHandler = () => {
 };
 
 export const useUpdateCounterHandler = () => {
-     const [updateCounterApi, { isLoading }] = useUpdateCounterMutation();
+     const [updateCounterApi, { isLoading, isSuccess }] = useUpdateCounterMutation();
 
      const handleUpdate = async ({
           seq,
           Token,
           setIsOpen,
           setSeq,
+          setIsSubmitted,
      }: {
           seq: string | number;
           Token: string | undefined;
           setIsOpen: (arg0: boolean) => void;
           setSeq: (arg0: string | number) => void;
+          setIsSubmitted: (arg0: boolean) => void;
      }) => {
           try {
                if (seq == '') {
@@ -52,6 +54,7 @@ export const useUpdateCounterHandler = () => {
                     title: 'Darood submitted successfully',
                     type: 'success',
                });
+               setIsSubmitted(true);
                if (typeof seq == 'number') {
                     setSeq(0);
                } else {
@@ -65,5 +68,5 @@ export const useUpdateCounterHandler = () => {
           }
      };
 
-     return { handleUpdate, isLoading };
+     return { handleUpdate, isLoading, isSuccess };
 };
