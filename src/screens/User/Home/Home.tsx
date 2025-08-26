@@ -27,13 +27,14 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const [refreshing, setRefresing] = useState(false);
      const [isUrdu, setIsUrdu] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
+     const [isSubmitted, setIsSubmitted] = useState(false);
      const [seq, setSeq] = useState<number | string>('');
 
      const counterApi = useGetCounterHandler();
      const refetch = counterApi?.refetch;
      const GetLoading = counterApi?.isLoading;
 
-     const { handleUpdate, isLoading } = useUpdateCounterHandler();
+     const { handleUpdate, isLoading, isSuccess } = useUpdateCounterHandler();
 
      const onRefresh = async () => {
           setRefresing(true);
@@ -42,7 +43,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const handleUpdateCounter = () => {
-          handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq });
+          handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq, setIsSubmitted: setIsSubmitted });
      };
 
      const renderItem = () => (
@@ -155,6 +156,12 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <Field placeHolder="Enter Darood Count" type="number" value={seq} onChange={value => setSeq(value)} />
 
                          <Button name={isLoading ? 'Loading...' : 'Submit'} onPress={handleUpdateCounter} disabled={isLoading} />
+                    </View>
+               </ModalLayout>
+               <ModalLayout isOpen={isSubmitted} setIsOpen={setIsSubmitted}>
+                    <View style={styles.ModalContainer}>
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20, textAlign: 'center', fontSize: 24 }]}>آپ کا درود پاک مرکزی درود میں جمع ہو گیا ہے۔ شکریہ</Text>
+                         <Button name={'OK'} onPress={() => setIsSubmitted(false)} disabled={isLoading} />
                     </View>
                </ModalLayout>
           </>

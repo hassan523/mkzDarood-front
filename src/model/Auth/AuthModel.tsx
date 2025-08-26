@@ -125,7 +125,7 @@ export const useRegisterHandler = () => {
 
 export const useForgotPasswordHandler = () => {
      const dispatch = useDispatch();
-     const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+     const [forgotPassword, { isLoading, isError }] = useForgotPasswordMutation();
 
      type RootStackParamList = {
           Otp: { type: string; email: string };
@@ -133,7 +133,7 @@ export const useForgotPasswordHandler = () => {
 
      const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-     const handleForgotPassword = async ({ email }: { email: string }) => {
+     const handleForgotPassword = async ({ email, type }: { email: string; type: string }) => {
           try {
                if (!email) {
                     return ResToast({
@@ -142,9 +142,8 @@ export const useForgotPasswordHandler = () => {
                     });
                }
 
-               const res = await forgotPassword({ identifier: email });
+               const res = await forgotPassword({ identifier: email, type });
                if (!res.error) {
-                    // registerDispatch(authUser({ data: res?.data || null }));
                     ResToast({
                          title: 'Otp Sent successfully',
                          type: 'success',
@@ -162,7 +161,7 @@ export const useForgotPasswordHandler = () => {
           }
      };
 
-     return { handleForgotPassword, isLoading };
+     return { handleForgotPassword, isLoading, isError };
 };
 
 export const useVerifyOTPHandler = () => {

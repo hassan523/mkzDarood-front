@@ -1,5 +1,5 @@
 import { StyleSheet, View, TextInput, NativeSyntheticEvent, Text, TouchableOpacity, Keyboard, ScrollView } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
 import colors from '../../../utils/colors/colors';
@@ -11,7 +11,7 @@ import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useDispatch } from 'react-redux';
 import { authUser } from '../../../redux/Features/authState';
-import { useVerifyOTPHandler } from '../../../model/Auth/AuthModel';
+import { useForgotPasswordHandler, useVerifyOTPHandler } from '../../../model/Auth/AuthModel';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 
 const Otp = ({
@@ -26,6 +26,7 @@ const Otp = ({
 
      const [isOpen, setIsOpen] = useState(false);
      const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '']);
+     const [counter, setCounter] = useState(60);
      const inputs = useRef<(TextInput | null)[]>(Array(5).fill(null));
      const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -60,6 +61,7 @@ const Otp = ({
      };
 
      const { handleVerifyOTP, isLoading } = useVerifyOTPHandler();
+     const { handleForgotPassword, isLoading: resendLoading, isError } = useForgotPasswordHandler();
 
      const handleForgot = async () => {
           await handleVerifyOTP({
@@ -70,12 +72,26 @@ const Otp = ({
                phone,
                password,
                deviceId,
-               email: signupEmail,
+               email: signupEmail || email,
           });
           handleOpenSheet();
      };
-     console.log(email);
      const isKeyboardVisible = useKeyboardStatus();
+
+     const handleResendOtp = async () => {
+          await handleForgotPassword({ email: signupEmail || email, type: type === 'signup' ? 'signup' : 'otp' });
+          if (!isError) {
+               setCounter(60);
+          }
+     };
+
+     useEffect(() => {
+          let timer: NodeJS.Timeout;
+          if (counter > 0) {
+               timer = setTimeout(() => setCounter(counter - 1), 1000);
+          }
+          return () => clearTimeout(timer);
+     }, [counter]);
 
      return (
           <>
@@ -132,33 +148,47 @@ const Otp = ({
                                                   inputs.current[index + 1]?.focus();
                                              }
                                         }}
-                                        editable={!isOpen || isLoading}
+                                        editable={!isOpen || isLoading || resendLoading}
                                    />
                               ))}
                          </View>
                          <View style={styles.BtnContainer}>
-                              <Button name="Submit" onPress={handleForgot} isLoading={isLoading} />
+                              <Button name="Submit" onPress={handleForgot} isLoading={isLoading} disabled={resendLoading} />
                               <View style={styles.ResendContainer}>
-                                   <Text
-                                        style={{
-                                             fontSize: 16,
-                                             fontFamily: Font.font600,
-                                             color: colors.SecTextColor,
-                                        }}
-                                   >
-                                        Didn’t receive the code?
-                                   </Text>
-                                   <TouchableOpacity>
+                                   {counter > 0 ? (
                                         <Text
                                              style={{
                                                   fontSize: 16,
-                                                  fontFamily: Font.font700,
-                                                  color: colors.PrimaryColor,
+                                                  fontFamily: Font.font600,
+                                                  color: colors.SecTextColor,
                                              }}
                                         >
-                                             Resend
+                                             Resend code in {counter}s
                                         </Text>
-                                   </TouchableOpacity>
+                                   ) : (
+                                        <>
+                                             <Text
+                                                  style={{
+                                                       fontSize: 16,
+                                                       fontFamily: Font.font600,
+                                                       color: colors.SecTextColor,
+                                                  }}
+                                             >
+                                                  Didn’t receive the code?
+                                             </Text>
+                                             <TouchableOpacity onPress={handleResendOtp} disabled={resendLoading}>
+                                                  <Text
+                                                       style={{
+                                                            fontSize: 16,
+                                                            fontFamily: Font.font700,
+                                                            color: colors.PrimaryColor,
+                                                       }}
+                                                  >
+                                                       {resendLoading ? 'Loading...' : 'Resend'}
+                                                  </Text>
+                                             </TouchableOpacity>
+                                        </>
+                                   )}
                               </View>
                          </View>
                     </ScrollView>

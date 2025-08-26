@@ -23,7 +23,7 @@ const Auth = createApi({
                }),
           }),
 
-          forgotPassword: builder.mutation<{ message: string; identifier: string }, { identifier: string }>({
+          forgotPassword: builder.mutation<{ message: string; identifier: string }, { identifier: string; type: string }>({
                query: data => ({
                     url: `/api/forget-password`,
                     method: 'PATCH',
