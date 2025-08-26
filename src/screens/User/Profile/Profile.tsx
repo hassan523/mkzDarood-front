@@ -286,7 +286,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
-                                                            alignItems: 'center',
                                                        },
                                                   ]}
                                              >
