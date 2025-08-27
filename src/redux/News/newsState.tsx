@@ -6,10 +6,13 @@ const News = createApi({
      reducerPath: 'News',
      baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
      endpoints: builder => ({
-          GetNews: builder.query<GetNewsResponse[], void>({
-               query: () => ({
+          GetNews: builder.query<GetNewsResponse[], { Token: string | undefined }>({
+               query: ({ Token }) => ({
                     url: `/api/news/get-news`,
                     method: 'GET',
+                    headers: {
+                         Authorization: `Bearer ${Token}`,
+                    },
                }),
           }),
      }),

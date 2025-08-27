@@ -8,11 +8,18 @@ import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import { useGetNews } from '../../../model/News/NewsModel';
 import Video from 'react-native-video';
+import { RootState } from 'src/redux/store';
+import { useSelector } from 'react-redux';
 
 const News = ({ navigation }: { navigation: Navigation }) => {
      const [refreshing, setRefresing] = useState(false);
      const [expanded, setExpanded] = useState(false);
-     const { data, isLoading, isError, error, refetch } = useGetNews();
+
+     const selector = useSelector((state: RootState) => state?.userData);
+     const Token: string | undefined = selector?.data?.accessToken;
+
+     const { data, isLoading, isError, error, refetch } = useGetNews(Token);
+     const newsData = (data as any)?.news;
 
      const onRefresh = async () => {
           setRefresing(true);
@@ -50,7 +57,7 @@ const News = ({ navigation }: { navigation: Navigation }) => {
           <View style={styles.MainContainer}>
                <GradientBG style={styles.gradient} isBackgroundImage>
                     <FlatList
-                         data={data || []}
+                         data={newsData || []}
                          renderItem={renderItem}
                          keyExtractor={item => item?._id?.toString()}
                          showsVerticalScrollIndicator={false}

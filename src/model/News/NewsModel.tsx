@@ -1,9 +1,9 @@
 import ResToast from '../../components/ResToast/ResToast';
 import { useGetNewsQuery } from '../../redux/News/newsState';
 
-export const useGetNews = () => {
+export const useGetNews = (Token: string | undefined) => {
      try {
-          const { data, isLoading, isError, error, refetch } = useGetNewsQuery();
+          const { data, isLoading, isError, error, refetch } = useGetNewsQuery({ Token });
 
           if (isError) {
                ResToast({ type: 'danger', title: 'Failed to fetch News Update' });

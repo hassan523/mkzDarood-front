@@ -61,7 +61,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
      };
 
      const handleForgot = () => {
-          handleForgotPassword({ email: forgotEmail });
+          handleForgotPassword({ email: forgotEmail, type: 'otp' });
      };
 
      const isKeyboardVisible = useKeyboardStatus();
