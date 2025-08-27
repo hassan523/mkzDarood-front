@@ -21,6 +21,7 @@ import ModalLayout from '../layout/ModalLayout/ModalLayout';
 import { useLogoutMutation } from '../redux/Auth/Auth';
 import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
 import AsmaunNabi from '../screens/User/Home/AsmaunNabi/AsmaunNabi';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 interface MainNavigation {
      initRoute: string;
@@ -138,7 +139,7 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                               </View>
                               <DrawerItemList {...props} />
 
-                              {isLogin && (
+                              {isLogin ? (
                                    <TouchableOpacity
                                         style={styles.logoutButton}
                                         onPress={() => {
@@ -149,6 +150,13 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                                         <View style={styles.logoutButtonContent}>
                                              <Ionicons name="log-out" color={colors.PrimaryColor} size={24} />
                                              <Text style={styles.logoutButtonText}>Logout</Text>
+                                        </View>
+                                   </TouchableOpacity>
+                              ) : (
+                                   <TouchableOpacity style={styles.logoutButton} onPress={() => navigationRef.current.navigate('Login')}>
+                                        <View style={styles.logoutButtonContent}>
+                                             <Entypo name="login" color={colors.PrimaryColor} size={24} />
+                                             <Text style={styles.logoutButtonText}>Login</Text>
                                         </View>
                                    </TouchableOpacity>
                               )}

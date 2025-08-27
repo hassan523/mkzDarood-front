@@ -10,6 +10,7 @@ import { useGetNews } from '../../../model/News/NewsModel';
 import Video from 'react-native-video';
 import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
+import Skeleton from '../../../components/SkeletonComp/Skeleton';
 
 const News = ({ navigation }: { navigation: Navigation }) => {
      const [refreshing, setRefresing] = useState(false);
@@ -32,23 +33,40 @@ const News = ({ navigation }: { navigation: Navigation }) => {
      const renderItem = ({ item }: { item: any }) => {
           return (
                <View style={styles.Container}>
-                    <Text style={styles.NewsHeading}>{item.title}</Text>
-                    {item.content?.length > 100 ? (
-                         <Text style={styles.Desc}>
-                              {item.content.slice(0, expanded ? item.content.length : 400) + '...'}
-                              <TouchableOpacity onPress={() => setExpanded(!expanded)} style={{ flexDirection: 'row', alignItems: 'center', zIndex: 9999999 }}>
-                                   <Text style={{ fontWeight: '700', marginLeft: 5, lineHeight: 10, paddingTop: 5, color: 'white' }}>{expanded ? 'See less' : 'See more'}</Text>
-                              </TouchableOpacity>
-                         </Text>
-                    ) : (
-                         <Text style={styles.Desc}>{item.content}</Text>
-                    )}
+                    <View style={{ gap: 10, paddingHorizontal: 20 }}>
+                         <Text style={styles.NewsHeading}>{item.title}</Text>
+                         {item.content?.length > 100 ? (
+                              <Text style={styles.Desc}>
+                                   {item.content.slice(0, expanded ? item.content.length : 400) + '...'}
+                                   <TouchableOpacity onPress={() => setExpanded(!expanded)} style={{ flexDirection: 'row', alignItems: 'center', zIndex: 9999999 }}>
+                                        <Text style={{ fontWeight: '700', marginLeft: 5, lineHeight: 10, paddingTop: 5, color: 'white' }}>{expanded ? 'See less' : 'See more'}</Text>
+                                   </TouchableOpacity>
+                              </Text>
+                         ) : (
+                              <Text style={styles.Desc}>{item.content}</Text>
+                         )}
+                    </View>
                     {item?.thumbnail && <Image source={require('../../../assets/news.png')} src={item?.thumbnail} style={styles.NewsImages} />}
                     {item?.video && (
-                         <View style={{ borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: colors.SecondaryColor }}>
-                              <Video source={{ uri: item?.video }} style={{ width: '100%', height: 350, borderRadius: 10 }} controls volume={1.0} />
+                         <View style={{ borderBottomEndRadius: 15, borderBottomLeftRadius: 15, borderTopWidth: 1, borderColor: colors.SecondaryColor, marginTop: 10 }}>
+                              <Video source={{ uri: item?.video }} style={{ width: '100%', height: 300, borderRadius: 0 }} controls volume={1.0} />
                          </View>
                     )}
+               </View>
+          );
+     };
+
+     const LoadingRender = () => {
+          return (
+               <View style={[styles.Container, { gap: 25, paddingHorizontal: 20, paddingBottom: 10 }]}>
+                    <Skeleton height={15} width={100} borderRadius={100} />
+                    <View style={{ gap: 10 }}>
+                         <Skeleton height={15} width={windowWidth - 90} borderRadius={100} />
+                         <Skeleton height={15} width={windowWidth - 90} borderRadius={100} />
+                         <Skeleton height={15} width={windowWidth - 90} borderRadius={100} />
+                         <Skeleton height={15} width={windowWidth - 90} borderRadius={100} />
+                    </View>
+                    <Skeleton height={200} width={windowWidth - 90} borderRadius={10} />
                </View>
           );
      };
@@ -57,9 +75,9 @@ const News = ({ navigation }: { navigation: Navigation }) => {
           <View style={styles.MainContainer}>
                <GradientBG style={styles.gradient} isBackgroundImage>
                     <FlatList
-                         data={newsData || []}
-                         renderItem={renderItem}
-                         keyExtractor={item => item?._id?.toString()}
+                         data={isLoading ? [1, 2, 3] : newsData || []}
+                         renderItem={isLoading ? LoadingRender : renderItem}
+                         keyExtractor={(item, index) => (isLoading ? index.toString() : item?._id?.toString())}
                          showsVerticalScrollIndicator={false}
                          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.PrimaryColor]} />}
                          contentContainerStyle={{ width: '100%', paddingBottom: 20 }}
@@ -84,11 +102,9 @@ const styles = StyleSheet.create({
           justifyContent: 'center',
      },
      Container: {
-          paddingHorizontal: 20,
           paddingTop: 15,
-          gap: 25,
+          gap: 10,
           width: windowWidth - 40,
-          paddingBottom: 20,
           overflow: 'hidden',
           marginTop: 15,
           borderRadius: 15,
@@ -150,8 +166,13 @@ const styles = StyleSheet.create({
      },
      NewsImages: {
           width: '100%',
-          borderRadius: 15,
           height: 250,
+          borderWidth: 1,
+          borderColor: 'white',
+          borderBottomEndRadius: 15,
+          borderBottomLeftRadius: 15,
+          objectFit: 'contain',
+          marginTop: 10,
      },
      IconImage: {
           position: 'absolute',

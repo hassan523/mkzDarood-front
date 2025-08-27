@@ -32,6 +32,13 @@ export const useLoginHandler = () => {
                     deviceId: credentials.deviceId,
                });
 
+               if (res?.data?.user?.role !== 'User') {
+                    return ResToast({
+                         title: 'Unauthorized access.',
+                         type: 'danger',
+                    });
+               }
+
                if (!res.error) {
                     dispatch(authUser({ data: res.data }));
                     ResToast({
