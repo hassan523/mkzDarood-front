@@ -62,7 +62,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                          <View style={styles.HeroContainer}>
                               <View style={{ overflow: 'hidden', borderRadius: 10, borderWidth: 2, borderColor: 'white' }}>
                                    <ImageBackground source={require('../../../assets/MasjidImage.png')} style={styles.heroHeading}>
-                                        <Text style={{ fontSize: 20, color: 'white', textAlign: 'center' }}>
+                                        <Text style={{ fontSize: 20, color: 'white', textAlign: 'center', fontFamily: Font.font600 }}>
                                              اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
                                         </Text>
                                         <Text style={styles.Heading}>Global Darood Count</Text>
@@ -160,7 +160,9 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                </ModalLayout>
                <ModalLayout isOpen={isSubmitted} setIsOpen={setIsSubmitted}>
                     <View style={styles.ModalContainer}>
-                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20, textAlign: 'center', fontSize: 24 }]}>آپ کا درود پاک مرکزی درود میں جمع ہو گیا ہے۔ شکریہ</Text>
+                         <Text style={[styles.Heading, { color: colors.PrimaryColor, marginTop: 20, textAlign: 'center', fontSize: 24 }]}>
+                              آپ کا درود پاک مرکز درود میں جمع ہو گیا ہے۔ شکریہ جزاک اللہ
+                         </Text>
                          <Button name={'OK'} onPress={() => setIsSubmitted(false)} disabled={isLoading} />
                     </View>
                </ModalLayout>

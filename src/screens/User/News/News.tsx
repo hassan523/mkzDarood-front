@@ -1,5 +1,5 @@
 import { FlatList, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
 import { windowWidth } from '../../../utils/dimensions/dimensions';
@@ -11,10 +11,12 @@ import Video from 'react-native-video';
 import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
+import { useIsFocused } from '@react-navigation/native';
 
 const News = ({ navigation }: { navigation: Navigation }) => {
      const [refreshing, setRefresing] = useState(false);
      const [expanded, setExpanded] = useState(false);
+     const [paused, setPaused] = useState(true);
 
      const selector = useSelector((state: RootState) => state?.userData);
      const Token: string | undefined = selector?.data?.accessToken;
@@ -30,10 +32,19 @@ const News = ({ navigation }: { navigation: Navigation }) => {
           }, 2000);
      };
 
+     const isFocused = useIsFocused();
+
+     useEffect(() => {
+          if (!isFocused) {
+               setPaused(true);
+          }
+          return () => setPaused(true);
+     }, [isFocused]);
+
      const renderItem = ({ item }: { item: any }) => {
           return (
                <View style={styles.Container}>
-                    <View style={{ gap: 10, paddingHorizontal: 20 }}>
+                    <View style={{ gap: 10, paddingHorizontal: 20, paddingBottom: 15 }}>
                          <Text style={styles.NewsHeading}>{item.title}</Text>
                          {item.content?.length > 100 ? (
                               <Text style={styles.Desc}>
@@ -46,11 +57,36 @@ const News = ({ navigation }: { navigation: Navigation }) => {
                               <Text style={styles.Desc}>{item.content}</Text>
                          )}
                     </View>
-                    {item?.thumbnail && <Image source={require('../../../assets/news.png')} src={item?.thumbnail} style={styles.NewsImages} />}
-                    {item?.video && (
-                         <View style={{ borderBottomEndRadius: 15, borderBottomLeftRadius: 15, borderTopWidth: 1, borderColor: colors.SecondaryColor, marginTop: 10 }}>
-                              <Video source={{ uri: item?.video }} style={{ width: '100%', height: 300, borderRadius: 0 }} controls volume={1.0} />
+                    {item?.thumbnail && (
+                         <View
+                              style={{
+                                   width: '100%',
+                                   height: 250,
+                                   borderTopWidth: 1,
+                                   borderColor: 'white',
+                                   borderBottomEndRadius: 15,
+                                   borderBottomLeftRadius: 15,
+                                   overflow: 'hidden', // ⬅️ keeps the image inside rounded corners
+                              }}
+                         >
+                              <Image source={{ uri: item.thumbnail }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                          </View>
+                    )}
+                    {item?.video && (
+                         <TouchableOpacity
+                              activeOpacity={0.9}
+                              onPress={() => setPaused(!paused)}
+                              style={{ borderBottomEndRadius: 15, borderBottomLeftRadius: 15, borderTopWidth: 1, borderColor: colors.SecondaryColor }}
+                         >
+                              <Video
+                                   source={{ uri: item?.video }}
+                                   style={{ width: '100%', height: 300, borderRadius: 0 }}
+                                   controls
+                                   volume={1.0}
+                                   paused={paused}
+                                   onPlaybackStateChanged={e => setPaused(e.isPlaying === true ? false : true)}
+                              />
+                         </TouchableOpacity>
                     )}
                </View>
           );
@@ -103,7 +139,6 @@ const styles = StyleSheet.create({
      },
      Container: {
           paddingTop: 15,
-          gap: 10,
           width: windowWidth - 40,
           overflow: 'hidden',
           marginTop: 15,
@@ -167,7 +202,7 @@ const styles = StyleSheet.create({
      NewsImages: {
           width: '100%',
           height: 250,
-          borderWidth: 1,
+          borderTopWidth: 1,
           borderColor: 'white',
           borderBottomEndRadius: 15,
           borderBottomLeftRadius: 15,

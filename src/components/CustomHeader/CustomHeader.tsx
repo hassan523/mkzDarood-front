@@ -11,7 +11,7 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
      const selector = useSelector((state: RootState) => state?.userData);
      const profileImg = (selector?.data?.user as any)?.profilePicture;
      const isLoggin = selector?.isLoggin;
-     console.log(isLoggin);
+
      return (
           <View style={styles.headerContainer}>
                {showDrawerButton ? (

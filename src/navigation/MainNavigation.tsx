@@ -113,6 +113,11 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
           }
      };
 
+     const handleLogin = async () => {
+          drawerNavigation?.closeDrawer();
+          navigationRef.current.navigate('HomeStackScreen', { screen: 'Login' });
+     };
+
      return (
           <NavigationContainer ref={navigationRef}>
                <ModalLayout isOpen={showLogoutModal} setIsOpen={setShowLogoutModal}>
@@ -153,7 +158,7 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                                         </View>
                                    </TouchableOpacity>
                               ) : (
-                                   <TouchableOpacity style={styles.logoutButton} onPress={() => navigationRef.current.navigate('Login')}>
+                                   <TouchableOpacity style={styles.logoutButton} onPress={handleLogin}>
                                         <View style={styles.logoutButtonContent}>
                                              <Entypo name="login" color={colors.PrimaryColor} size={24} />
                                              <Text style={styles.logoutButtonText}>Login</Text>

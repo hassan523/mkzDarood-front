@@ -1,5 +1,5 @@
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import colors from '../../../utils/colors/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -21,6 +21,7 @@ import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
+import { useIsFocused } from '@react-navigation/native';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -35,7 +36,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      const [updateData, setUpdateData] = useState<DataTypes>({ profilePicture: '', username: '', email: '', phone: '', country: '', city: '' });
      const [isEdit, setIsEdit] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
-     const [isFocused, setIsFocused] = useState(false);
      const [changePassword, setChangePassword] = useState({
           password: '',
           newPass: '',
@@ -108,6 +108,19 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
 
      const isKeyboardVisible = useKeyboardStatus();
 
+     const isFocused = useIsFocused();
+
+     useEffect(() => {
+          if (!isFocused) {
+               setIsEdit(false);
+               setIsOpen(false);
+          }
+          return () => {
+               setIsEdit(false);
+               setIsOpen(false);
+          };
+     }, [isFocused]);
+
      return (
           <View style={{ flex: 1 }}>
                <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ height: windowHeight, justifyContent: 'center' }}>
@@ -121,7 +134,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               <View style={styles.ImageContainer}>
                                    <View style={styles.ImageWrapper}>
                                         {isLoadingProfile ? (
-                                             <ActivityIndicator size="large" color={colors.SecondaryColor} style={{ alignItems: 'center', justifyContent: 'center', top: 40 }} />
+                                             <Skeleton width={120} height={120} borderRadius={10000} />
                                         ) : isEdit && updateData.profilePicture ? (
                                              <Image
                                                   source={{
@@ -164,6 +177,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: isEdit ? 'flex-start' : 'center',
                                                        },
                                                   ]}
                                              >
@@ -175,8 +189,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             isIcon={<FontAwesome5 name="user-alt" size={20} color={colors.SecondaryColor} />}
                                                             value={updateData.username}
                                                             onChange={value => handleData({ name: 'username', value })}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => setIsFocused(false)}
                                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
                                                             customClass={{
                                                                  backgroundColor: colors.lightGreen,
@@ -204,6 +216,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: isEdit ? 'flex-start' : 'center',
                                                        },
                                                   ]}
                                              >
@@ -216,8 +229,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             isIcon={<Fontisto name="world-o" size={20} color={colors.SecondaryColor} />}
                                                             value={updateData.country}
                                                             onChange={value => handleData({ name: 'country', value })}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => setIsFocused(false)}
                                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
                                                             customClass={{
                                                                  backgroundColor: colors.lightGreen,
@@ -245,6 +256,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: isEdit ? 'flex-start' : 'center',
                                                        },
                                                   ]}
                                              >
@@ -257,8 +269,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             placeHolderTextColor="white"
                                                             value={updateData.city}
                                                             onChange={value => handleData({ name: 'city', value })}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => setIsFocused(false)}
                                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
                                                             customClass={{
                                                                  backgroundColor: colors.lightGreen,
@@ -286,6 +296,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderTopWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: isEdit ? 'flex-start' : 'center',
                                                        },
                                                   ]}
                                              >
@@ -297,8 +308,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             isIcon
                                                             value={updateData.email}
                                                             onChange={value => handleData({ name: 'email', value })}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => setIsFocused(false)}
                                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
                                                             customClass={{
                                                                  backgroundColor: colors.lightGreen,
@@ -328,6 +337,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             borderBottomWidth: isEdit ? 0 : 1,
                                                             borderColor: 'lightgray',
                                                             paddingBlock: isEdit ? 5 : 15,
+                                                            alignItems: isEdit ? 'flex-start' : 'center',
                                                        },
                                                   ]}
                                              >
@@ -339,8 +349,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             isIcon={<FontAwesome name="phone" size={20} color={colors.SecondaryColor} />}
                                                             value={updateData.phone}
                                                             onChange={value => handleData({ name: 'phone', value })}
-                                                            onFocus={() => setIsFocused(true)}
-                                                            onBlur={() => setIsFocused(false)}
                                                             customDivClass={{ backgroundColor: colors.lightGreen, borderColor: colors.SecondaryColor, borderWidth: 1 }}
                                                             customClass={{
                                                                  backgroundColor: colors.lightGreen,

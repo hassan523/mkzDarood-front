@@ -26,7 +26,7 @@ const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      const { handleUpdate, isLoading } = useUpdateCounterHandler();
 
      const handleUpdateCounter = () => {
-          handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq });
+          handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq, setIsSubmitted: () => {} });
      };
      return (
           <>
