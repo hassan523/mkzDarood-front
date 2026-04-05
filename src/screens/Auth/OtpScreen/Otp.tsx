@@ -6,13 +6,10 @@ import colors from '../../../utils/colors/colors';
 import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import Fontisto from 'react-native-vector-icons/Fontisto';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { useDispatch } from 'react-redux';
-import { authUser } from '../../../redux/Features/authState';
 import { useForgotPasswordHandler, useVerifyOTPHandler } from '../../../model/Auth/AuthModel';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
+import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 
 const Otp = ({
      route,
@@ -23,6 +20,7 @@ const Otp = ({
 }) => {
      const { type, email, data } = route.params;
      const { username, phone, password, deviceId, email: signupEmail } = data || {};
+     const [visible, setVisible] = useState(false);
 
      const [isOpen, setIsOpen] = useState(false);
      const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '']);
@@ -60,7 +58,7 @@ const Otp = ({
           }
      };
 
-     const { handleVerifyOTP, isLoading } = useVerifyOTPHandler();
+     const { handleVerifyOTP, isLoading, status } = useVerifyOTPHandler();
      const { handleForgotPassword, isLoading: resendLoading, isError } = useForgotPasswordHandler();
 
      const handleForgot = async () => {
@@ -76,6 +74,11 @@ const Otp = ({
           });
           handleOpenSheet();
      };
+
+     useEffect(() => {
+          if (type === 'signup' && (isLoading || (status as string) == 'pending')) setVisible(true);
+     }, [isLoading]);
+
      const isKeyboardVisible = useKeyboardStatus();
 
      const handleResendOtp = async () => {
@@ -86,7 +89,7 @@ const Otp = ({
      };
 
      useEffect(() => {
-          let timer: NodeJS.Timeout;
+          let timer: ReturnType<typeof setTimeout>;
           if (counter > 0) {
                timer = setTimeout(() => setCounter(counter - 1), 1000);
           }
@@ -95,67 +98,17 @@ const Otp = ({
 
      return (
           <>
-               <AuthLayout heading="Verification" isBack onBack={() => navigation.goBack()}>
-                    <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
-                         <View style={styles.IconContainer}>
-                              <View style={styles.IconSecContainer}>
-                                   <Fontisto name="locked" size={40} color={colors.SecondaryColor} />
+               {!visible && (
+                    <AuthLayout heading="Verification" isBack onBack={() => navigation.goBack()}>
+                         <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
+                              <View style={styles.IconContainer}>
+                                   <View style={styles.IconSecContainer}>
+                                        <Fontisto name="locked" size={40} color={colors.SecondaryColor} />
+                                   </View>
                               </View>
-                         </View>
-                         <View style={styles.HeadingContainer}>
-                              <Text style={styles.Heading}>Verification Code</Text>
-                              <View style={styles.InnerText}>
-                                   <Text
-                                        style={{
-                                             fontSize: 16,
-                                             fontFamily: Font.font600,
-                                             color: colors.SecTextColor,
-                                        }}
-                                   >
-                                        We have sent the code to
-                                   </Text>
-                                   <Text
-                                        style={{
-                                             fontSize: 16,
-                                             fontFamily: Font.font600,
-                                             color: colors.SecTextColor,
-                                        }}
-                                   >
-                                        {signupEmail || email || ''}
-                                   </Text>
-                              </View>
-                         </View>
-                         <View style={styles.codeContainer}>
-                              {[0, 1, 2, 3, 4, 5].map(index => (
-                                   <TextInput
-                                        ref={ref => {
-                                             if (ref && inputs.current) {
-                                                  inputs.current[index] = ref;
-                                             }
-                                        }}
-                                        key={index}
-                                        style={styles.codeInput}
-                                        value={verificationCode[index]}
-                                        onChangeText={text => handleChangeCode(text, index)}
-                                        onKeyPress={e => handleKeyPress(e, index)}
-                                        keyboardType="number-pad"
-                                        maxLength={1}
-                                        placeholder="-"
-                                        placeholderTextColor="black"
-                                        returnKeyType={index === 5 ? 'done' : 'next'}
-                                        onSubmitEditing={() => {
-                                             if (index < 4) {
-                                                  inputs.current[index + 1]?.focus();
-                                             }
-                                        }}
-                                        editable={!isOpen || isLoading || resendLoading}
-                                   />
-                              ))}
-                         </View>
-                         <View style={styles.BtnContainer}>
-                              <Button name="Submit" onPress={handleForgot} isLoading={isLoading} disabled={resendLoading} />
-                              <View style={styles.ResendContainer}>
-                                   {counter > 0 ? (
+                              <View style={styles.HeadingContainer}>
+                                   <Text style={styles.Heading}>Verification Code</Text>
+                                   <View style={styles.InnerText}>
                                         <Text
                                              style={{
                                                   fontSize: 16,
@@ -163,10 +116,50 @@ const Otp = ({
                                                   color: colors.SecTextColor,
                                              }}
                                         >
-                                             Resend code in {counter}s
+                                             We have sent the code to
                                         </Text>
-                                   ) : (
-                                        <>
+                                        <Text
+                                             style={{
+                                                  fontSize: 16,
+                                                  fontFamily: Font.font600,
+                                                  color: colors.SecTextColor,
+                                             }}
+                                        >
+                                             {signupEmail || email || ''}
+                                        </Text>
+                                   </View>
+                              </View>
+                              <View style={styles.codeContainer}>
+                                   {[0, 1, 2, 3, 4, 5].map(index => (
+                                        <TextInput
+                                             ref={ref => {
+                                                  if (ref && inputs.current) {
+                                                       inputs.current[index] = ref;
+                                                  }
+                                             }}
+                                             key={index}
+                                             style={styles.codeInput}
+                                             value={verificationCode[index]}
+                                             onChangeText={text => handleChangeCode(text, index)}
+                                             onKeyPress={e => handleKeyPress(e, index)}
+                                             keyboardType="number-pad"
+                                             maxLength={1}
+                                             placeholder="-"
+                                             placeholderTextColor="black"
+                                             returnKeyType={index === 5 ? 'done' : 'next'}
+                                             onSubmitEditing={() => {
+                                                  if (index < 4) {
+                                                       inputs.current[index + 1]?.focus();
+                                                  }
+                                             }}
+                                             editable={!isOpen || isLoading || resendLoading}
+                                        />
+                                   ))}
+                              </View>
+                              <View style={styles.BtnContainer}>
+                                   <Button name="Submit" onPress={handleForgot} isLoading={isLoading} disabled={resendLoading} />
+                                   <View style={styles.ResendContainer}>
+                                        {counter > 0 ? (
                                              <Text
                                                   style={{
                                                        fontSize: 16,
@@ -174,60 +167,51 @@ const Otp = ({
                                                        color: colors.SecTextColor,
                                                   }}
                                              >
-                                                  Didn’t receive the code?
+                                                  Resend code in {counter}s
                                              </Text>
-                                             <TouchableOpacity onPress={handleResendOtp} disabled={resendLoading}>
+                                        ) : (
+                                             <>
                                                   <Text
                                                        style={{
                                                             fontSize: 16,
-                                                            fontFamily: Font.font700,
-                                                            color: colors.PrimaryColor,
+                                                            fontFamily: Font.font600,
+                                                            color: colors.SecTextColor,
                                                        }}
                                                   >
-                                                       {resendLoading ? 'Loading...' : 'Resend'}
+                                                       Didn’t receive the code?
                                                   </Text>
-                                             </TouchableOpacity>
-                                        </>
-                                   )}
+                                                  <TouchableOpacity onPress={handleResendOtp} disabled={resendLoading}>
+                                                       <Text
+                                                            style={{
+                                                                 fontSize: 16,
+                                                                 fontFamily: Font.font700,
+                                                                 color: colors.PrimaryColor,
+                                                            }}
+                                                       >
+                                                            {resendLoading ? 'Loading...' : 'Resend'}
+                                                       </Text>
+                                                  </TouchableOpacity>
+                                             </>
+                                        )}
+                                   </View>
                               </View>
-                         </View>
-                    </ScrollView>
-               </AuthLayout>
-               {/* <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet} snapPoints={type == 'signup' ? ['50%', '50%'] : ['40%', '40%']}>
-                    <View style={styles.CheckContainer}>
-                         <FontAwesome name="check" color={colors.SecondaryColor} size={50} />
-                    </View>
-                    <View
-                         style={{
-                              width: '100%',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              gap: 15,
-                              paddingBottom: 20,
-                         }}
-                    >
-                         <Text style={styles.Heading}>{type == 'signup' ? 'Register Successfully' : 'Verfication Complete'}</Text>
-                         {type == 'signup' && (
-                              <Text
-                                   style={{
-                                        fontSize: 16,
-                                        fontFamily: Font.font600,
-                                        color: colors.SecTextColor,
-                                        textAlign: 'center',
-                                        width: '85%',
-                                   }}
-                              >
-                                   Congratulations! Your account created successfully. Now you can get amazing experience with our services.
-                              </Text>
-                         )}
-                    </View>
-                    <Button
-                         name={type == 'signup' ? 'Get Started' : 'Continue'}
-                         onPress={() => {
-                              type == 'signup' ? handleLogin() : handleForgot();
-                         }}
+                         </ScrollView>
+                    </AuthLayout>
+               )}
+               {status != 'uninitialized' && visible && type === 'signup' && (
+                    <LoadingScreen
+                         status={status}
+                         onHide={() => setVisible(false)}
+                         image={require('../../../assets/Allah.png')} // apni image yahan
+                         loadingTitle="Verifing Account Details"
+                         successTitle="All done!"
+                         successSubtitle="Account Created Successfully"
+                         imageSize={40}
+                         errorTitle="Something went wrong"
+                         errorSubtitle="Check your otp and try again"
+                         hideDelay={1000}
                     />
-               </BtSheets> */}
+               )}
           </>
      );
 };

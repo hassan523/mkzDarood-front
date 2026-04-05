@@ -6,14 +6,22 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
+import { useProfileData } from '../../model/Profile/ProfileModel';
+import FastImage from 'react-native-fast-image';
+import Skeleton from '../SkeletonComp/Skeleton';
 
-const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButton?: boolean; navigation: Navigation }) => {
+const CustomHeader = ({ showDrawerButton = true, navigation, style }: { showDrawerButton?: boolean; navigation: Navigation; style?: any }) => {
      const selector = useSelector((state: RootState) => state?.userData);
-     const profileImg = (selector?.data?.user as any)?.profilePicture;
+     const id: string | undefined = selector?.data?.user?._id;
+     const Token: string | undefined = selector?.data?.accessToken;
+
+     const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
+     const userData = getProfile?.data?.profile;
+     const isLoadingProfile = getProfile?.isLoading;
      const isLoggin = selector?.isLoggin;
 
      return (
-          <View style={styles.headerContainer}>
+          <View style={[styles.headerContainer, style]}>
                {showDrawerButton ? (
                     <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.menuButton}>
                          <Ionicons name="menu" size={30} color={colors.SecondaryColor} />
@@ -22,11 +30,22 @@ const CustomHeader = ({ showDrawerButton = true, navigation }: { showDrawerButto
                     <View style={styles.menuButton} />
                )}
 
-               <Image source={require('../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
+               <Image source={require('../../assets/logo2.png')} style={{ width: 60 }} resizeMode="contain" />
                {isLoggin ? (
-                    <TouchableOpacity onPress={() => navigation.navigate('ProfileStackScreen')}>
-                         <Image src={profileImg} style={{ width: 45, height: 45, borderRadius: 1000 }} />
-                    </TouchableOpacity>
+                    isLoadingProfile ? (
+                         <Skeleton width={45} height={45} borderRadius={10000} />
+                    ) : (
+                         <TouchableOpacity onPress={() => navigation.navigate('ProfileStackScreen')}>
+                              <FastImage
+                                   source={{
+                                        uri: userData?.profilePicture,
+                                        priority: FastImage.priority.high, // high priority load
+                                        cache: FastImage.cacheControl.immutable, // cache karo
+                                   }}
+                                   style={{ width: 45, height: 45, borderRadius: 1000 }}
+                              />
+                         </TouchableOpacity>
+                    )
                ) : (
                     <View style={styles.rightHeaderPlaceholder} />
                )}
@@ -45,7 +64,7 @@ const styles = StyleSheet.create({
           height: 60,
           paddingHorizontal: 15,
           position: 'absolute',
-          top: 0,
+          top: 5,
           left: 0,
           right: 0,
           zIndex: 10000,

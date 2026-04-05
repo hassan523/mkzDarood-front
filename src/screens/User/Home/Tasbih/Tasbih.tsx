@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../../../../utils/colors/colors';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -14,51 +14,82 @@ import { useSelector } from 'react-redux';
 import GradientBG from '../../../../components/GradientBG/GradientBG';
 import { windowHeight } from '../../../../utils/dimensions/dimensions';
 import RadiusButton from '../../../../components/RadiusButton/RadiusButton';
+import LoadingScreen from '../../../../components/LoadingScreen/LoadingScreen';
 
 const Tasbih = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
      const Token: string | undefined = selector?.data?.accessToken;
      const isLogin: boolean = selector?.isLoggin;
 
+     const [visible, setVisible] = useState(false);
      const [seq, setSeq] = useState<number | string>(0);
      const [isOpen, setIsOpen] = useState(false);
 
-     const { handleUpdate, isLoading } = useUpdateCounterHandler();
+     const { handleUpdate, isLoading, status } = useUpdateCounterHandler();
 
      const handleUpdateCounter = () => {
           handleUpdate({ seq: seq, Token: Token, setIsOpen: setIsOpen, setSeq: setSeq, setIsSubmitted: () => {} });
      };
+
+     useEffect(() => {
+          if (status === 'pending') setVisible(true);
+     }, [status]);
+
      return (
           <>
-               <View style={styles.Container}>
-                    <GradientBG style={styles.gradient} isBackgroundImage>
-                         <View style={{ gap: 45 }}>
-                              <View style={styles.HeaderContainer}>
-                                   <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
-                                        <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
-                                   </TouchableOpacity>
-                                   <Image source={require('../../../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
-                              </View>
-                              <View style={styles.CounterContainer}>
-                                   <View style={styles.Counter}>
-                                        <Text style={[styles.CounterText, { fontSize: typeof seq == 'number' && seq <= 999999 ? 50 : 40 }]}>{seq}</Text>
-                                   </View>
-                                   <View style={styles.BtnContainer}>
-                                        <TouchableOpacity
-                                             style={[styles.Btn, { backgroundColor: colors.SecondaryColor }]}
-                                             onPress={() => seq != 0 && setSeq(prev => (typeof prev == 'number' ? prev - 1 : ''))}
-                                        >
-                                             <AntDesign name="minus" size={50} color={colors.PrimaryColor} />
+               {!visible && (
+                    <View style={styles.Container}>
+                         <GradientBG style={styles.gradient} isBackgroundImage>
+                              <View style={{ gap: 45 }}>
+                                   <View style={styles.HeaderContainer}>
+                                        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
+                                             <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setSeq(prev => (typeof prev == 'number' ? prev + 1 : ''))}>
-                                             <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
-                                        </TouchableOpacity>
+                                        <Image source={require('../../../../assets/logo2.png')} style={{ width: 60 }} resizeMode="contain" />
                                    </View>
-                                   {seq != 0 && <RadiusButton name="Submit Darood" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
+                                   <View style={styles.CounterContainer}>
+                                        <View style={styles.Counter}>
+                                             <Text style={[styles.CounterText, { fontSize: typeof seq == 'number' && seq <= 999999 ? 50 : 40 }]}>{seq}</Text>
+                                        </View>
+                                        <View style={styles.BtnContainer}>
+                                             <TouchableOpacity
+                                                  style={[styles.Btn, { backgroundColor: colors.SecondaryColor }]}
+                                                  onPress={() => seq != 0 && setSeq(prev => (typeof prev == 'number' ? prev - 1 : ''))}
+                                             >
+                                                  <AntDesign name="minus" size={50} color={colors.PrimaryColor} />
+                                             </TouchableOpacity>
+                                             <TouchableOpacity style={[styles.Btn, { backgroundColor: colors.lightGreen }]} onPress={() => setSeq(prev => (typeof prev == 'number' ? prev + 1 : ''))}>
+                                                  <AntDesign name="plus" size={50} color={colors.SecondaryColor} />
+                                             </TouchableOpacity>
+                                        </View>
+                                        {seq != 0 && <RadiusButton name="Submit Darood" onPress={() => (!isLogin ? navigation.navigate('Login') : setIsOpen(true))} />}
+                                   </View>
                               </View>
-                         </View>
-                    </GradientBG>
-               </View>
+                         </GradientBG>
+                    </View>
+               )}
+
+               {visible && (
+                    <LoadingScreen
+                         status={status}
+                         onHide={() => {
+                              setVisible(false);
+                              console.log('object');
+                              navigation.navigate('Home');
+                         }}
+                         image={require('../../../../assets/Allah.png')}
+                         loadingTitle="Adding your darood..."
+                         successTitle="Your Darood has been successfully added."
+                         successSubtitle=".آپ کا درود پاک جمع ہو گیا ہے"
+                         imageSize={40}
+                         errorTitle="Something went wrong"
+                         errorSubtitle="Please try again later"
+                         hideDelay={3000}
+                         backgroundColor={colors.SecondaryColor}
+                         style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}
+                    />
+               )}
+
                <ModalLayout isOpen={isOpen} setIsOpen={setIsOpen}>
                     <View style={styles.ModalContainer}>
                          <TouchableOpacity style={styles.Cross} onPress={() => setIsOpen(false)} disabled={isLoading}>
@@ -99,6 +130,7 @@ const styles = StyleSheet.create({
           width: '100%',
           position: 'relative',
           marginTop: 20,
+          height: 40,
      },
      MenuButton: {
           position: 'absolute',

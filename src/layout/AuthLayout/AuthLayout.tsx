@@ -37,7 +37,10 @@ const styles = StyleSheet.create({
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
-          top: 20,
+          top: 0,
+          paddingBlock: 20,
+          zIndex: 100,
+          backgroundColor: 'white',
      },
      Heading: {
           fontFamily: Font.font600,

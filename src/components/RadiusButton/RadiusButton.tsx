@@ -32,9 +32,9 @@ const RadiusButton: React.FC<ButtonProps> = props => {
                {iconRight ? iconRight && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
 
                {isLoading ? (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font500 }}>{loadingName ? loadingName : 'Loading...'}</Text>
+                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 17, fontFamily: Font.font500 }}>{loadingName ? loadingName : 'Loading...'}</Text>
                ) : (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
+                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 17, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
                )}
                {iconLeft ? iconLeft && icon ? icon : <Entypo name="chevron-left" color={colors.SecondaryColor} size={30} /> : null}
           </TouchableOpacity>
@@ -45,9 +45,9 @@ const RadiusButton: React.FC<ButtonProps> = props => {
                disabled={disabled}
           >
                {isLoading ? (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{loadingName ? loadingName : 'Loading...'}</Text>
+                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 17, fontFamily: Font.font600 }}>{loadingName ? loadingName : 'Loading...'}</Text>
                ) : (
-                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 18, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
+                    <Text style={textStyle ? textStyle : { color: colors.SecondaryColor, fontSize: 17, fontFamily: Font.font600 }}>{name || 'Button'}</Text>
                )}
           </TouchableOpacity>
      );

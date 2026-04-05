@@ -36,7 +36,7 @@ const AsmaulHusna = ({ navigation }: { navigation: Navigation }) => {
                                              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.MenuButton}>
                                                   <FontAwesome6 name="arrow-left-long" size={20} color={colors.SecondaryColor} />
                                              </TouchableOpacity>
-                                             <Image source={require('../../../../assets/logo2.png')} style={{ width: 100 }} resizeMode="contain" />
+                                             <Image source={require('../../../../assets/logo2.png')} style={{ width: 60 }} resizeMode="contain" />
                                         </View>
                                         <Text style={styles.Title}>Asma ul Husna</Text>
                                    </>
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
           width: '100%',
           position: 'relative',
           marginVertical: 20,
+          height: 40,
      },
      MenuButton: {
           position: 'absolute',

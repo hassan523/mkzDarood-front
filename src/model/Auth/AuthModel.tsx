@@ -7,7 +7,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export const useLoginHandler = () => {
      const dispatch = useDispatch();
-     const [login, { isLoading }] = useLoginMutation();
+     const [login, { isLoading, status }] = useLoginMutation();
 
      type RootStackParamList = {
           Home: undefined;
@@ -31,7 +31,6 @@ export const useLoginHandler = () => {
                     password,
                     deviceId: credentials.deviceId,
                });
-
                if (res?.data?.user?.role !== 'User') {
                     return ResToast({
                          title: 'Unauthorized access.',
@@ -40,12 +39,14 @@ export const useLoginHandler = () => {
                }
 
                if (!res.error) {
-                    dispatch(authUser({ data: res.data }));
-                    ResToast({
-                         title: 'Login successful!',
-                         type: 'success',
-                    });
-                    navigation.navigate('Home');
+                    setTimeout(() => {
+                         dispatch(authUser({ data: res.data }));
+                         ResToast({
+                              title: 'Login successful!',
+                              type: 'success',
+                         });
+                         navigation.navigate('Home');
+                    }, 1000);
                } else {
                     ResToast({
                          title: (res.error as any).data.message || 'Login failed.',
@@ -58,12 +59,12 @@ export const useLoginHandler = () => {
           }
      };
 
-     return { handleLogin, isLoading };
+     return { handleLogin, isLoading, status };
 };
 
 export const useRegisterHandler = () => {
      const registerDispatch = useDispatch();
-     const [register, { isLoading }] = useSignupMutation();
+     const [register, { isLoading, status }] = useSignupMutation();
 
      type RootStackParamList = {
           Otp: { type: string; data: any };
@@ -97,24 +98,26 @@ export const useRegisterHandler = () => {
                     deviceId,
                     role: 'User',
                });
-               console.log(res);
+
                if (!res.error) {
                     // registerDispatch(authUser({ data: res?.data || null }));
-                    ResToast({
-                         title: 'Otp Sent successfully',
-                         type: 'success',
-                    });
-                    navigation.navigate('Otp', {
-                         type: 'signup',
-                         data: {
-                              username,
-                              email,
-                              phone,
-                              password,
-                              deviceId,
-                              role: 'User',
-                         },
-                    });
+                    setTimeout(() => {
+                         ResToast({
+                              title: 'Otp Sent successfully',
+                              type: 'success',
+                         });
+                         navigation.navigate('Otp', {
+                              type: 'signup',
+                              data: {
+                                   username,
+                                   email,
+                                   phone,
+                                   password,
+                                   deviceId,
+                                   role: 'User',
+                              },
+                         });
+                    }, 1000);
                } else {
                     ResToast({
                          res: res,
@@ -127,7 +130,7 @@ export const useRegisterHandler = () => {
           }
      };
 
-     return { handleRegister, isLoading };
+     return { handleRegister, isLoading, status };
 };
 
 export const useForgotPasswordHandler = () => {
@@ -173,7 +176,7 @@ export const useForgotPasswordHandler = () => {
 
 export const useVerifyOTPHandler = () => {
      const dispatch = useDispatch();
-     const [verifyOTP, { isLoading }] = useVerifyOtpMutation();
+     const [verifyOTP, { isLoading, status }] = useVerifyOtpMutation();
 
      type RootStackParamList = {
           NewPassword: { identifier: string; otp: string };
@@ -217,8 +220,10 @@ export const useVerifyOTPHandler = () => {
                          type: 'success',
                     });
                     if (type === 'signup') {
-                         navigation.navigate('Home');
-                         dispatch(authUser({ data: res.data as any }));
+                         setTimeout(() => {
+                              navigation.navigate('Home');
+                              dispatch(authUser({ data: res.data as any }));
+                         }, 1000);
                     } else {
                          navigation.navigate('NewPassword', { identifier, otp });
                     }
@@ -234,11 +239,11 @@ export const useVerifyOTPHandler = () => {
           }
      };
 
-     return { handleVerifyOTP, isLoading };
+     return { handleVerifyOTP, isLoading, status };
 };
 
 export const useNewPasswordHandler = () => {
-     const [newPasswordAPI, { isLoading }] = useNewpasswordMutation();
+     const [newPasswordAPI, { isLoading, status }] = useNewpasswordMutation();
 
      type RootStackParamList = {
           Login: undefined;
@@ -264,11 +269,13 @@ export const useNewPasswordHandler = () => {
 
                const res = await newPasswordAPI({ identifier: email, otp, newPassword });
                if (!res.error) {
-                    ResToast({
-                         title: 'Password changed successfully',
-                         type: 'success',
-                    });
-                    navigation.navigate('Login');
+                    setTimeout(() => {
+                         ResToast({
+                              title: 'Password changed successfully',
+                              type: 'success',
+                         });
+                         navigation.navigate('Login');
+                    }, 1000);
                } else {
                     ResToast({
                          title: (res.error as any).data.message || 'Failed to change password.',
@@ -281,5 +288,5 @@ export const useNewPasswordHandler = () => {
           }
      };
 
-     return { handleNewPassword, isLoading };
+     return { handleNewPassword, isLoading, status };
 };

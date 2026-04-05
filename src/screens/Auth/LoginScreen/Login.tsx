@@ -1,5 +1,5 @@
 import { Image, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import AuthLayout from '../../../layout/AuthLayout/AuthLayout';
 import colors from '../../../utils/colors/colors';
@@ -13,10 +13,10 @@ import { useDispatch } from 'react-redux';
 import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
-     const dispatch = useDispatch();
-
+     const [visible, setVisible] = useState(false);
      const [data, setData] = useState<{
           email: string;
           password: string;
@@ -48,17 +48,25 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
           }
      };
 
-     const { handleLogin, isLoading } = useLoginHandler();
+     const { handleLogin, isLoading, status } = useLoginHandler();
      const { handleForgotPassword, isLoading: forgotLoading } = useForgotPasswordHandler();
 
-     const handleSubmit = () => {
-          handleLogin({
+     const handleSubmit = async () => {
+          await handleLogin({
                deviceId: 'app-device-id',
                identifier: email,
                password,
                navigation: navigation,
           });
      };
+
+     useEffect(() => {
+          if (isLoading || (status as string) == 'pending') setVisible(true);
+     }, [isLoading]);
+
+     // setTimeout(() => {
+     //      if ((status as string) == 'fulfilled' || (status as string) == 'rejected') setVisible(false);
+     // }, 1000);
 
      const handleForgot = () => {
           handleForgotPassword({ email: forgotEmail, type: 'otp' });
@@ -68,47 +76,64 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
 
      return (
           <>
-               <AuthLayout isBack onBack={() => navigation.goBack()}>
-                    <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
-                         <View style={styles.ContainerWrapper}>
-                              <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
-                              <View style={styles.FieldContainer}>
-                                   <Text style={styles.Label}>Email or Phone Number</Text>
-                                   <Field
-                                        placeHolder="Enter Email or Phone Number"
-                                        type="email"
-                                        isIcon
-                                        value={email}
-                                        onChange={value => handleData({ name: 'email', value })}
-                                        disabled={isOpen || isLoading}
-                                   />
+               {!visible && (
+                    <AuthLayout isBack onBack={() => navigation.goBack()}>
+                         <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 200 }]} showsVerticalScrollIndicator={false}>
+                              <View style={styles.ContainerWrapper}>
+                                   <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
+                                   <View style={styles.FieldContainer}>
+                                        <Text style={styles.Label}>Email or Phone Number</Text>
+                                        <Field
+                                             placeHolder="Enter Email or Phone Number"
+                                             type="email"
+                                             isIcon
+                                             value={email}
+                                             onChange={value => handleData({ name: 'email', value })}
+                                             disabled={isOpen || isLoading}
+                                        />
+                                   </View>
+                                   <View style={styles.FieldContainer}>
+                                        <Text style={styles.Label}>Password</Text>
+                                        <Field
+                                             placeHolder="Enter Password"
+                                             type="password"
+                                             isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
+                                             value={password}
+                                             onChange={value => handleData({ name: 'password', value })}
+                                             disabled={isOpen || isLoading}
+                                        />
+                                   </View>
+                                   <View style={styles.Forget}>
+                                        <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen || isLoading}>
+                                             <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                                        </TouchableOpacity>
+                                   </View>
+                                   <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
                               </View>
-                              <View style={styles.FieldContainer}>
-                                   <Text style={styles.Label}>Password</Text>
-                                   <Field
-                                        placeHolder="Enter Password"
-                                        type="password"
-                                        isIcon={<Fontisto name="locked" size={20} color={colors.PrimaryColor} />}
-                                        value={password}
-                                        onChange={value => handleData({ name: 'password', value })}
-                                        disabled={isOpen || isLoading}
-                                   />
-                              </View>
-                              <View style={styles.Forget}>
-                                   <TouchableOpacity onPress={handleOpenSheet} disabled={isOpen || isLoading}>
-                                        <Text style={[styles.Label, { color: colors.PrimaryColor }]}>Forget Password?</Text>
+                              <View style={styles.BottomLine}>
+                                   <Text style={styles.BottomText}>Don't have account?</Text>
+                                   <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isOpen || isLoading}>
+                                        <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
                                    </TouchableOpacity>
                               </View>
-                              <Button name="Sign in" disabled={isOpen} onPress={handleSubmit} isLoading={isLoading} />
-                         </View>
-                         <View style={styles.BottomLine}>
-                              <Text style={styles.BottomText}>Don't have account?</Text>
-                              <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isOpen || isLoading}>
-                                   <Text style={[styles.BottomText, { color: colors.PrimaryColor }]}>Sign Up</Text>
-                              </TouchableOpacity>
-                         </View>
-                    </ScrollView>
-               </AuthLayout>
+                         </ScrollView>
+                    </AuthLayout>
+               )}
+
+               {status != 'uninitialized' && visible && (
+                    <LoadingScreen
+                         status={status}
+                         onHide={() => setVisible(false)}
+                         image={require('../../../assets/Allah.png')} // apni image yahan
+                         loadingTitle="Authenticating..."
+                         successTitle="All done!"
+                         successSubtitle="Welcome back to Mkz Darood"
+                         imageSize={40}
+                         errorTitle="Login failed"
+                         errorSubtitle="Check your credentials and try again"
+                         hideDelay={1000}
+                    />
+               )}
 
                <BtSheets ref={bottomSheetRef} onClose={handleCloseSheet}>
                     <Text style={styles.ForgotHeading}>Forgot Password</Text>
@@ -181,5 +206,8 @@ const styles = StyleSheet.create({
      },
      Logo: {
           marginBottom: 40,
+          width: '100%',
+          height: 170,
+          objectFit: 'contain',
      },
 });

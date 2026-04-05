@@ -3,9 +3,9 @@ import ResToast from '../../components/ResToast/ResToast';
 
 export const useGetCounterHandler = () => {
      try {
-          const { data, isLoading, refetch, isError, error } = useGetCounterQuery();
+          const { data, isLoading, refetch, isError, error, isFetching } = useGetCounterQuery();
 
-          return { data, isLoading, refetch, isError, error };
+          return { data, isLoading, refetch, isError, error, isFetching };
      } catch (error) {
           ResToast({
                title: 'Something Went Wrong!',
@@ -15,7 +15,7 @@ export const useGetCounterHandler = () => {
 };
 
 export const useUpdateCounterHandler = () => {
-     const [updateCounterApi, { isLoading, isSuccess }] = useUpdateCounterMutation();
+     const [updateCounterApi, { isLoading, isSuccess, status }] = useUpdateCounterMutation();
 
      const handleUpdate = async ({
           seq,
@@ -50,6 +50,7 @@ export const useUpdateCounterHandler = () => {
                     });
                     return;
                }
+
                ResToast({
                     title: 'Darood submitted successfully',
                     type: 'success',
@@ -68,5 +69,5 @@ export const useUpdateCounterHandler = () => {
           }
      };
 
-     return { handleUpdate, isLoading, isSuccess };
+     return { handleUpdate, isLoading, isSuccess, status };
 };

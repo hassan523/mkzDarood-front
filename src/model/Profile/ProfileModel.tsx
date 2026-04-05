@@ -7,7 +7,7 @@ import { useGetProfileQuery, useUpdateProfileMutation } from '../../redux/Profil
 export const useUpdateProfile = () => {
      const selector = useSelector((state: RootState) => state?.userData);
      const dispatch = useDispatch();
-     const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+     const [updateProfile, { isLoading, status }] = useUpdateProfileMutation();
 
      const handleUpdateProfile = async ({
           id,
@@ -135,7 +135,7 @@ export const useUpdateProfile = () => {
           }
      };
 
-     return { handleUpdateProfile, handleChangePassword, isLoading };
+     return { handleUpdateProfile, handleChangePassword, isLoading, status };
 };
 
 export const useProfileData = ({ Token, id }: { Token: string; id: string }) => {
