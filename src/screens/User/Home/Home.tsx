@@ -17,6 +17,7 @@ import RadiusButton from '../../../components/RadiusButton/RadiusButton';
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
+import NoInternetModal from '../../../components/NoInternetModal/NoInternetModal';
 
 // ─── Count-Up Hook ────────────────────────────────────────────────────────────
 const useCountUp = (target: number, duration: number = 2000) => {
@@ -134,7 +135,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
                                         {/* ── Counter ── */}
                                         {GetLoading || isFetching ? (
-                                             <Skeleton borderRadius={5} width={windowWidth - 100} height={50} />
+                                             <Skeleton borderRadius={5} width={windowWidth - 100} height={55} />
                                         ) : isError ? (
                                              <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
                                         ) : seqValue ? (

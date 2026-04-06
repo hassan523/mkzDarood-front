@@ -7,7 +7,7 @@ import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
 import { useProfileData } from '../../model/Profile/ProfileModel';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import Skeleton from '../SkeletonComp/Skeleton';
 
 const CustomHeader = ({ showDrawerButton = true, navigation, style }: { showDrawerButton?: boolean; navigation: Navigation; style?: any }) => {

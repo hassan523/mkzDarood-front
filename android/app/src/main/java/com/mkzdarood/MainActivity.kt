@@ -15,10 +15,10 @@ class MainActivity : ReactActivity() {
    */
   override fun getMainComponentName(): String = "mkzdarood"
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-        SplashScreen.show(this) // Show the splash screen
-        super.onCreate(savedInstanceState)
-  }
+//   override fun onCreate(savedInstanceState: Bundle?) {
+//         SplashScreen.show(this) // Show the splash screen
+//         super.onCreate(savedInstanceState)
+//   }
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]

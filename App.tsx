@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import RootNavigation from './src/navigation/RootNavigation';
 import 'react-native-gesture-handler';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -7,13 +7,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import SplashScreen from 'react-native-splash-screen';
+import AnimatedSplashScreen from './src/components/AnimatedSplashScreen/AnimatedSplashScreen';
 
 export default function App() {
-     useEffect(() => {
-          setTimeout(() => {
-               SplashScreen.hide();
-          }, 1000);
-     }, []);
+     const [splashDone, setSplashDone] = useState(false);
+
+     if (!splashDone) {
+          return <AnimatedSplashScreen onFinish={() => setSplashDone(true)} />;
+     }
 
      return (
           <Provider store={store}>

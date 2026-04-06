@@ -12,7 +12,7 @@ import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 

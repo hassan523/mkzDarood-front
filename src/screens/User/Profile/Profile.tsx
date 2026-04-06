@@ -23,7 +23,7 @@ import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
 import AddressAutocomplete from '../../../components/AddressAutocomplete/AddressAutocomplete';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import ResToast from '../../../components/ResToast/ResToast';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -202,6 +202,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      }, [(userData as DataTypes)?.profilePicture]);
 
      const profilePic = isEdit ? updateData.profilePicture : (userData as DataTypes)?.profilePicture;
+     console.log(userData?.country);
 
      return (
           <>
@@ -319,11 +320,11 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                   icon={<MaterialIcons name="location-city" size={12} color="#fff" />}
                                                   isEdit={isEdit}
                                                   isLoading={!!isLoadingProfile}
-                                                  displayValue={updateData?.city || undefined}
+                                                  displayValue={userData?.city.replace(userData?.country, '').replace(',', '') || undefined}
                                              >
                                                   <AddressAutocomplete
                                                        type="city"
-                                                       value={updateData.city}
+                                                       value={updateData.city.replace(updateData?.country, '').replace(',', '')}
                                                        onChangeText={value => handleData({ name: 'city', value })}
                                                        placeholder="Enter your city"
                                                        apiKey="AIzaSyClo7scOstr59xuT6Y-sKNPodDQGnrtPhE"
