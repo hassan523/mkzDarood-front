@@ -59,6 +59,7 @@ export interface user {
      phone: string;
      email: string;
      country: string;
+     countryCode: string;
      city: string;
      password: string;
      role: 'User';

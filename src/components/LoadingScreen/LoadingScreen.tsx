@@ -77,10 +77,10 @@ const SpinningRing: React.FC<{ size?: number; color?: string; children?: React.R
 
      return (
           <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-               <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={StyleSheet.absoluteFillObject}>
+               <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={StyleSheet.absoluteFill}>
                     <Circle cx={size / 2} cy={size / 2} r={size / 2 - 3} stroke={color} strokeWidth="1.2" opacity={0.12} fill="none" />
                </Svg>
-               <Animated.View style={[StyleSheet.absoluteFillObject, { transform: [{ rotate }] }]}>
+               <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ rotate }] }]}>
                     <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
                          <Path d={`M${size / 2} 3 A${size / 2 - 3} ${size / 2 - 3} 0 0 1 ${size - 3} ${size / 2}`} stroke={color} strokeWidth="1.6" strokeLinecap="round" fill="none" />
                     </Svg>
@@ -104,7 +104,7 @@ const StaticRing: React.FC<{ size?: number; color?: string; children?: React.Rea
 
      return (
           <Animated.View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', transform: [{ scale }], opacity }}>
-               <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={StyleSheet.absoluteFillObject}>
+               <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={StyleSheet.absoluteFill}>
                     <Circle cx={size / 2} cy={size / 2} r={size / 2 - 3} stroke={color} strokeWidth="1.4" opacity={0.3} fill="none" />
                </Svg>
                {children}

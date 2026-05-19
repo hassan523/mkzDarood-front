@@ -15,7 +15,7 @@ export const useGetCounterHandler = () => {
 };
 
 export const useUpdateCounterHandler = () => {
-     const [updateCounterApi, { isLoading, isSuccess, status }] = useUpdateCounterMutation();
+     const [updateCounterApi, { isLoading, isSuccess, status, error }] = useUpdateCounterMutation();
 
      const handleUpdate = async ({
           seq,
@@ -41,9 +41,18 @@ export const useUpdateCounterHandler = () => {
 
                const num = Number(seq);
                setIsOpen(false);
-               const res = await updateCounterApi({ seq: num, Token });
-
+               const res = await updateCounterApi({
+                    seq: num,
+                    Token: Token,
+               });
                if (res?.error) {
+                    if ((res?.error as any)?.status === 403) {
+                         ResToast({
+                              title: 'Token expair please try again',
+                              type: 'danger',
+                         });
+                    }
+
                     ResToast({
                          title: 'Something Went Wrong!',
                          type: 'danger',
@@ -69,5 +78,5 @@ export const useUpdateCounterHandler = () => {
           }
      };
 
-     return { handleUpdate, isLoading, isSuccess, status };
+     return { handleUpdate, isLoading, isSuccess, status, error };
 };

@@ -9,14 +9,16 @@ import Button from '../../../components/Button/Button';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import BtSheets from '../../../components/BtSheets/BtSheets';
 import BottomSheet from '@gorhom/bottom-sheet';
-import { useDispatch } from 'react-redux';
 import { useForgotPasswordHandler, useLoginHandler } from '../../../model/Auth/AuthModel';
 import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
+import { getDeviceId } from '../../../utils/GetDeviceID/getDeviceInfo';
+
+let _deviceId = '';
 
 const Login = ({ navigation }: { navigation: Navigation }) => {
      const [visible, setVisible] = useState(false);
+     const [deviceId, setDeviceId] = useState<string>('app_id');
      const [data, setData] = useState<{
           email: string;
           password: string;
@@ -48,12 +50,24 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
           }
      };
 
+     const handleGetDeviceID = async () => {
+          if (_deviceId != '') return;
+
+          const id = await getDeviceId();
+          _deviceId = id;
+          setDeviceId(id);
+     };
+
+     useEffect(() => {
+          handleGetDeviceID();
+     }, []);
+
      const { handleLogin, isLoading, status } = useLoginHandler();
      const { handleForgotPassword, isLoading: forgotLoading } = useForgotPasswordHandler();
 
      const handleSubmit = async () => {
           await handleLogin({
-               deviceId: 'app-device-id',
+               deviceId: deviceId,
                identifier: email,
                password,
                navigation: navigation,
@@ -63,10 +77,6 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
      useEffect(() => {
           if (isLoading || (status as string) == 'pending') setVisible(true);
      }, [isLoading]);
-
-     // setTimeout(() => {
-     //      if ((status as string) == 'fulfilled' || (status as string) == 'rejected') setVisible(false);
-     // }, 1000);
 
      const handleForgot = () => {
           handleForgotPassword({ email: forgotEmail, type: 'otp' });
@@ -82,7 +92,7 @@ const Login = ({ navigation }: { navigation: Navigation }) => {
                               <View style={styles.ContainerWrapper}>
                                    <Image source={require('../../../assets/logo.png')} style={styles.Logo} />
                                    <View style={styles.FieldContainer}>
-                                        <Text style={styles.Label}>Email or Phone Number</Text>
+                                        <Text style={styles.Label}>Email or Phone Number </Text>
                                         <Field
                                              placeHolder="Enter Email or Phone Number"
                                              type="email"
@@ -200,7 +210,7 @@ const styles = StyleSheet.create({
           color: colors.SecTextColor,
      },
      Overlay: {
-          ...StyleSheet.absoluteFillObject,
+          ...StyleSheet.absoluteFill,
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           zIndex: 1,
      },

@@ -96,6 +96,11 @@ const Otp = ({
           return () => clearTimeout(timer);
      }, [counter]);
 
+     console.log(!isOpen || isLoading || resendLoading);
+     console.log({ isOpen: !isOpen });
+     console.log({ isLoading: isLoading });
+     console.log({ resendLoading: resendLoading });
+
      return (
           <>
                {!visible && (
@@ -152,7 +157,7 @@ const Otp = ({
                                                        inputs.current[index + 1]?.focus();
                                                   }
                                              }}
-                                             editable={!isOpen || isLoading || resendLoading}
+                                             editable={isLoading === false || resendLoading === false}
                                         />
                                    ))}
                               </View>

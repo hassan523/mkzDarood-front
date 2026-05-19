@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import ResToast from '../../components/ResToast/ResToast';
-import { authUser } from '../../redux/Features/authState';
+import { authUser, logout } from '../../redux/Features/authState';
 import { RootState } from '../../redux/store';
-import { useGetProfileQuery, useUpdateProfileMutation } from '../../redux/Profile/Profile';
+import { useDeleteProfileMutation, useGetProfileQuery, useUpdateProfileMutation } from '../../redux/Profile/Profile';
 
 export const useUpdateProfile = () => {
      const selector = useSelector((state: RootState) => state?.userData);
@@ -17,6 +17,7 @@ export const useUpdateProfile = () => {
           city,
           username,
           phone,
+          countryCode,
           setIsEdit,
      }: {
           id: string | undefined;
@@ -26,6 +27,7 @@ export const useUpdateProfile = () => {
           city?: string;
           username?: string;
           phone?: string;
+          countryCode?: string;
           setIsEdit: (arg0: boolean) => void;
      }) => {
           try {
@@ -40,6 +42,7 @@ export const useUpdateProfile = () => {
                } as any;
                formData.append('profilePicture', imageBlob);
                formData.append('country', country);
+               formData.append('countryCode', countryCode);
                formData.append('city', city);
                formData.append('username', username);
                formData.append('phone', phone);
@@ -136,6 +139,45 @@ export const useUpdateProfile = () => {
      };
 
      return { handleUpdateProfile, handleChangePassword, isLoading, status };
+};
+
+export const useDeleteAccount = () => {
+     const selector = useSelector((state: RootState) => state?.userData);
+     const dispatch = useDispatch();
+     const [deleteAccount, { isLoading: DeleteLoading, status: DeleteStatus }] = useDeleteProfileMutation();
+     const Token = selector.data?.accessToken || '';
+     const userId = selector.data?.user?._id || '';
+
+     const handleDeleteAccount = async () => {
+          try {
+               const res = await deleteAccount({ userId, Token });
+               console.log(res, 'dasdsadsadsa');
+
+               if (res?.error) {
+                    return ResToast({
+                         title: (res.error as any).data.message || 'Failed to Delete Account.',
+                         type: 'danger',
+                    });
+               }
+
+               if (!res?.error) {
+                    setTimeout(() => {
+                         dispatch(logout());
+                         return ResToast({
+                              title: 'Account Deleted successfuly.',
+                              type: 'success',
+                         });
+                    }, 2000);
+               }
+          } catch (error) {
+               ResToast({
+                    title: 'Something Went Wrong!',
+                    type: 'danger',
+               });
+          }
+     };
+
+     return { handleDeleteAccount, DeleteLoading, DeleteStatus };
 };
 
 export const useProfileData = ({ Token, id }: { Token: string; id: string }) => {

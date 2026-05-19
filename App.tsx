@@ -1,3 +1,49 @@
+// /**
+//  * Sample React Native App
+//  * https://github.com/facebook/react-native
+//  *
+//  * @format
+//  */
+
+// import { NewAppScreen } from '@react-native/new-app-screen';
+// import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+// import {
+//   SafeAreaProvider,
+//   useSafeAreaInsets,
+// } from 'react-native-safe-area-context';
+
+// function App() {
+//   const isDarkMode = useColorScheme() === 'dark';
+
+//   return (
+//     <SafeAreaProvider>
+//       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+//       <AppContent />
+//     </SafeAreaProvider>
+//   );
+// }
+
+// function AppContent() {
+//   const safeAreaInsets = useSafeAreaInsets();
+
+//   return (
+//     <View style={styles.container}>
+//       <NewAppScreen
+//         templateFileName="App.tsx"
+//         safeAreaInsets={safeAreaInsets}
+//       />
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//   },
+// });
+
+// export default App;
+
 import React, { useEffect, useState } from 'react';
 import RootNavigation from './src/navigation/RootNavigation';
 import 'react-native-gesture-handler';
@@ -6,7 +52,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
-import SplashScreen from 'react-native-splash-screen';
+import { StatusBar } from 'react-native';
 import AnimatedSplashScreen from './src/components/AnimatedSplashScreen/AnimatedSplashScreen';
 
 export default function App() {
@@ -20,7 +66,11 @@ export default function App() {
           <Provider store={store}>
                <SafeAreaProvider>
                     <GestureHandlerRootView style={{ flex: 1 }}>
-                         <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+                         <StatusBar backgroundColor="#006860" translucent={false} />
+                         <SafeAreaView
+                              style={{ flex: 1, backgroundColor: '#1a7a6e' }} // 👈 background color match karo
+                              edges={['top', 'bottom', 'left', 'right']}
+                         >
                               <RootNavigation />
                          </SafeAreaView>
                     </GestureHandlerRootView>

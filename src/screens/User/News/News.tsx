@@ -7,8 +7,8 @@ import GradientBG from '../../../components/GradientBG/GradientBG';
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import { useGetNews } from '../../../model/News/NewsModel';
-import Video from 'react-native-video';
-import { RootState } from 'src/redux/store';
+import { useVideoPlayer, VideoView } from 'react-native-video';
+import { RootState } from '../../../redux/store';
 import { useSelector } from 'react-redux';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
@@ -35,6 +35,10 @@ const NewsCard = ({
      const fadeAnim = useRef(new Animated.Value(0)).current;
      const slideAnim = useRef(new Animated.Value(30)).current;
      const isExpanded = expanded === item._id;
+     const player = useVideoPlayer(item?.video || 'https://www.w3schools.com/html/mov_bbb.mp4', _player => {
+          _player.play();
+          _player.volume = 100;
+     });
 
      useEffect(() => {
           Animated.parallel([
@@ -68,7 +72,7 @@ const NewsCard = ({
                          <View style={styles.tagRow}>
                               <View style={styles.tag}>
                                    <MaterialIcons name="newspaper" size={11} color={colors.PrimaryColor} />
-                                   <Text style={styles.tagText}>NEWS</Text>
+                                   <Text style={styles.tagText}>UPDATES</Text>
                               </View>
                          </View>
 
@@ -80,7 +84,7 @@ const NewsCard = ({
                               {displayText}
                               {isLong && !isExpanded && (
                                    <Text style={styles.seeMore} onPress={() => setExpanded(item._id)}>
-                                        {'... '}
+                                        {'dasdsa... '}
                                         <Text style={styles.seeMoreBtn}>Read more</Text>
                                    </Text>
                               )}
@@ -109,7 +113,8 @@ const NewsCard = ({
                     {/* ── Video ── */}
                     {item?.video && (
                          <TouchableOpacity activeOpacity={0.95} onPress={() => setPaused(!paused)} style={styles.mediaWrapper}>
-                              <Video source={{ uri: item?.video }} style={styles.video} controls volume={1.0} paused={paused} onPlaybackStateChanged={e => setPaused(!e.isPlaying)} />
+                              {/* <Video source={{ uri: item?.video }} style={styles.video} controls volume={1.0} paused={paused} onPlaybackStateChanged={(e:any) => setPaused(!e.isPlaying)} /> */}
+                              <VideoView player={player} style={styles.video} controls />
                          </TouchableOpacity>
                     )}
                </View>
@@ -131,7 +136,7 @@ const SkeletonCard = () => (
                          <Skeleton height={12} width={windowWidth - 130} borderRadius={100} />
                     </View>
                </View>
-               <Skeleton height={200} width={windowWidth - 56} borderRadius={0} />
+               <Skeleton height={200} width={windowWidth - 0} borderRadius={0} />
           </View>
      </View>
 );
@@ -206,7 +211,7 @@ const News = ({ navigation }: { navigation: Navigation }) => {
                               <>
                                    <CustomHeader navigation={navigation} style={{ paddingHorizontal: 0 }} />
                                    <View style={styles.headerSection}>
-                                        <Text style={styles.headerTitle}>Latest News</Text>
+                                        <Text style={styles.headerTitle}>Latest Updates</Text>
                                         <Text style={styles.headerUrdu}>تازہ ترین خبریں</Text>
                                         <View style={styles.headerDivider} />
                                    </View>
@@ -228,7 +233,7 @@ const styles = StyleSheet.create({
      listContent: { paddingBottom: 30, paddingHorizontal: 16 },
 
      // ── Header ──
-     headerSection: { alignItems: 'center', paddingTop: 100, paddingBottom: 10 },
+     headerSection: { alignItems: 'center', paddingTop: 50, paddingBottom: 10 },
      headerTitle: { fontFamily: Font.font700, fontSize: 28, color: '#fff', letterSpacing: 1.5, textTransform: 'uppercase' },
      headerUrdu: { fontFamily: Font.font600, fontSize: 16, color: 'rgba(255,255,255,0.6)', marginTop: 4 },
      headerDivider: { width: 40, height: 3, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.4)', marginTop: 12 },
@@ -249,7 +254,7 @@ const styles = StyleSheet.create({
           elevation: 8,
      },
      accentBar: { width: '100%', height: 3 },
-     cardBody: { paddingHorizontal: 18, paddingTop: 14, paddingBottom: 12, gap: 10 },
+     cardBody: { paddingHorizontal: 15, paddingTop: 14, paddingBottom: 10, gap: 10 },
 
      // Tag
      tagRow: { flexDirection: 'row' },
@@ -274,7 +279,7 @@ const styles = StyleSheet.create({
 
      // Media
      mediaWrapper: { width: '100%', height: 220, overflow: 'hidden', position: 'relative' },
-     thumbnail: { width: '100%', height: '100%' },
+     thumbnail: { width: '100%', height: '100%', objectFit: 'fill' },
      imgOverlay: { position: 'absolute', bottom: 0, left: 0, right: 0, height: 80 },
      video: { width: '100%', height: '100%' },
 

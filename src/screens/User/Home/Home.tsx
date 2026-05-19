@@ -7,9 +7,11 @@ import Button from '../../../components/Button/Button';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Field from '../../../components/Field/Field';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
 import { RootState } from '../../../redux/store';
 import { useGetCounterHandler, useUpdateCounterHandler } from '../../../model/Counter/Counter';
 import GradientBG from '../../../components/GradientBG/GradientBG';
@@ -17,7 +19,12 @@ import RadiusButton from '../../../components/RadiusButton/RadiusButton';
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
-import NoInternetModal from '../../../components/NoInternetModal/NoInternetModal';
+import WarningAlert from '../../../components/Alert/WarningAlert';
+import { useProfileData } from '../../../model/Profile/ProfileModel';
+import { useRefreshTokenHandler } from '../../../model/Auth/AuthModel';
+import { getDeviceId } from '../../../utils/GetDeviceID/getDeviceInfo';
+import { useLogoutMutation } from '../../../redux/Auth/Auth';
+import { authUser, logout } from '../../../redux/Features/authState';
 
 // ─── Count-Up Hook ────────────────────────────────────────────────────────────
 const useCountUp = (target: number, duration: number = 2000) => {
@@ -78,9 +85,14 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
      const isLogin: boolean = selector?.isLoggin;
      const Token: string | undefined = selector?.data?.accessToken;
+     const RefreshToken: string | undefined = selector?.data?.refreshToken;
+     const DeviceId = ((selector?.data?.user as any)?.refreshTokens as [{ token: string; deviceId: string; _id: string }])?.filter(item => item.token == RefreshToken)[0];
+     const id = selector?.data?.user?._id;
+     const dispatch = useDispatch();
 
      const [visible, setVisible] = useState(false);
      const [refreshing, setRefresing] = useState(false);
+     const [accessToken, setAccessToken] = useState('');
      const [isUrdu, setIsUrdu] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
      const [isSubmitted, setIsSubmitted] = useState(false);
@@ -93,12 +105,16 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const isError = counterApi?.isError;
      const seqValue: number = counterApi?.data?.seq ?? 0;
 
-     const { handleUpdate, isLoading, status } = useUpdateCounterHandler();
+     const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
+     const userData = getProfile?.data?.profile;
+     const refetchProfile = getProfile?.refetch;
 
      const onRefresh = async () => {
           try {
                setRefresing(true);
+               refetchProfile?.();
                await refetch?.();
+
                setRefresing(false);
           } catch {
                setRefresing(false);
@@ -109,38 +125,96 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
           if (isError) setRefresing(false);
      }, [counterApi]);
 
+     const countFontSize = seqValue <= 99999999 ? 50 : 35;
+     const { handleRefreshToken, isLoading: TokenLoading, status: TokenStatus } = useRefreshTokenHandler();
+     const [logoutAPI] = useLogoutMutation();
+
+     const handleLogout = async () => {
+          try {
+               const res = await logoutAPI({
+                    token: RefreshToken || '',
+                    deviceId: DeviceId.deviceId || '',
+               });
+
+               if (!res.error) {
+                    dispatch(logout());
+                    return true;
+               } else {
+                    dispatch(logout());
+                    return true;
+               }
+          } catch (error) {
+               console.error('Logout failed:', error);
+               return false;
+          }
+     };
+
+     const handleUpdateToken = async () => {
+          const { res } = await handleRefreshToken({ deviceId: DeviceId.deviceId, token: RefreshToken || '' });
+
+          if ((res?.error as any)?.data.message === 'Invalid refresh token') {
+               handleLogout();
+          } else {
+               setAccessToken((res?.data as any)?.accessToken);
+          }
+     };
+
+     useEffect(() => {
+          if (selector.isLoggin == true) {
+               handleUpdateToken();
+          }
+     }, []);
+
+     const { handleUpdate, isLoading, status, error } = useUpdateCounterHandler();
      const handleUpdateCounter = () => {
           handleUpdate({ seq, Token, setIsOpen, setSeq, setIsSubmitted });
      };
 
      useEffect(() => {
           if (status === 'pending') setVisible(true);
-     }, [status]);
+          if ((error as any)?.status === 403) {
+               const refreshToken = selector?.data?.refreshToken;
+               const user = selector?.data?.user;
 
-     const countFontSize = seqValue <= 9999999999 ? 50 : 35;
+               if (!refreshToken || !user) return; // ✅ guard clause
+
+               const newData = {
+                    accessToken: accessToken,
+                    refreshToken: refreshToken,
+                    user: user,
+               };
+
+               dispatch(authUser({ data: newData }));
+          }
+     }, [status]);
 
      const renderItem = () => (
           <View style={styles.Container}>
-               <CustomHeader navigation={navigation} />
-
                <GradientBG style={styles.gradient} isBackgroundImage>
-                    <View style={[styles.ImageBgContainer, { height: !GetLoading ? (seqValue <= 9999999999999 ? 400 : 480) : 370 }]}>
+                    <CustomHeader navigation={navigation} />
+                    {userData?.country === '' || userData?.city === '' ? <WarningAlert message="Please update your profile" visible={userData?.country === '' || userData?.city === ''} /> : null}
+                    <View style={[styles.ImageBgContainer]}>
                          <View style={styles.HeroContainer}>
                               <View style={{ overflow: 'hidden', borderRadius: 10, borderWidth: 2, borderColor: 'white' }}>
-                                   <ImageBackground source={require('../../../assets/MasjidImage.png')} style={styles.heroHeading}>
+                                   <ImageBackground
+                                        source={require('../../../assets/MasjidImage.png')}
+                                        style={[styles.heroHeading, { height: GetLoading || isFetching ? 220 : seqValue <= 99999999 ? 220 : 220 }]}
+                                   >
                                         <Text style={{ fontSize: 20, color: 'white', textAlign: 'center', fontFamily: Font.font600 }}>
                                              اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
                                         </Text>
-                                        <Text style={styles.Heading}>Global Darood Count</Text>
-
                                         {/* ── Counter ── */}
-                                        {GetLoading || isFetching ? (
-                                             <Skeleton borderRadius={5} width={windowWidth - 100} height={55} />
-                                        ) : isError ? (
-                                             <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
-                                        ) : seqValue ? (
-                                             <AnimatedCounter value={seqValue} fontSize={countFontSize} />
-                                        ) : null}
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', gap: 10 }}>
+                                             {GetLoading || isFetching ? (
+                                                  <Skeleton borderRadius={100} width={windowWidth - 100} height={40} />
+                                             ) : isError ? (
+                                                  <Text style={[styles.Count, { fontSize: 30 }]}>Something Went Wrong!</Text>
+                                             ) : seqValue ? (
+                                                  <AnimatedCounter value={(seqValue as any).length === 0 ? 0 : seqValue} fontSize={countFontSize} />
+                                             ) : null}
+
+                                             <Text style={styles.Heading}>Global Darood Count</Text>
+                                        </View>
                                    </ImageBackground>
                               </View>
 
@@ -168,6 +242,26 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                               <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
                                    <Image source={require('../../../assets/Allah.png')} style={{ width: 40, height: 40 }} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
+                              </TouchableOpacity>
+                         </View>
+
+                         <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+                              <TouchableOpacity onPress={() => navigation.navigate('NewsStackScreen')} activeOpacity={0.85}>
+                                   <LinearGradient colors={['#006860', '#349F92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.updatesCard}>
+                                        {/* Left: Icon Box */}
+                                        <View style={styles.updatesIconBox}>
+                                             <Icon name="newspaper-variant-outline" size={32} color="#006860" />
+                                        </View>
+
+                                        {/* Middle: Text */}
+                                        <View style={{ flex: 1, marginLeft: 14 }}>
+                                             <Text style={styles.updatesTitle}>Latest Updates</Text>
+                                             <Text style={styles.updatesSubtitle}>News & announcements</Text>
+                                        </View>
+
+                                        {/* Right: Arrow */}
+                                        <Icon name="chevron-right" size={24} color="rgba(255,255,255,0.7)" />
+                                   </LinearGradient>
                               </TouchableOpacity>
                          </View>
 
@@ -251,20 +345,28 @@ export default Home;
 
 const styles = StyleSheet.create({
      Container: { flex: 1, gap: 25, paddingBottom: 30, backgroundColor: 'transparent' },
-     ImageBgContainer: { height: 300, position: 'relative', width: windowWidth, borderRadius: 0, justifyContent: 'center', alignItems: 'center' },
-     Overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.65)' },
-     Image: { height: '100%', width: '100%', ...StyleSheet.absoluteFillObject, opacity: 0.4 },
+     ImageBgContainer: { position: 'relative', width: windowWidth, borderRadius: 0, justifyContent: 'center', alignItems: 'center', marginVertical: 20 },
+     Overlay: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0, 0, 0, 0.65)' },
+     Image: { height: '100%', width: '100%', ...StyleSheet.absoluteFill, opacity: 0.4 },
      gradient: { borderRadius: 0, flex: 1, height: '100%' },
-     HeroContainer: { justifyContent: 'center', alignItems: 'center', zIndex: 1000, paddingHorizontal: 20, height: '100%', width: '100%', gap: 15, paddingTop: 30 },
-     heroHeading: { justifyContent: 'center', alignItems: 'center', gap: 10, backgroundColor: colors.lightGreen, paddingVertical: 15, paddingHorizontal: 20 },
+     HeroContainer: { justifyContent: 'center', alignItems: 'center', zIndex: 1000, paddingHorizontal: 20, width: '100%', gap: 15, paddingTop: 0 },
+     heroHeading: { justifyContent: 'space-between', alignItems: 'center', gap: 5, backgroundColor: colors.lightGreen, paddingVertical: 30, paddingHorizontal: 20 },
      Heading: { color: colors.SecondaryColor, fontFamily: Font.font600, fontSize: 17 },
      Count: { color: colors.SecondaryColor, fontFamily: Font.font700, fontSize: 50, textAlign: 'center' },
-     IconsContainer: { paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10, width: windowWidth },
+     IconsContainer: {
+          paddingHorizontal: 20,
+          flexDirection: 'row',
+          flexWrap: 'wrap', // 👈 yeh add kiya
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 0,
+          width: windowWidth,
+     },
      IconBox: {
           gap: 5,
           alignItems: 'center',
           justifyContent: 'center',
-          width: windowWidth / 3 - 25,
+          width: windowWidth / 3 - 20, // 👈 /3 se /2 kar diya
           height: 100,
           paddingInline: 5,
           paddingBlock: 8,
@@ -297,4 +399,36 @@ const styles = StyleSheet.create({
      DescImage: { height: 120, width: '40%', borderRadius: 20, position: 'relative', objectFit: 'fill' },
      ModalContainer: { justifyContent: 'center', alignItems: 'center', position: 'relative', gap: 20 },
      Cross: { position: 'absolute', right: 5, top: 5 },
+
+     updatesCard: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderRadius: 16,
+          paddingVertical: 16,
+          paddingHorizontal: 18,
+          shadowColor: '#006860',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.35,
+          shadowRadius: 8,
+          elevation: 6,
+     },
+     updatesIconBox: {
+          width: 52,
+          height: 52,
+          borderRadius: 14,
+          backgroundColor: 'rgba(255,255,255,0.92)',
+          alignItems: 'center',
+          justifyContent: 'center',
+     },
+     updatesTitle: {
+          fontSize: 16,
+          fontFamily: Font.font600,
+          color: '#ffffff',
+     },
+     updatesSubtitle: {
+          fontSize: 12,
+          fontFamily: Font.font400,
+          color: 'rgba(255,255,255,0.75)',
+          marginTop: 2,
+     },
 });

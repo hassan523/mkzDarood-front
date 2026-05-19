@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { useForgotPasswordMutation, useLoginMutation, useNewpasswordMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
+import { useForgotPasswordMutation, useLoginMutation, useNewpasswordMutation, useRefreshTokenMutation, useSignupMutation, useVerifyOtpMutation } from '../../redux/Auth/Auth';
 import ResToast from '../../components/ResToast/ResToast';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { authUser, logout } from '../../redux/Features/authState';
@@ -289,4 +289,35 @@ export const useNewPasswordHandler = () => {
      };
 
      return { handleNewPassword, isLoading, status };
+};
+
+export const useRefreshTokenHandler = () => {
+     const [refreshTokenAPI, { isLoading, status }] = useRefreshTokenMutation();
+
+     const handleRefreshToken = async ({ token, deviceId }: { token: string; deviceId: string }) => {
+          try {
+               const res = await refreshTokenAPI({ token, deviceId });
+               console.log(res);
+
+               if (!res.error) {
+                    // setTimeout(() => {
+                    //      ResToast({
+                    //           title: 'Password changed successfully',
+                    //           type: 'success',
+                    //      });
+                    //      navigation.navigate('Login');
+                    // }, 1000);
+               } else {
+                    // ResToast({
+                    //      title: (res.error as any).data.message || 'Failed to change password.',
+                    //      type: 'danger',
+                    // });
+               }
+               return { res };
+          } catch (error) {
+               throw error;
+          }
+     };
+
+     return { handleRefreshToken, isLoading, status };
 };

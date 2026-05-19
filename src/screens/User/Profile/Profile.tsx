@@ -12,7 +12,7 @@ import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
+import { useDeleteAccount, useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
 import { user } from '../../../redux/Auth/AuthType';
 import GradientBG from '../../../components/GradientBG/GradientBG';
 import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions';
@@ -26,6 +26,8 @@ import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import FastImage from '@d11/react-native-fast-image';
 import ResToast from '../../../components/ResToast/ResToast';
 import LinearGradient from 'react-native-linear-gradient';
+import { getCountryCallingCode, parsePhoneNumberFromString } from 'libphonenumber-js';
+import DeleteAccountModal from '../../../components/DeleteModal/DeleteAccountModal';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -34,6 +36,7 @@ interface DataTypes {
      phone: string;
      country: string;
      city: string;
+     countryCode: string;
 }
 
 // ─── Reusable Row ─────────────────────────────────────────────────────────────
@@ -100,13 +103,13 @@ const rowStyles = StyleSheet.create({
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 const Profile = ({ navigation }: { navigation: Navigation }) => {
      const [imageLoading, setImageLoading] = useState(true);
-     const [updateData, setUpdateData] = useState<DataTypes>({ profilePicture: '', username: '', email: '', phone: '', country: '', city: '' });
+     const [updateData, setUpdateData] = useState<DataTypes>({ profilePicture: '', username: '', email: '', phone: '', country: '', city: '', countryCode: '' });
      const [isEdit, setIsEdit] = useState(false);
      const [isValidPassword, setIsValidPassword] = useState(false);
-     const [isValidNumber, setIsValidNumber] = useState(false);
+     const [deleteModal, setDeleteModal] = useState(false);
      const [visible, setVisible] = useState(false);
      const [isOpen, setIsOpen] = useState(false);
-     const [countryCode, setCountryCode] = useState<string | null>(null);
+     // const [countryCode, setCountryCode] = useState<string | null>(null);
      const [changePassword, setChangePassword] = useState({ password: '', newPass: '', reNewPass: '' });
 
      // Avatar ring pulse animation
@@ -124,6 +127,9 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      const id = selector?.data?.user?._id;
      const Token = selector?.data?.accessToken;
      const { password, newPass, reNewPass } = changePassword;
+
+     // APIS
+     const { handleDeleteAccount, DeleteStatus, DeleteLoading } = useDeleteAccount();
      const { handleUpdateProfile, handleChangePassword, isLoading, status } = useUpdateProfile();
      const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
      const userData = getProfile?.data?.profile;
@@ -135,7 +141,37 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      };
      const handleData = ({ name, value }: { name: string; value: string }) => setUpdateData({ ...updateData, [name]: value });
 
+     const code = getCountryCallingCode((updateData?.countryCode as any)?.toUpperCase() || 'PK');
+
+     const validatePhone = (phone: string, country: any) => {
+          const parsed = parsePhoneNumberFromString(phone, country);
+          return parsed?.isValid() || false;
+     };
+
      const handleSave = () => {
+          if (updateData.username === '') {
+               return ResToast({ title: 'Please enter your name', type: 'warning' });
+          }
+          if (updateData.country === '') {
+               return ResToast({ title: 'Please enter country', type: 'warning' });
+          }
+
+          if (updateData.countryCode === '') {
+               return ResToast({ title: 'Please select country', type: 'warning' });
+          }
+
+          if (updateData.city === '') {
+               return ResToast({ title: 'Please enter city', type: 'warning' });
+          }
+
+          if (updateData.phone === '') {
+               return ResToast({ title: 'Please enter phone', type: 'warning' });
+          }
+
+          const validatePhoneNumber = validatePhone(updateData?.phone || '0', updateData?.countryCode?.toUpperCase());
+          if (!validatePhoneNumber) {
+               return ResToast({ title: 'Invalid Phone Number', type: 'warning' });
+          }
           handleUpdateProfile({
                id,
                Token,
@@ -143,9 +179,17 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                setIsEdit,
                country: updateData?.country,
                city: updateData?.city,
+               countryCode: updateData?.countryCode,
                username: updateData?.username,
                phone: updateData?.phone,
           });
+          setVisible(true);
+     };
+     console.log(updateData);
+     const handleDeleteAccountHandler = () => {
+          handleDeleteAccount();
+          setDeleteModal(false);
+          setVisible(true);
      };
 
      const handleChangePass = () => {
@@ -154,7 +198,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      };
 
      useEffect(() => {
-          if (status === 'pending') setVisible(true);
+          if (status === 'pending' || DeleteStatus === 'pending') setVisible(true);
      }, [status]);
 
      const pickImage = () => {
@@ -202,7 +246,6 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      }, [(userData as DataTypes)?.profilePicture]);
 
      const profilePic = isEdit ? updateData.profilePicture : (userData as DataTypes)?.profilePicture;
-     console.log(userData?.country);
 
      return (
           <>
@@ -212,7 +255,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 100 }]} showsVerticalScrollIndicator={false}>
                                    <CustomHeader navigation={navigation} />
 
-                                   <View style={{ marginTop: 100 }}>
+                                   <View style={{ marginTop: 50 }}>
                                         {/* ── Avatar Section ── */}
                                         <View style={styles.avatarSection}>
                                              {/* Decorative ring */}
@@ -290,6 +333,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        customDivClass={styles.fieldDiv}
                                                        customClass={styles.fieldInput}
                                                        iconColor="white"
+                                                       placeHolderTextColor="rgba(255,255,255,0.6)"
                                                        disabled={isLoading}
                                                   />
                                              </ProfileRow>
@@ -306,12 +350,12 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        value={updateData.country}
                                                        onChangeText={value => {
                                                             handleData({ name: 'country', value });
-                                                            setUpdateData(prev => ({ ...prev, city: '' }));
+                                                            setUpdateData(prev => ({ ...prev, city: '', countryCode: '' }));
                                                        }}
                                                        placeholder="Enter your Country"
                                                        apiKey="AIzaSyClo7scOstr59xuT6Y-sKNPodDQGnrtPhE"
                                                        iconName="city"
-                                                       setCountryCode={value => setCountryCode(value)}
+                                                       setCountryCode={value => setUpdateData((prev: any) => ({ ...prev, countryCode: value }))}
                                                   />
                                              </ProfileRow>
 
@@ -329,7 +373,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        placeholder="Enter your city"
                                                        apiKey="AIzaSyClo7scOstr59xuT6Y-sKNPodDQGnrtPhE"
                                                        iconName="city"
-                                                       countryCode={countryCode}
+                                                       countryCode={updateData?.countryCode}
                                                   />
                                              </ProfileRow>
 
@@ -349,6 +393,7 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                        customDivClass={styles.fieldDiv}
                                                        customClass={styles.fieldInput}
                                                        iconColor="white"
+                                                       placeHolderTextColor="rgba(255,255,255,0.6)"
                                                        disabled
                                                   />
                                              </ProfileRow>
@@ -360,21 +405,37 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                   isLoading={!!isLoadingProfile}
                                                   displayValue={(userData as DataTypes)?.phone}
                                              >
-                                                  <Field
-                                                       placeHolder="Enter Phone Number"
-                                                       type="number"
-                                                       isIcon={<FontAwesome name="phone" size={16} color={colors.SecondaryColor} />}
-                                                       value={updateData.phone}
-                                                       onChange={value => handleData({ name: 'phone', value })}
-                                                       customDivClass={styles.fieldDiv}
-                                                       customClass={styles.fieldInput}
-                                                       iconColor="white"
-                                                       disabled={isLoading}
-                                                       maxLength={15}
-                                                       minValue={10}
-                                                       validate
-                                                       onValidationChange={value => setIsValidNumber(value)}
-                                                  />
+                                                  <View style={styles.phoneRow}>
+                                                       {/* Country Code Box */}
+                                                       <TouchableOpacity
+                                                            style={styles.codeBox}
+                                                            onPress={() => {
+                                                                 /* agar flag picker chahiye toh yahan open karo */
+                                                            }}
+                                                            activeOpacity={0.8}
+                                                       >
+                                                            <FontAwesome name="phone" size={13} color={colors.SecondaryColor} />
+                                                            <Text style={styles.codeText}>{code ? `+${code}` : '+92'}</Text>
+                                                       </TouchableOpacity>
+
+                                                       {/* Number Input */}
+                                                       <View style={[styles.fieldDiv, styles.phoneInput]}>
+                                                            <Field
+                                                                 placeHolder="Phone Number"
+                                                                 type="number"
+                                                                 value={updateData.phone}
+                                                                 onChange={value => handleData({ name: 'phone', value })}
+                                                                 customDivClass={{ backgroundColor: 'transparent', borderWidth: 0, flex: 1 }}
+                                                                 customClass={styles.fieldInput}
+                                                                 iconColor="white"
+                                                                 disabled={isLoading}
+                                                                 maxLength={12}
+                                                                 minValue={10}
+                                                                 placeHolderTextColor="rgba(255,255,255,0.6)"
+                                                                 validate
+                                                            />
+                                                       </View>
+                                                  </View>
                                              </ProfileRow>
 
                                              {/* Buttons */}
@@ -391,10 +452,21 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             </TouchableOpacity>
                                                        </View>
                                                   ) : (
-                                                       <TouchableOpacity onPress={() => setIsOpen(true)} disabled={isLoadingProfile} activeOpacity={0.8} style={styles.changePassBtn}>
-                                                            <MaterialIcons name="lock-outline" color={colors.PrimaryColor} size={16} />
-                                                            <Text style={styles.changePassText}>Change Password</Text>
-                                                       </TouchableOpacity>
+                                                       <View style={{ gap: 10 }}>
+                                                            <TouchableOpacity onPress={() => setIsOpen(true)} disabled={isLoadingProfile} activeOpacity={0.8} style={styles.changePassBtn}>
+                                                                 <MaterialIcons name="lock-outline" color={colors.PrimaryColor} size={16} />
+                                                                 <Text style={styles.changePassText}>Change Password</Text>
+                                                            </TouchableOpacity>
+                                                            <TouchableOpacity
+                                                                 onPress={() => setDeleteModal(true)}
+                                                                 disabled={isLoadingProfile}
+                                                                 activeOpacity={0.8}
+                                                                 style={[styles.changePassBtn, { backgroundColor: 'white' }]}
+                                                            >
+                                                                 <MaterialIcons name="delete-outline" color={'red'} size={16} />
+                                                                 <Text style={[styles.changePassText, { color: 'red' }]}>Delete Account</Text>
+                                                            </TouchableOpacity>
+                                                       </View>
                                                   )}
                                              </View>
                                         </View>
@@ -466,9 +538,9 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               status={status}
                               onHide={() => setVisible(false)}
                               image={require('../../../assets/Allah.png')}
-                              loadingTitle="Updating Profile Details..."
+                              loadingTitle={DeleteStatus != 'uninitialized' ? 'Deleting Your Account...' : 'Updating Profile Details...'}
                               successTitle="All done!"
-                              successSubtitle="Profile Updated Successfully"
+                              successSubtitle={DeleteStatus != 'uninitialized' ? 'Account Deleted Successfully...' : 'Profile Updated Successfully'}
                               imageSize={40}
                               errorTitle="Something went wrong"
                               errorSubtitle="Please try again later"
@@ -477,6 +549,16 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                               style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}
                          />
                     )}
+                    <DeleteAccountModal
+                         visible={deleteModal}
+                         onClose={() => setDeleteModal(false)}
+                         onConfirm={() => {
+                              // apna delete API call yahan
+                              handleDeleteAccountHandler();
+                         }}
+                         isLoading={DeleteLoading}
+                         requireConfirmText={true} // false karo agar confirm typing nahi chahiye
+                    />
                </View>
           </>
      );
@@ -560,4 +642,37 @@ const styles = StyleSheet.create({
      modalTitle: { fontFamily: Font.font600, fontSize: 18, color: colors.textColor, letterSpacing: 0.2 },
      modalSub: { fontFamily: Font.font500 || Font.font600, fontSize: 12, color: colors.SecTextColor, marginTop: 3 },
      modalClose: { position: 'absolute', right: 0, top: 0 },
+
+     phoneRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 0,
+     },
+     codeBox: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 10,
+          height: 48,
+          paddingHorizontal: 12,
+          borderTopLeftRadius: 5,
+          borderBottomLeftRadius: 5,
+          backgroundColor: 'rgba(255,255,255,0.15)',
+          borderWidth: 1,
+          borderColor: 'rgba(255,255,255,0.3)',
+          minWidth: 70,
+          justifyContent: 'center',
+     },
+     codeText: {
+          fontFamily: Font.font600,
+          fontSize: 14,
+          color: '#fff',
+     },
+     phoneInput: {
+          flex: 1,
+          borderTopRightRadius: 5,
+          borderBottomRightRadius: 5,
+          height: 48,
+          justifyContent: 'center',
+          paddingLeft: 10,
+     },
 });

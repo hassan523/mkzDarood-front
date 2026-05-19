@@ -88,10 +88,6 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                     return true;
                } else {
                     dispatch(logout());
-                    // ResToast({
-                    //      title: (res.error as any)?.data.message || 'Failed to logout please try again.',
-                    //      type: 'danger',
-                    // });
                     return true;
                }
           } catch (error) {
@@ -207,7 +203,7 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                          name="NewsStackScreen"
                          component={NewsStackScreen}
                          options={{
-                              drawerLabel: 'News',
+                              drawerLabel: 'Updates',
                               drawerIcon: ({ color, size }) => <Ionicons name="newspaper" color={color} size={size} />,
                          }}
                     />

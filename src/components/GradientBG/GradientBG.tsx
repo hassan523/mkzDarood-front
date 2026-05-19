@@ -14,7 +14,7 @@ const GradientBG = ({ style, children, isBackgroundImage, imgStyle }: { style?: 
                          end={{ x: 1, y: 0 }}
                          style={style || { justifyContent: 'center', alignItems: 'center', borderRadius: 10, width: '100%' }}
                     >
-                         <ImageBackground source={require('../../assets/bgVector.png')} resizeMode="cover" style={imgStyle || { opacity: 1 }}>
+                         <ImageBackground source={require('../../assets/bgVector.png')} resizeMode="cover" style={imgStyle || { opacity: 1, flex: 1 }}>
                               {children}
                          </ImageBackground>
                     </LinearGradient>
