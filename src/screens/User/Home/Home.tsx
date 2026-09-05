@@ -87,6 +87,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
      const Token: string | undefined = selector?.data?.accessToken;
      const RefreshToken: string | undefined = selector?.data?.refreshToken;
      const DeviceId = ((selector?.data?.user as any)?.refreshTokens as [{ token: string; deviceId: string; _id: string }])?.filter(item => item.token == RefreshToken)[0];
+     const TokenExpireIn: any = selector?.data?.tokenExpiresAt;
      const id = selector?.data?.user?._id;
      const dispatch = useDispatch();
 
@@ -149,6 +150,18 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
           }
      };
 
+     useEffect(() => {
+          if (!TokenExpireIn) return;
+
+          const interval = setInterval(() => {
+               if (Date.now() > new Date(TokenExpireIn).getTime()) {
+                    handleLogout();
+               }
+          }, 30 * 1000);
+
+          return () => clearInterval(interval);
+     }, [TokenExpireIn]);
+
      const handleUpdateToken = async () => {
           const { res } = await handleRefreshToken({ deviceId: DeviceId.deviceId, token: RefreshToken || '' });
 
@@ -159,16 +172,16 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
           }
      };
 
+     const { handleUpdate, isLoading, status, error } = useUpdateCounterHandler();
+     const handleUpdateCounter = () => {
+          handleUpdate({ seq, Token, setIsOpen, setSeq, setIsSubmitted });
+     };
+
      useEffect(() => {
           if (selector.isLoggin == true) {
                handleUpdateToken();
           }
      }, []);
-
-     const { handleUpdate, isLoading, status, error } = useUpdateCounterHandler();
-     const handleUpdateCounter = () => {
-          handleUpdate({ seq, Token, setIsOpen, setSeq, setIsSubmitted });
-     };
 
      useEffect(() => {
           if (status === 'pending') setVisible(true);
@@ -178,30 +191,58 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
                if (!refreshToken || !user) return; // ✅ guard clause
 
+               const expiresInMs = 2 * 24 * 60 * 60 * 1000; // 2 days
+
                const newData = {
                     accessToken: accessToken,
                     refreshToken: refreshToken,
+                    tokenExpiresAt: new Date(Date.now() + expiresInMs).toISOString(),
                     user: user,
                };
 
                dispatch(authUser({ data: newData }));
           }
-     }, [status]);
+     }, [status, error]);
 
      const renderItem = () => (
           <View style={styles.Container}>
                <GradientBG style={styles.gradient} isBackgroundImage>
                     <CustomHeader navigation={navigation} />
-                    {userData?.country === '' || userData?.city === '' ? <WarningAlert message="Please update your profile" visible={userData?.country === '' || userData?.city === ''} /> : null}
+                    {userData?.country === '' || userData?.city === '' ? (
+                         <WarningAlert
+                              view={
+                                   <View style={{ borderRadius: 10, justifyContent: 'flex-start', gap: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                        <View style={{ alignItems: 'center' }}>
+                                             <TouchableOpacity onPress={() => navigation.navigate('ProfileStackScreen')}>
+                                                  <Text style={{ color: 'white', textDecorationLine: 'underline', fontSize: 12 }}>Click Here</Text>
+                                             </TouchableOpacity>
+                                        </View>
+                                        <Text style={{ fontSize: 12, fontFamily: Font.font500, color: 'white' }}>to update your profile .</Text>
+                                   </View>
+                              }
+                              visible={userData?.country === '' || userData?.city === ''}
+                         />
+                    ) : null}
                     <View style={[styles.ImageBgContainer]}>
                          <View style={styles.HeroContainer}>
                               <View style={{ overflow: 'hidden', borderRadius: 10, borderWidth: 2, borderColor: 'white' }}>
                                    <ImageBackground
-                                        source={require('../../../assets/MasjidImage.png')}
-                                        style={[styles.heroHeading, { height: GetLoading || isFetching ? 220 : seqValue <= 99999999 ? 220 : 220 }]}
+                                        source={require('../../../assets/MasjidImage2.jpg')}
+                                        style={[styles.heroHeading, { height: GetLoading || isFetching ? 250 : seqValue <= 99999999 ? 250 : null }]}
                                    >
-                                        <Text style={{ fontSize: 20, color: 'white', textAlign: 'center', fontFamily: Font.font600 }}>
-                                             اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا محمَدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْه
+                                        <View style={{ ...StyleSheet.absoluteFill, backgroundColor: 'rgba(0, 0, 0, 0.8)' }} />
+                                        <Text
+                                             style={{
+                                                  fontSize: 20,
+                                                  lineHeight: 50, // ← Badhao (42 se 48 ya 50 try karo)
+                                                  color: 'white',
+                                                  textAlign: 'center',
+                                                  writingDirection: 'rtl',
+                                                  includeFontPadding: false,
+                                                  fontFamily: Font.arabic400,
+                                             }}
+                                        >
+                                             اللَّهُمَّ صَلِّ عَلَىٰ سَيِّدِنَا وَمَوْلَانَا مُحَمَّدٍ وَعَلَىٰ آلِ سَيِّدِنَا وَمَوْلَانَا مُحَمَّدٍ، وَبَارِكْ وَسَلِّمْ وَصَلِّ عَلَيْهِ
                                         </Text>
                                         {/* ── Counter ── */}
                                         <View style={{ justifyContent: 'center', alignItems: 'center', gap: 10 }}>
@@ -224,6 +265,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                         customWidth={windowWidth - 40}
                                         textStyle={{ fontFamily: Font.font700, fontSize: 20, color: 'white' }}
                                         onPress={() => (isLogin ? setIsOpen(true) : navigation.navigate('Signup'))}
+                                        disabled={GetLoading || isFetching}
                                    />
                               </View>
                          </View>
@@ -231,21 +273,40 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
 
                     <View style={{ backgroundColor: 'white', width: '100%', gap: 20, paddingTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                          <View style={styles.IconsContainer}>
-                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('Tasbih')}>
+                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('Tasbih')} disabled={GetLoading || isFetching}>
                                    <Image source={require('../../../assets/tasbih.png')} style={{ width: 40, height: 40 }} />
                                    <Text style={styles.IconText}>Tasbih</Text>
                               </TouchableOpacity>
-                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaunNabi')}>
+                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaunNabi')} disabled={GetLoading || isFetching}>
                                    <Image source={require('../../../assets/nabi.png')} style={{ width: 40, height: 40 }} />
                                    <Text style={styles.IconText}>Asma un Nabi</Text>
                               </TouchableOpacity>
-                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')}>
+                              <TouchableOpacity style={styles.IconBox} onPress={() => navigation.navigate('AsmaulHusna')} disabled={GetLoading || isFetching}>
                                    <Image source={require('../../../assets/Allah.png')} style={{ width: 40, height: 40 }} />
                                    <Text style={styles.IconText}>Asma ul Husna</Text>
                               </TouchableOpacity>
                          </View>
 
-                         <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+                         <View style={{ paddingHorizontal: 20 }}>
+                              <TouchableOpacity onPress={() => navigation.navigate('Darood')} activeOpacity={0.85}>
+                                   <LinearGradient colors={['#004d45', '#006860']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.updatesCard}>
+                                        {/* Left: Icon Box */}
+                                        <View style={[styles.updatesIconBox, { backgroundColor: 'rgba(255,255,255,0.15)' }]}>
+                                             <Icon name="book-open-page-variant-outline" size={32} color="#fff" />
+                                        </View>
+
+                                        {/* Middle: Text */}
+                                        <View style={{ flex: 1, marginLeft: 14 }}>
+                                             <Text style={styles.updatesTitle}>Darood Shareef</Text>
+                                             <Text style={styles.updatesSubtitle}>Recite multiple salutations</Text>
+                                        </View>
+
+                                        {/* Right: Arrow */}
+                                        <Icon name="chevron-right" size={24} color="rgba(255,255,255,0.7)" />
+                                   </LinearGradient>
+                              </TouchableOpacity>
+                         </View>
+                         <View style={{ paddingHorizontal: 20 }}>
                               <TouchableOpacity onPress={() => navigation.navigate('NewsStackScreen')} activeOpacity={0.85}>
                                    <LinearGradient colors={['#006860', '#349F92']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.updatesCard}>
                                         {/* Left: Icon Box */}
@@ -271,8 +332,8 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                    <View style={styles.DescBox}>
                                         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', width: '100%' }}>
                                              <Image source={require('../../../assets/peersaab.png')} style={styles.DescImage} />
-                                             <View style={{ width: '60%', flexDirection: 'column', gap: 5 }}>
-                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 17, color: colors.PrimaryColor, lineHeight: 25 }}>
+                                             <View style={{ width: '60%', flexDirection: 'column', gap: 5, alignItems: 'center', justifyContent: 'center' }}>
+                                                  <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 14, color: colors.PrimaryColor, lineHeight: 25 }}>
                                                        Under the spiritual guidance of
                                                   </Text>
                                                   <Text style={{ width: '100%', fontFamily: Font.font600, fontSize: 17, color: colors.PrimaryColor, lineHeight: 25 }}>Pir Sultan Fiaz ul Hassan</Text>
@@ -280,7 +341,7 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                                         </View>
                                         <View style={{ flex: 1 }}>
                                              <Text style={[styles.Desc, { textAlign: isUrdu ? 'right' : 'left' }]}>{isUrdu ? userMessage : message}</Text>
-                                             <Text style={[styles.Desc, { textAlign: isUrdu ? 'right' : 'left', fontWeight: '800' }]}>Message By: Sultan Fiaz Ul Hassan</Text>
+                                             {/* <Text style={[styles.Desc, { textAlign: isUrdu ? 'right' : 'left', fontWeight: '800' }]}>Message By: Sultan Fiaz Ul Hassan</Text> */}
                                         </View>
                                    </View>
                               </View>
@@ -314,11 +375,11 @@ const Home = ({ navigation }: { navigation: Navigation }) => {
                     <LoadingScreen
                          status={status}
                          onHide={() => setVisible(false)}
-                         image={require('../../../assets/Allah.png')}
+                         image={require('../../../assets/LoadingLogo.png')}
                          loadingTitle="Adding your darood..."
                          successTitle="Your Darood has been successfully added."
                          successSubtitle=".آپ کا درود پاک جمع ہو گیا ہے"
-                         imageSize={40}
+                         imageSize={70}
                          errorTitle="Something went wrong"
                          errorSubtitle="Please try again later"
                          hideDelay={3000}

@@ -56,6 +56,9 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Amiri-Regular.ttf</string>
+		<string>NotoNaskhArabic-Regular.ttf</string>
+		<string>ScheherazadeNew-Regular.ttf</string>
 		<string>Urbanist-Bold.ttf</string>
 		<string>Urbanist-Medium.ttf</string>
 		<string>Urbanist-Regular.ttf</string>

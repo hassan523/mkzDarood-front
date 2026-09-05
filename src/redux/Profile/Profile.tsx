@@ -30,18 +30,29 @@ const Profile = createApi({
                providesTags: ['updateProfile'],
           }),
 
-          DeleteProfile: builder.mutation<{ message: string }, { userId: string; Token: string }>({
+          VerifyDeleteProfile: builder.mutation<{ message: string }, { userId: string; Token: string }>({
                query: ({ userId, Token }) => ({
-                    url: `/api/${userId}/delete-account`,
-                    method: 'DELETE',
+                    url: `/api/${userId}/verify-delete-account`,
+                    method: 'POST',
                     headers: {
                          Authorization: `Bearer ${Token}`,
                     },
                }),
           }),
+
+          DeleteProfile: builder.mutation<{ message: string }, { userId: string; Token: string; otp: string }>({
+               query: ({ userId, Token, otp }) => ({
+                    url: `/api/${userId}/delete-account`,
+                    method: 'DELETE',
+                    headers: {
+                         Authorization: `Bearer ${Token}`,
+                    },
+                    body: { otp },
+               }),
+          }),
      }),
 });
 
-export const { useUpdateProfileMutation, useGetProfileQuery, useDeleteProfileMutation } = Profile;
+export const { useUpdateProfileMutation, useGetProfileQuery, useVerifyDeleteProfileMutation, useDeleteProfileMutation } = Profile;
 
 export default Profile;

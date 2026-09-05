@@ -2,7 +2,8 @@ export interface GetCounterResponse {
      seq: number;
 }
 
-export interface UpdateCounterRequest{
+export interface UpdateCounterRequest {
      seq: number;
      Token: string | undefined;
+     userId: string;
 }

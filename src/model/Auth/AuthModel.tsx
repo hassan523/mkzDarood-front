@@ -31,6 +31,18 @@ export const useLoginHandler = () => {
                     password,
                     deviceId: credentials.deviceId,
                });
+
+               const resData = res?.data;
+
+               const expiresInMs = 2 * 24 * 60 * 60 * 1000; // 2 days
+
+               const saveData = {
+                    data: {
+                         ...resData,
+                         tokenExpiresAt: new Date(Date.now() + expiresInMs).toISOString(),
+                    },
+               };
+
                if (res?.data?.user?.role !== 'User') {
                     return ResToast({
                          title: 'Unauthorized access.',
@@ -40,7 +52,7 @@ export const useLoginHandler = () => {
 
                if (!res.error) {
                     setTimeout(() => {
-                         dispatch(authUser({ data: res.data }));
+                         dispatch(authUser({ data: saveData?.data as any }));
                          ResToast({
                               title: 'Login successful!',
                               type: 'success',
@@ -153,6 +165,7 @@ export const useForgotPasswordHandler = () => {
                }
 
                const res = await forgotPassword({ identifier: email, type });
+               console.log(res);
                if (!res.error) {
                     ResToast({
                          title: 'Otp Sent successfully',

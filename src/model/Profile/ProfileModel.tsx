@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ResToast from '../../components/ResToast/ResToast';
 import { authUser, logout } from '../../redux/Features/authState';
 import { RootState } from '../../redux/store';
-import { useDeleteProfileMutation, useGetProfileQuery, useUpdateProfileMutation } from '../../redux/Profile/Profile';
+import { useVerifyDeleteProfileMutation, useGetProfileQuery, useUpdateProfileMutation, useDeleteProfileMutation } from '../../redux/Profile/Profile';
 
 export const useUpdateProfile = () => {
      const selector = useSelector((state: RootState) => state?.userData);
@@ -141,21 +141,61 @@ export const useUpdateProfile = () => {
      return { handleUpdateProfile, handleChangePassword, isLoading, status };
 };
 
-export const useDeleteAccount = () => {
+export const useVerifyDeleteAccount = () => {
      const selector = useSelector((state: RootState) => state?.userData);
-     const dispatch = useDispatch();
-     const [deleteAccount, { isLoading: DeleteLoading, status: DeleteStatus }] = useDeleteProfileMutation();
+     const [deleteAccount, { isLoading: DeleteLoading, status: DeleteStatus }] = useVerifyDeleteProfileMutation();
      const Token = selector.data?.accessToken || '';
      const userId = selector.data?.user?._id || '';
 
-     const handleDeleteAccount = async () => {
+     const handleVerifyDeleteAccount = async ({ setOTPModal, setDeleteModal }: { setOTPModal: (arg0: boolean) => void; setDeleteModal: (arg0: boolean) => void }) => {
           try {
                const res = await deleteAccount({ userId, Token });
                console.log(res, 'dasdsadsadsa');
 
                if (res?.error) {
                     return ResToast({
-                         title: (res.error as any).data.message || 'Failed to Delete Account.',
+                         title: (res.error as any).data.message || 'Failed to Send Otp.',
+                         type: 'danger',
+                    });
+               }
+
+               if (!res?.error) {
+                    setOTPModal(true);
+                    setDeleteModal(false);
+                    // setTimeout(() => {
+                    //      dispatch(logout());
+                    // }, 2000);
+                    return ResToast({
+                         title: 'Otp Sent to your email. Please check and confirm delete account.',
+                         type: 'success',
+                    });
+               }
+          } catch (error) {
+               ResToast({
+                    title: 'Something Went Wrong!',
+                    type: 'danger',
+               });
+          }
+     };
+
+     return { handleVerifyDeleteAccount, DeleteLoading, DeleteStatus };
+};
+
+export const useDeleteAccount = () => {
+     const selector = useSelector((state: RootState) => state?.userData);
+     const [deleteAccount, { isLoading: DeleteLoading, status: DeleteStatus }] = useDeleteProfileMutation();
+     const Token = selector.data?.accessToken || '';
+     const userId = selector.data?.user?._id || '';
+     const dispatch = useDispatch();
+
+     const handleDeleteAccount = async (otp: string) => {
+          try {
+               const res = await deleteAccount({ userId, Token, otp });
+               console.log(res, 'dasdsadsadsa');
+
+               if (res?.error) {
+                    return ResToast({
+                         title: (res.error as any).data.message || 'Failed to delete account.',
                          type: 'danger',
                     });
                }
@@ -164,7 +204,7 @@ export const useDeleteAccount = () => {
                     setTimeout(() => {
                          dispatch(logout());
                          return ResToast({
-                              title: 'Account Deleted successfuly.',
+                              title: 'Account deleted successfully.',
                               type: 'success',
                          });
                     }, 2000);

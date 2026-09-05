@@ -153,11 +153,11 @@ const Signup = ({ navigation }: { navigation: Navigation }) => {
                     <LoadingScreen
                          status={status}
                          onHide={() => setVisible(false)}
-                         image={require('../../../assets/Allah.png')} // apni image yahan
+                         image={require('../../../assets/LoadingLogo.png')} // apni image yahan
                          loadingTitle="Processing Request"
                          successTitle="All done!"
                          successSubtitle="Please Confirm your OTP"
-                         imageSize={40}
+                         imageSize={70}
                          errorTitle="Account Creation failed"
                          errorSubtitle="Check your internet and try again"
                          hideDelay={1000}

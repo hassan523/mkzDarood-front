@@ -3,31 +3,21 @@ import React, { useEffect, useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import colors from '../../../utils/colors/colors';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Button from '../../../components/Button/Button';
-import Field from '../../../components/Field/Field';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import ImagePicker from 'react-native-image-crop-picker';
-import ModalLayout from '../../../layout/ModalLayout/ModalLayout';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
-import { useDeleteAccount, useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
-import { user } from '../../../redux/Auth/AuthType';
+import { useProfileData } from '../../../model/Profile/ProfileModel';
 import GradientBG from '../../../components/GradientBG/GradientBG';
-import { windowHeight, windowWidth } from '../../../utils/dimensions/dimensions';
 import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
-import useKeyboardStatus from '../../../utils/IsKeyboardStatus/useKeyboardStatus';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
-import AddressAutocomplete from '../../../components/AddressAutocomplete/AddressAutocomplete';
-import LoadingScreen from '../../../components/LoadingScreen/LoadingScreen';
 import FastImage from '@d11/react-native-fast-image';
-import ResToast from '../../../components/ResToast/ResToast';
 import LinearGradient from 'react-native-linear-gradient';
-import { getCountryCallingCode, parsePhoneNumberFromString } from 'libphonenumber-js';
-import DeleteAccountModal from '../../../components/DeleteModal/DeleteAccountModal';
+import EditProfileScreen from './EditProfileScreen';
+import { windowWidth } from '../../../utils/dimensions/dimensions';
 
 interface DataTypes {
      profilePicture: string | undefined;
@@ -47,70 +37,103 @@ const ProfileRow = ({
      isLoading,
      children,
      displayValue,
+     overLayColor,
+     rightText,
+     onPress,
+     valueColor,
 }: {
      label: string;
      icon: React.ReactNode;
-     isEdit: boolean;
+     rightText?: string | React.ReactNode | React.ReactNode;
+     isEdit?: boolean;
      isLoading: boolean;
-     children: React.ReactNode;
+     children?: React.ReactNode;
+     onPress?: () => void;
      displayValue?: string;
+     overLayColor?: string;
+     valueColor?: string;
 }) => (
-     <View style={rowStyles.wrapper}>
-          <View style={rowStyles.labelRow}>
-               <View style={rowStyles.iconBox}>{icon}</View>
-               <Text style={rowStyles.label}>{label}</Text>
+     <TouchableOpacity
+          activeOpacity={1}
+          onPress={onPress}
+          style={{
+               flexDirection: 'row',
+               width: '100%',
+               paddingVertical: 14,
+               borderBottomWidth: 1,
+               borderBottomColor: '#c5c5c563',
+               paddingHorizontal: 20,
+               justifyContent: 'space-between',
+               alignItems: 'center',
+          }}
+     >
+          <View style={rowStyles.wrapper}>
+               <View style={[rowStyles.IconStyle, { backgroundColor: overLayColor ? overLayColor : '#d1eee9' }]}>
+                    <View style={rowStyles.iconBox}>{icon}</View>
+               </View>
+               <View style={{ gap: 2 }}>
+                    {isEdit ? (
+                         children
+                    ) : isLoading ? (
+                         <Skeleton width={150} height={10} borderRadius={5} />
+                    ) : (
+                         <Text style={[rowStyles.value, { color: valueColor ? valueColor : colors.textColor }]}>{displayValue || `Add ${label}`}</Text>
+                    )}
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', width: windowWidth - 150 }}>
+                         <Text style={rowStyles.label}>{label}</Text>
+                         {rightText ? rightText : null}
+                    </View>
+               </View>
           </View>
-          {isEdit ? children : isLoading ? <Skeleton width={150} height={10} borderRadius={5} /> : <Text style={rowStyles.value}>{displayValue || `Add ${label}`}</Text>}
-     </View>
+          {rightText ? null : displayValue == '' || displayValue == undefined ? (
+               <FontAwesome5 name="info-circle" size={15} color="#F97316" />
+          ) : (
+               <FontAwesome5 name="chevron-right" size={10} color={'rgba(77, 77, 77, 0.6)'} />
+          )}
+     </TouchableOpacity>
 );
 
 const rowStyles = StyleSheet.create({
      wrapper: {
-          width: '100%',
-          gap: 8,
-          paddingVertical: 14,
-          borderBottomWidth: 1,
-          borderBottomColor: 'rgba(255,255,255,0.12)',
+          gap: 10,
+
+          flexDirection: 'row',
+          alignItems: 'center',
      },
-     labelRow: {
+     IconStyle: {
           flexDirection: 'row',
           alignItems: 'center',
           gap: 8,
+          color: colors.textColor,
+          backgroundColor: '#d1eee9',
+          padding: 7,
+          borderRadius: 10,
      },
      iconBox: {
+          color: colors.textColor,
           width: 26,
           height: 26,
           borderRadius: 8,
-          backgroundColor: 'rgba(255,255,255,0.15)',
           alignItems: 'center',
           justifyContent: 'center',
      },
      label: {
           fontFamily: Font.font600,
-          fontSize: 11,
-          color: 'rgba(255,255,255,0.6)',
-          letterSpacing: 1,
-          textTransform: 'uppercase',
+          fontSize: 13,
+          color: 'rgba(77, 77, 77, 0.6)',
+          textTransform: 'capitalize',
      },
      value: {
           fontFamily: Font.font600,
           fontSize: 16,
-          color: '#fff',
-          paddingLeft: 34,
+          color: '#000000',
      },
 });
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 const Profile = ({ navigation }: { navigation: Navigation }) => {
      const [imageLoading, setImageLoading] = useState(true);
-     const [updateData, setUpdateData] = useState<DataTypes>({ profilePicture: '', username: '', email: '', phone: '', country: '', city: '', countryCode: '' });
      const [isEdit, setIsEdit] = useState(false);
-     const [isValidPassword, setIsValidPassword] = useState(false);
-     const [deleteModal, setDeleteModal] = useState(false);
-     const [visible, setVisible] = useState(false);
-     const [isOpen, setIsOpen] = useState(false);
-     // const [countryCode, setCountryCode] = useState<string | null>(null);
-     const [changePassword, setChangePassword] = useState({ password: '', newPass: '', reNewPass: '' });
 
      // Avatar ring pulse animation
      const ringAnim = useRef(new Animated.Value(1)).current;
@@ -126,113 +149,24 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
      const selector = useSelector((state: RootState) => state?.userData);
      const id = selector?.data?.user?._id;
      const Token = selector?.data?.accessToken;
-     const { password, newPass, reNewPass } = changePassword;
 
      // APIS
-     const { handleDeleteAccount, DeleteStatus, DeleteLoading } = useDeleteAccount();
-     const { handleUpdateProfile, handleChangePassword, isLoading, status } = useUpdateProfile();
      const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
      const userData = getProfile?.data?.profile;
      const isLoadingProfile = getProfile?.isLoading;
 
      const handleIsEdit = () => {
-          setUpdateData(userData as user);
           setIsEdit(true);
      };
-     const handleData = ({ name, value }: { name: string; value: string }) => setUpdateData({ ...updateData, [name]: value });
 
-     const code = getCountryCallingCode((updateData?.countryCode as any)?.toUpperCase() || 'PK');
-
-     const validatePhone = (phone: string, country: any) => {
-          const parsed = parsePhoneNumberFromString(phone, country);
-          return parsed?.isValid() || false;
-     };
-
-     const handleSave = () => {
-          if (updateData.username === '') {
-               return ResToast({ title: 'Please enter your name', type: 'warning' });
-          }
-          if (updateData.country === '') {
-               return ResToast({ title: 'Please enter country', type: 'warning' });
-          }
-
-          if (updateData.countryCode === '') {
-               return ResToast({ title: 'Please select country', type: 'warning' });
-          }
-
-          if (updateData.city === '') {
-               return ResToast({ title: 'Please enter city', type: 'warning' });
-          }
-
-          if (updateData.phone === '') {
-               return ResToast({ title: 'Please enter phone', type: 'warning' });
-          }
-
-          const validatePhoneNumber = validatePhone(updateData?.phone || '0', updateData?.countryCode?.toUpperCase());
-          if (!validatePhoneNumber) {
-               return ResToast({ title: 'Invalid Phone Number', type: 'warning' });
-          }
-          handleUpdateProfile({
-               id,
-               Token,
-               profilePicture: updateData?.profilePicture || '',
-               setIsEdit,
-               country: updateData?.country,
-               city: updateData?.city,
-               countryCode: updateData?.countryCode,
-               username: updateData?.username,
-               phone: updateData?.phone,
-          });
-          setVisible(true);
-     };
-     console.log(updateData);
-     const handleDeleteAccountHandler = () => {
-          handleDeleteAccount();
-          setDeleteModal(false);
-          setVisible(true);
-     };
-
-     const handleChangePass = () => {
-          if (!isValidPassword) return ResToast({ title: 'Invalid Password', type: 'danger' });
-          handleChangePassword({ id, Token, oldPassword: password, newPassword: newPass, reEnter: reNewPass, setIsEdit: setIsOpen });
-     };
-
-     useEffect(() => {
-          if (status === 'pending' || DeleteStatus === 'pending') setVisible(true);
-     }, [status]);
-
-     const pickImage = () => {
-          if (!isEdit) return;
-          ImagePicker.openPicker({
-               width: 500,
-               height: 500,
-               cropping: true,
-               cropperCircleOverlay: true,
-               compressImageQuality: 0.8,
-               mediaType: 'photo',
-               cropperToolbarTitle: 'Adjust Photo',
-               cropperActiveWidgetColor: colors.PrimaryColor,
-               cropperStatusBarColor: colors.PrimaryColor,
-               cropperToolbarColor: colors.PrimaryColor,
-               cropperToolbarWidgetColor: colors.SecondaryColor,
-          })
-               .then(image => setUpdateData(prev => ({ ...prev, profilePicture: image.path })))
-               .catch(error => {
-                    if (error.code !== 'E_PICKER_CANCELLED') console.log('ImagePicker Error:', error);
-               });
-     };
-
-     const isKeyboardVisible = useKeyboardStatus();
      const isFocused = useIsFocused();
 
      useEffect(() => {
           if (!isFocused) {
                setIsEdit(false);
-               setIsOpen(false);
           }
           return () => {
                setIsEdit(false);
-               setIsOpen(false);
           };
      }, [isFocused]);
 
@@ -245,14 +179,14 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
           return () => clearTimeout(timer);
      }, [(userData as DataTypes)?.profilePicture]);
 
-     const profilePic = isEdit ? updateData.profilePicture : (userData as DataTypes)?.profilePicture;
+     const profilePic = (userData as DataTypes)?.profilePicture;
 
      return (
           <>
-               <View style={{ flex: 1, backgroundColor: '#f0f4f3' }}>
-                    {!visible && (
-                         <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ height: windowHeight, justifyContent: 'center' }}>
-                              <ScrollView contentContainerStyle={[styles.Container, { paddingBottom: isKeyboardVisible ? 500 : 100 }]} showsVerticalScrollIndicator={false}>
+               {!isEdit && (
+                    <View style={{ flex: 1, backgroundColor: '#f4f0f0' }}>
+                         <ScrollView contentContainerStyle={[styles.Container, { gap: 30 }]} showsVerticalScrollIndicator={false}>
+                              <GradientBG style={styles.gradient} isBackgroundImage imgStyle={{ justifyContent: 'center' }}>
                                    <CustomHeader navigation={navigation} />
 
                                    <View style={{ marginTop: 50 }}>
@@ -277,289 +211,109 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                             <Text style={styles.avatarInitial}>{userData?.username?.charAt(0)?.toUpperCase()}</Text>
                                                        </LinearGradient>
                                                   )}
-
-                                                  {isEdit && (
-                                                       <TouchableOpacity style={styles.editBadge} onPress={pickImage} disabled={isLoadingProfile} activeOpacity={0.8}>
-                                                            <LinearGradient colors={[colors.gradientOne, colors.gradientTwo]} style={styles.editBadgeGradient}>
-                                                                 <MaterialIcons name="photo-camera" color="#fff" size={16} />
-                                                            </LinearGradient>
-                                                       </TouchableOpacity>
-                                                  )}
-                                             </View>
-
-                                             {/* Name + email below avatar */}
-                                             {!isEdit && (
-                                                  <View style={{ alignItems: 'center', marginTop: 14, gap: 4 }}>
-                                                       {isLoadingProfile ? (
-                                                            <Skeleton width={120} height={14} borderRadius={7} />
-                                                       ) : (
-                                                            <Text style={styles.avatarName}>{userData?.username || 'Your Name'}</Text>
-                                                       )}
-                                                       {isLoadingProfile ? <Skeleton width={160} height={10} borderRadius={5} /> : <Text style={styles.avatarEmail}>{userData?.email}</Text>}
-                                                  </View>
-                                             )}
-                                        </View>
-
-                                        {/* ── Card ── */}
-                                        <View style={styles.card}>
-                                             {/* Card header */}
-                                             <View style={styles.cardHeader}>
-                                                  <View>
-                                                       <Text style={styles.cardTitle}>Profile Details</Text>
-                                                       <Text style={styles.cardSub}>Manage your personal info</Text>
-                                                  </View>
-                                                  {!isEdit && (
-                                                       <TouchableOpacity style={styles.editBtn} onPress={handleIsEdit} disabled={isLoadingProfile} activeOpacity={0.8}>
-                                                            <MaterialIcons name="edit" color="#fff" size={15} />
-                                                            <Text style={styles.editBtnText}>Edit</Text>
-                                                       </TouchableOpacity>
-                                                  )}
-                                             </View>
-
-                                             {/* Fields */}
-                                             <ProfileRow
-                                                  label="Name"
-                                                  icon={<FontAwesome5 name="user-alt" size={12} color="#fff" />}
-                                                  isEdit={isEdit}
-                                                  isLoading={!!isLoadingProfile}
-                                                  displayValue={userData?.username}
-                                             >
-                                                  <Field
-                                                       placeHolder="Enter Username"
-                                                       type="text"
-                                                       isIcon={<FontAwesome5 name="user-alt" size={16} color={colors.SecondaryColor} />}
-                                                       value={updateData.username}
-                                                       onChange={value => handleData({ name: 'username', value })}
-                                                       customDivClass={styles.fieldDiv}
-                                                       customClass={styles.fieldInput}
-                                                       iconColor="white"
-                                                       placeHolderTextColor="rgba(255,255,255,0.6)"
-                                                       disabled={isLoading}
-                                                  />
-                                             </ProfileRow>
-
-                                             <ProfileRow
-                                                  label="Country"
-                                                  icon={<FontAwesome name="globe" size={12} color="#fff" />}
-                                                  isEdit={isEdit}
-                                                  isLoading={!!isLoadingProfile}
-                                                  displayValue={userData?.country || undefined}
-                                             >
-                                                  <AddressAutocomplete
-                                                       type="country"
-                                                       value={updateData.country}
-                                                       onChangeText={value => {
-                                                            handleData({ name: 'country', value });
-                                                            setUpdateData(prev => ({ ...prev, city: '', countryCode: '' }));
-                                                       }}
-                                                       placeholder="Enter your Country"
-                                                       apiKey="AIzaSyClo7scOstr59xuT6Y-sKNPodDQGnrtPhE"
-                                                       iconName="city"
-                                                       setCountryCode={value => setUpdateData((prev: any) => ({ ...prev, countryCode: value }))}
-                                                  />
-                                             </ProfileRow>
-
-                                             <ProfileRow
-                                                  label="City"
-                                                  icon={<MaterialIcons name="location-city" size={12} color="#fff" />}
-                                                  isEdit={isEdit}
-                                                  isLoading={!!isLoadingProfile}
-                                                  displayValue={userData?.city.replace(userData?.country, '').replace(',', '') || undefined}
-                                             >
-                                                  <AddressAutocomplete
-                                                       type="city"
-                                                       value={updateData.city.replace(updateData?.country, '').replace(',', '')}
-                                                       onChangeText={value => handleData({ name: 'city', value })}
-                                                       placeholder="Enter your city"
-                                                       apiKey="AIzaSyClo7scOstr59xuT6Y-sKNPodDQGnrtPhE"
-                                                       iconName="city"
-                                                       countryCode={updateData?.countryCode}
-                                                  />
-                                             </ProfileRow>
-
-                                             <ProfileRow
-                                                  label="Email"
-                                                  icon={<MaterialIcons name="email" size={12} color="#fff" />}
-                                                  isEdit={isEdit}
-                                                  isLoading={!!isLoadingProfile}
-                                                  displayValue={userData?.email}
-                                             >
-                                                  <Field
-                                                       placeHolder="Enter Email"
-                                                       type="email"
-                                                       isIcon
-                                                       value={updateData.email}
-                                                       onChange={value => handleData({ name: 'email', value })}
-                                                       customDivClass={styles.fieldDiv}
-                                                       customClass={styles.fieldInput}
-                                                       iconColor="white"
-                                                       placeHolderTextColor="rgba(255,255,255,0.6)"
-                                                       disabled
-                                                  />
-                                             </ProfileRow>
-
-                                             <ProfileRow
-                                                  label="Phone"
-                                                  icon={<FontAwesome name="phone" size={12} color="#fff" />}
-                                                  isEdit={isEdit}
-                                                  isLoading={!!isLoadingProfile}
-                                                  displayValue={(userData as DataTypes)?.phone}
-                                             >
-                                                  <View style={styles.phoneRow}>
-                                                       {/* Country Code Box */}
-                                                       <TouchableOpacity
-                                                            style={styles.codeBox}
-                                                            onPress={() => {
-                                                                 /* agar flag picker chahiye toh yahan open karo */
-                                                            }}
-                                                            activeOpacity={0.8}
-                                                       >
-                                                            <FontAwesome name="phone" size={13} color={colors.SecondaryColor} />
-                                                            <Text style={styles.codeText}>{code ? `+${code}` : '+92'}</Text>
-                                                       </TouchableOpacity>
-
-                                                       {/* Number Input */}
-                                                       <View style={[styles.fieldDiv, styles.phoneInput]}>
-                                                            <Field
-                                                                 placeHolder="Phone Number"
-                                                                 type="number"
-                                                                 value={updateData.phone}
-                                                                 onChange={value => handleData({ name: 'phone', value })}
-                                                                 customDivClass={{ backgroundColor: 'transparent', borderWidth: 0, flex: 1 }}
-                                                                 customClass={styles.fieldInput}
-                                                                 iconColor="white"
-                                                                 disabled={isLoading}
-                                                                 maxLength={12}
-                                                                 minValue={10}
-                                                                 placeHolderTextColor="rgba(255,255,255,0.6)"
-                                                                 validate
-                                                            />
-                                                       </View>
-                                                  </View>
-                                             </ProfileRow>
-
-                                             {/* Buttons */}
-                                             <View style={{ marginTop: 20 }}>
-                                                  {isEdit ? (
-                                                       <View style={styles.btnRow}>
-                                                            <TouchableOpacity style={styles.cancelBtn} onPress={() => setIsEdit(false)} disabled={isLoading} activeOpacity={0.8}>
-                                                                 <Text style={styles.cancelBtnText}>Cancel</Text>
-                                                            </TouchableOpacity>
-                                                            <TouchableOpacity activeOpacity={0.85} onPress={handleSave} style={{ flex: 1 }}>
-                                                                 <LinearGradient colors={[colors.gradientOne, colors.gradientTwo]} style={styles.saveBtn} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
-                                                                      <Text style={styles.saveBtnText}>{isLoading ? 'Saving...' : 'Save Changes'}</Text>
-                                                                 </LinearGradient>
-                                                            </TouchableOpacity>
-                                                       </View>
-                                                  ) : (
-                                                       <View style={{ gap: 10 }}>
-                                                            <TouchableOpacity onPress={() => setIsOpen(true)} disabled={isLoadingProfile} activeOpacity={0.8} style={styles.changePassBtn}>
-                                                                 <MaterialIcons name="lock-outline" color={colors.PrimaryColor} size={16} />
-                                                                 <Text style={styles.changePassText}>Change Password</Text>
-                                                            </TouchableOpacity>
-                                                            <TouchableOpacity
-                                                                 onPress={() => setDeleteModal(true)}
-                                                                 disabled={isLoadingProfile}
-                                                                 activeOpacity={0.8}
-                                                                 style={[styles.changePassBtn, { backgroundColor: 'white' }]}
-                                                            >
-                                                                 <MaterialIcons name="delete-outline" color={'red'} size={16} />
-                                                                 <Text style={[styles.changePassText, { color: 'red' }]}>Delete Account</Text>
-                                                            </TouchableOpacity>
-                                                       </View>
-                                                  )}
                                              </View>
                                         </View>
                                    </View>
-                              </ScrollView>
-                         </GradientBG>
-                    )}
-
-                    {/* ── Change Password Modal ── */}
-                    <ModalLayout
-                         isOpen={isOpen}
-                         setIsOpen={() => {
-                              setIsOpen(false);
-                              setChangePassword({ newPass: '', password: '', reNewPass: '' });
-                         }}
-                    >
-                         <View style={styles.ModalContainer}>
-                              <View style={styles.modalHeader}>
-                                   <View style={styles.modalIconBox}>
-                                        <MaterialIcons name="lock-outline" color={colors.PrimaryColor} size={22} />
+                              </GradientBG>
+                              {/* ── Card ── */}
+                              <View style={styles.card}>
+                                   {/* Card header */}
+                                   <View style={styles.cardHeader}>
+                                        <View style={{}}>
+                                             <Text style={styles.cardTitle}>Personal info</Text>
+                                        </View>
+                                        {!isEdit && (
+                                             <TouchableOpacity style={styles.editBtn} onPress={handleIsEdit} disabled={isLoadingProfile} activeOpacity={0.8}>
+                                                  <MaterialIcons name="edit" color={colors.PrimaryColor} size={15} />
+                                                  <Text style={styles.editBtnText}>Edit</Text>
+                                             </TouchableOpacity>
+                                        )}
                                    </View>
-                                   <Text style={styles.modalTitle}>Change Password</Text>
-                                   <Text style={styles.modalSub}>Choose a strong new password</Text>
-                                   <TouchableOpacity
-                                        style={styles.modalClose}
-                                        onPress={() => {
-                                             setIsOpen(false);
-                                             setChangePassword({ newPass: '', password: '', reNewPass: '' });
-                                        }}
-                                        disabled={isLoading}
-                                   >
-                                        <Entypo name="cross" color={colors.SecTextColor} size={22} />
-                                   </TouchableOpacity>
-                              </View>
-                              <View style={{ width: '100%', gap: 14 }}>
-                                   <Field
-                                        placeHolder="Current Password"
-                                        type="password"
-                                        value={password}
-                                        onChange={value => setChangePassword({ ...changePassword, password: value })}
-                                        disabled={isLoading}
-                                   />
-                                   <Field
-                                        placeHolder="New Password"
-                                        type="password"
-                                        isIcon
-                                        value={newPass}
-                                        onChange={value => setChangePassword({ ...changePassword, newPass: value })}
-                                        disabled={isLoading}
-                                        validate
-                                        onValidationChange={value => setIsValidPassword(value)}
-                                   />
-                                   <Field
-                                        placeHolder="Re-Enter New Password"
-                                        type="password"
-                                        isIcon
-                                        value={reNewPass}
-                                        onChange={value => setChangePassword({ ...changePassword, reNewPass: value })}
-                                        disabled={isLoading}
-                                   />
-                              </View>
-                              <Button name="Update Password" onPress={handleChangePass} isLoading={isLoading} disabled={isLoading} />
-                         </View>
-                    </ModalLayout>
 
-                    {/* ── Loading Overlay ── */}
-                    {visible && (
-                         <LoadingScreen
-                              status={status}
-                              onHide={() => setVisible(false)}
-                              image={require('../../../assets/Allah.png')}
-                              loadingTitle={DeleteStatus != 'uninitialized' ? 'Deleting Your Account...' : 'Updating Profile Details...'}
-                              successTitle="All done!"
-                              successSubtitle={DeleteStatus != 'uninitialized' ? 'Account Deleted Successfully...' : 'Profile Updated Successfully'}
-                              imageSize={40}
-                              errorTitle="Something went wrong"
-                              errorSubtitle="Please try again later"
-                              hideDelay={2000}
-                              backgroundColor={colors.SecondaryColor}
-                              style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 999 }}
-                         />
-                    )}
-                    <DeleteAccountModal
-                         visible={deleteModal}
-                         onClose={() => setDeleteModal(false)}
-                         onConfirm={() => {
-                              // apna delete API call yahan
-                              handleDeleteAccountHandler();
-                         }}
-                         isLoading={DeleteLoading}
-                         requireConfirmText={true} // false karo agar confirm typing nahi chahiye
-                    />
-               </View>
+                                   {/* Fields */}
+                                   <ProfileRow
+                                        label="Name"
+                                        icon={<FontAwesome5 name="user-alt" size={18} color={colors.PrimaryColor} />}
+                                        isEdit={isEdit}
+                                        isLoading={!!isLoadingProfile}
+                                        displayValue={userData?.username}
+                                   />
+
+                                   <ProfileRow
+                                        label="Country"
+                                        icon={<FontAwesome name="globe" size={18} color={colors.PrimaryColor} />}
+                                        isEdit={isEdit}
+                                        isLoading={!!isLoadingProfile}
+                                        displayValue={userData?.country || undefined}
+                                   />
+
+                                   <ProfileRow
+                                        label="City"
+                                        icon={<MaterialIcons name="location-city" size={18} color={colors.PrimaryColor} />}
+                                        isEdit={isEdit}
+                                        isLoading={!!isLoadingProfile}
+                                        displayValue={userData?.city.replace(userData?.country, '').replace(',', '') || undefined}
+                                   />
+
+                                   <ProfileRow
+                                        label="Email"
+                                        icon={<MaterialIcons name="email" size={18} color={colors.PrimaryColor} />}
+                                        isEdit={isEdit}
+                                        isLoading={!!isLoadingProfile}
+                                        displayValue={userData?.email}
+                                        rightText={
+                                             <View style={{ paddingHorizontal: 15, paddingVertical: 5, backgroundColor: '#d1eee9', borderRadius: 100 }}>
+                                                  <Text style={{ color: colors.PrimaryColor, fontFamily: Font.font700, fontSize: 12 }}>Verified</Text>
+                                             </View>
+                                        }
+                                   />
+
+                                   <ProfileRow
+                                        label="Phone"
+                                        icon={<FontAwesome name="phone" size={18} color={colors.PrimaryColor} />}
+                                        isEdit={isEdit}
+                                        isLoading={!!isLoadingProfile}
+                                        displayValue={(userData as DataTypes)?.phone}
+                                   />
+                              </View>
+
+                              {/* <View style={[styles.card]}>
+                                   <View style={styles.cardHeader}>
+                                        <View style={{}}>
+                                             <Text style={styles.cardTitle}>Activity</Text>
+                                        </View>
+                                   </View>
+
+                                   <ProfileRow
+                                        label="Manage your darood history"
+                                        icon={<Ionicons name="time" size={18} color={colors.PrimaryColor} />}
+                                        isLoading={false}
+                                        displayValue={'Darood History Management'}
+                                        onPress={() => navigation.navigate('History')}
+                                   />
+                              </View> */}
+
+                              <View style={[styles.card, { marginBottom: 30 }]}>
+                                   {/* Card header */}
+                                   <View style={styles.cardHeader}>
+                                        <View style={{}}>
+                                             <Text style={styles.cardTitle}>Settings</Text>
+                                        </View>
+                                   </View>
+
+                                   {/* Fields */}
+                                   <ProfileRow
+                                        label="Check your settings"
+                                        icon={<Ionicons name="settings" size={18} color={colors.PrimaryColor} />}
+                                        isLoading={false}
+                                        displayValue={'Setting'}
+                                        onPress={() => navigation.navigate('SettingScreen')}
+                                   />
+                              </View>
+                         </ScrollView>
+                    </View>
+               )}
+               {isEdit && <EditProfileScreen goBack={() => setIsEdit(false)} />}
           </>
      );
 };
@@ -567,8 +321,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
 export default Profile;
 
 const styles = StyleSheet.create({
-     Container: { width: '100%', gap: 0, justifyContent: 'center' },
-     gradient: { borderRadius: 0, width: '100%', justifyContent: 'center', paddingTop: 14 },
+     Container: { width: '100%', gap: 0, justifyContent: 'center', backgroundColor: '#f4f0f0b9' },
+     gradient: { borderBottomRightRadius: 20, borderBottomLeftRadius: 20, width: '100%', justifyContent: 'center', paddingTop: 14 },
 
      // ── Avatar ──
      avatarSection: { alignItems: 'center', marginBottom: 28, position: 'relative' },
@@ -587,92 +341,38 @@ const styles = StyleSheet.create({
      card: {
           marginHorizontal: 16,
           borderRadius: 20,
-          backgroundColor: colors.lightGreen,
-          paddingHorizontal: 20,
-          paddingVertical: 22,
+          backgroundColor: '#fff',
+          paddingHorizontal: 0,
+          paddingTop: 15,
           shadowColor: colors.PrimaryColor,
           shadowOpacity: 0.25,
           shadowRadius: 16,
           shadowOffset: { width: 0, height: 8 },
           elevation: 10,
      },
-     cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
-     cardTitle: { fontFamily: Font.font600, color: '#fff', fontSize: 18, letterSpacing: 0.2 },
-     cardSub: { fontFamily: Font.font500 || Font.font600, color: 'rgba(255,255,255,0.55)', fontSize: 12, marginTop: 2 },
+     cardHeader: {
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+
+          paddingHorizontal: 20,
+          paddingBottom: 15,
+          borderBottomWidth: 1,
+          borderBottomColor: '#c5c5c563',
+     },
+     cardTitle: { fontFamily: Font.font700, color: colors.PrimaryColor, fontSize: 18, letterSpacing: 0.3, textTransform: 'uppercase' },
+     cardSub: { fontFamily: Font.font500 || Font.font600, color: colors.SecTextColor, fontSize: 12, marginTop: 2 },
 
      editBtn: {
           flexDirection: 'row',
           alignItems: 'center',
           gap: 5,
-          backgroundColor: 'rgba(255,255,255,0.18)',
-          paddingHorizontal: 14,
+          backgroundColor: '#fff',
+          paddingHorizontal: 20,
           paddingVertical: 7,
           borderRadius: 20,
           borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.3)',
+          borderColor: colors.PrimaryColor,
      },
-     editBtnText: { fontFamily: Font.font600, color: '#fff', fontSize: 13 },
-
-     // ── Field styles inside card ──
-     fieldDiv: { backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 },
-     fieldInput: { backgroundColor: 'transparent', color: '#fff', fontFamily: Font.font600, fontSize: 15, paddingHorizontal: 0 },
-
-     // ── Buttons ──
-     btnRow: { flexDirection: 'row', gap: 12 },
-     cancelBtn: {
-          flex: 1,
-          height: 48,
-          justifyContent: 'center',
-          alignItems: 'center',
-          borderRadius: 14,
-          borderWidth: 1.5,
-          borderColor: 'rgba(255,255,255,0.4)',
-          backgroundColor: 'rgba(255,255,255,0.1)',
-     },
-     cancelBtnText: { fontFamily: Font.font600, color: '#fff', fontSize: 15 },
-     saveBtn: { height: 48, borderRadius: 14, justifyContent: 'center', alignItems: 'center' },
-     saveBtnText: { fontFamily: Font.font600, color: '#fff', fontSize: 15, letterSpacing: 0.3 },
-     changePassBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, height: 44, borderRadius: 12, backgroundColor: '#fff', marginTop: 4 },
-     changePassText: { fontFamily: Font.font600, color: colors.PrimaryColor, fontSize: 14, textDecorationLine: 'underline', textDecorationColor: colors.PrimaryColor },
-
-     // ── Modal ──
-     ModalContainer: { justifyContent: 'center', alignItems: 'center', gap: 18, width: '100%' },
-     modalHeader: { alignItems: 'center', width: '100%', position: 'relative', paddingBottom: 4 },
-     modalIconBox: { width: 52, height: 52, borderRadius: 16, backgroundColor: colors.PrimaryColor + '15', alignItems: 'center', justifyContent: 'center', marginBottom: 10 },
-     modalTitle: { fontFamily: Font.font600, fontSize: 18, color: colors.textColor, letterSpacing: 0.2 },
-     modalSub: { fontFamily: Font.font500 || Font.font600, fontSize: 12, color: colors.SecTextColor, marginTop: 3 },
-     modalClose: { position: 'absolute', right: 0, top: 0 },
-
-     phoneRow: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 0,
-     },
-     codeBox: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 10,
-          height: 48,
-          paddingHorizontal: 12,
-          borderTopLeftRadius: 5,
-          borderBottomLeftRadius: 5,
-          backgroundColor: 'rgba(255,255,255,0.15)',
-          borderWidth: 1,
-          borderColor: 'rgba(255,255,255,0.3)',
-          minWidth: 70,
-          justifyContent: 'center',
-     },
-     codeText: {
-          fontFamily: Font.font600,
-          fontSize: 14,
-          color: '#fff',
-     },
-     phoneInput: {
-          flex: 1,
-          borderTopRightRadius: 5,
-          borderBottomRightRadius: 5,
-          height: 48,
-          justifyContent: 'center',
-          paddingLeft: 10,
-     },
+     editBtnText: { fontFamily: Font.font600, color: colors.PrimaryColor, fontSize: 13 },
 });

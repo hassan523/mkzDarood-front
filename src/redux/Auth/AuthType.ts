@@ -1,6 +1,7 @@
 export interface LoginResponse {
      accessToken: string;
      refreshToken: string;
+     tokenExpiresAt: string;
      user: user;
 }
 
@@ -14,6 +15,7 @@ export interface LoginResquest {
 export interface RegisterResponse {
      accessToken: string;
      refreshToken: string;
+     tokenExpiresAt: string;
 
      user: {
           username: string;
