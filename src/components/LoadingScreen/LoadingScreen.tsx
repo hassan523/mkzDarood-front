@@ -226,7 +226,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
      }, [status]); // sirf status dependency — baki refs se lete hain
 
      const renderContent = () => {
-          if (status === 'pending' || status === 'uninitialized') {
+          if (status == 'pending' || status == 'uninitialized') {
                return (
                     <View style={styles.content}>
                          <SpinningRing size={ringSize} color={colors.PrimaryColor}>
@@ -237,7 +237,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                );
           }
 
-          if (status === 'fulfilled') {
+          if (status == 'fulfilled') {
                return (
                     <View style={styles.content}>
                          <StaticRing size={ringSize} color={colors.PrimaryColor}>

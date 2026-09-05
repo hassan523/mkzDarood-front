@@ -1,5 +1,7 @@
 import { useGetCounterQuery, useUpdateCounterMutation } from '../../redux/Counter/Counter';
 import ResToast from '../../components/ResToast/ResToast';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 export const useGetCounterHandler = () => {
      try {
@@ -16,6 +18,8 @@ export const useGetCounterHandler = () => {
 
 export const useUpdateCounterHandler = () => {
      const [updateCounterApi, { isLoading, isSuccess, status, error }] = useUpdateCounterMutation();
+     const selector = useSelector((state: RootState) => state?.userData);
+     const userId = selector?.data?.user?._id ?? '';
 
      const handleUpdate = async ({
           seq,
@@ -44,7 +48,11 @@ export const useUpdateCounterHandler = () => {
                const res = await updateCounterApi({
                     seq: num,
                     Token: Token,
+                    userId,
                });
+
+               console.log(res);
+
                if (res?.error) {
                     if ((res?.error as any)?.status === 403) {
                          ResToast({

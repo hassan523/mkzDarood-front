@@ -4,11 +4,11 @@ import colors from '../../utils/colors/colors';
 import Font from '../../utils/fonts/Font';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
-import { RootState } from 'src/redux/store';
 import { useSelector } from 'react-redux';
 import { useProfileData } from '../../model/Profile/ProfileModel';
 import FastImage from '@d11/react-native-fast-image';
 import Skeleton from '../SkeletonComp/Skeleton';
+import { RootState } from '../../redux/store';
 
 const CustomHeader = ({ showDrawerButton = true, navigation, style }: { showDrawerButton?: boolean; navigation: Navigation; style?: any }) => {
      const selector = useSelector((state: RootState) => state?.userData);

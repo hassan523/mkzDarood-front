@@ -16,8 +16,8 @@ const Counter = createApi({
           }),
 
           updateCounter: builder.mutation<GetCounterResponse, UpdateCounterRequest>({
-               query: ({ seq, Token }) => ({
-                    url: `/api/counter/update-seq`,
+               query: ({ seq, Token, userId }) => ({
+                    url: `/api/counter/update-seq/${userId}`,
                     method: 'PATCH',
                     body: { seq },
                     headers: {

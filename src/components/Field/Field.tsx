@@ -205,7 +205,7 @@ const Field: React.FC<FieldProps> = ({
           if (type === 'email') {
                return (
                     <View style={divStyle}>
-                         <EmailIcon name="email" size={20} color={iconColor ?? colors.PrimaryColor} />
+                         {isIcon && <EmailIcon name="email" size={20} color={iconColor ?? colors.PrimaryColor} />}
                          <TextInput
                               style={[inputStyle, { width: '90%', height: 45 }]}
                               placeholder={placeHolder || 'Email'}
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingHorizontal: 10,
+          paddingHorizontal: 5,
           height: 50,
      },
      divError: {

@@ -2,8 +2,20 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "src/utils/fonts/Amiri-Regular.ttf",
+      "sha1": "a5f4fe8279d587ca8e65b01159c405788850c6d3"
+    },
+    {
       "path": "src/utils/fonts/Font.ts",
-      "sha1": "dc191e651b5ca5cc0cada9ca0c100a233ef6b70d"
+      "sha1": "bebe05ad57991bd708d3f57e32fc685c3c78dda2"
+    },
+    {
+      "path": "src/utils/fonts/NotoNaskhArabic-Regular.ttf",
+      "sha1": "131ccab4370e368b9fdd11b31ba6a3c1f4015ac0"
+    },
+    {
+      "path": "src/utils/fonts/ScheherazadeNew-Regular.ttf",
+      "sha1": "2c8183413da139a56fc5b48e73042d8856b801ef"
     },
     {
       "path": "src/utils/fonts/Urbanist-Bold.ttf",

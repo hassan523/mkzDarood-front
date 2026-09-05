@@ -22,6 +22,12 @@ import { useLogoutMutation } from '../redux/Auth/Auth';
 import AsmaulHusna from '../screens/User/Home/AsmaulHusna/AsmaulHusna';
 import AsmaunNabi from '../screens/User/Home/AsmaunNabi/AsmaunNabi';
 import Entypo from 'react-native-vector-icons/Entypo';
+import History from '../screens/User/History/History';
+import PrivacyPolicy from '../screens/User/Profile/PrivacyPolicy';
+import FingerprintScreen from '../screens/User/Profile/FingerPrintScreen';
+import SettingScreen from '../screens/User/Profile/SettingScreen';
+import NewsDetail from '../screens/User/News/NewsDetail';
+import Darood from '../screens/User/Home/Darood/Darood';
 
 interface MainNavigation {
      initRoute: string;
@@ -41,6 +47,7 @@ function HomeStackScreen() {
                <HomeStack.Screen name="Tasbih" component={Tasbih} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaulHusna" component={AsmaulHusna} options={{ headerShown: false }} />
                <HomeStack.Screen name="AsmaunNabi" component={AsmaunNabi} options={{ headerShown: false }} />
+               <HomeStack.Screen name="Darood" component={Darood} options={{ headerShown: false }} />
                {!isLogin && (
                     <>
                          <HomeStack.Screen name="Login" component={Login} options={{ headerShown: false }} />
@@ -57,6 +64,7 @@ function NewsStackScreen() {
      return (
           <NewsStack.Navigator>
                <NewsStack.Screen name="News" component={News} options={{ headerShown: false }} />
+               <NewsStack.Screen name="NewsDetail" component={NewsDetail} options={{ headerShown: false }} />
           </NewsStack.Navigator>
      );
 }
@@ -65,6 +73,10 @@ function ProfileStackScreen() {
      return (
           <ProfileStack.Navigator>
                <ProfileStack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+               <ProfileStack.Screen name="History" component={History} options={{ headerShown: false }} />
+               <ProfileStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} options={{ headerShown: false }} />
+               <ProfileStack.Screen name="FingerPrintScreen" component={FingerprintScreen} options={{ headerShown: false }} />
+               <ProfileStack.Screen name="SettingScreen" component={SettingScreen} options={{ headerShown: false }} />
           </ProfileStack.Navigator>
      );
 }
@@ -208,14 +220,24 @@ const MainNavigation = ({ initRoute }: MainNavigation) => {
                          }}
                     />
                     {isLogin && (
-                         <Drawer.Screen
-                              name="ProfileStackScreen"
-                              component={ProfileStackScreen}
-                              options={{
-                                   drawerLabel: 'Profile',
-                                   drawerIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
-                              }}
-                         />
+                         <>
+                              <Drawer.Screen
+                                   name="History"
+                                   component={History}
+                                   options={{
+                                        drawerLabel: 'Darood History',
+                                        drawerIcon: ({ color, size }) => <Ionicons name="time" color={color} size={size} />,
+                                   }}
+                              />
+                              <Drawer.Screen
+                                   name="ProfileStackScreen"
+                                   component={ProfileStackScreen}
+                                   options={{
+                                        drawerLabel: 'Profile',
+                                        drawerIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+                                   }}
+                              />
+                         </>
                     )}
                </Drawer.Navigator>
           </NavigationContainer>
