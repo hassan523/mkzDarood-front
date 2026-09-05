@@ -84,11 +84,11 @@ const NewPassword = ({ navigation, route }: { navigation: Navigation; route: any
                     <LoadingScreen
                          status={status}
                          onHide={() => setVisible(false)}
-                         image={require('../../../assets/Allah.png')} // apni image yahan
+                         image={require('../../../assets/LoadingLogo.png')} // apni image yahan
                          loadingTitle="Authenticating..."
                          successTitle="All done!"
                          successSubtitle="Welcome back to Mkz Darood"
-                         imageSize={40}
+                         imageSize={70}
                          errorTitle="Login failed"
                          errorSubtitle="Check your credentials and try again"
                          hideDelay={1000}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, KeyboardAvoidingView, Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import useKeyboardStatus from '../../utils/IsKeyboardStatus/useKeyboardStatus';
@@ -93,83 +93,85 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({ visible, onClos
                </Animated.View>
 
                <View style={styles.container}>
-                    <Animated.View style={[styles.sheet, { height: isKeyboardOpen ? '95%' : 'auto', transform: [{ translateY: sheetTranslateY }] }]}>
-                         {/* Pill */}
-                         <View style={styles.pill} />
+                    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ width: '100%' }}>
+                         <Animated.View style={[styles.sheet, { height: isKeyboardOpen ? '95%' : 'auto', transform: [{ translateY: sheetTranslateY }] }]}>
+                              {/* Pill */}
+                              <View style={styles.pill} />
 
-                         {/* Close button */}
-                         <TouchableOpacity style={styles.closeBtn} onPress={onClose} disabled={isLoading}>
-                              <MaterialIcons name="close" size={20} color={colors.SecTextColor} />
-                         </TouchableOpacity>
+                              {/* Close button */}
+                              <TouchableOpacity style={styles.closeBtn} onPress={onClose} disabled={isLoading}>
+                                   <MaterialIcons name="close" size={20} color={colors.SecTextColor} />
+                              </TouchableOpacity>
 
-                         {/* Icon */}
-                         <Animated.View style={[styles.iconWrapper, { transform: [{ scale: iconScale }] }]}>
-                              <View style={styles.iconCircleOuter}>
-                                   <View style={styles.iconCircleInner}>
-                                        <MaterialIcons name="delete-forever" size={36} color={colors.errorRed} />
+                              {/* Icon */}
+                              <Animated.View style={[styles.iconWrapper, { transform: [{ scale: iconScale }] }]}>
+                                   <View style={styles.iconCircleOuter}>
+                                        <View style={styles.iconCircleInner}>
+                                             <MaterialIcons name="delete-forever" size={36} color={colors.errorRed} />
+                                        </View>
                                    </View>
+                              </Animated.View>
+
+                              {/* Title */}
+                              <Animated.View style={[styles.textBlock, { opacity: warningOpacity }]}>
+                                   <Text style={styles.title}>Delete Account</Text>
+                                   <Text style={styles.subtitle}>
+                                        This action is <Text style={styles.bold}>permanent</Text> and cannot be undone. All your data will be lost forever.
+                                   </Text>
+                              </Animated.View>
+
+                              {/* Warning bullets */}
+                              <Animated.View style={[styles.warningBox, { opacity: warningOpacity }]}>
+                                   {['Your profile will be permanently deleted', 'You will not be able to recover your account'].map((item, i) => (
+                                        <View key={i} style={styles.warningRow}>
+                                             <MaterialIcons name="warning-amber" size={14} color={colors.errorRed} />
+                                             <Text style={styles.warningText}>{item}</Text>
+                                        </View>
+                                   ))}
+                              </Animated.View>
+
+                              {/* Confirm input */}
+                              {requireConfirmText && (
+                                   <Animated.View style={[styles.inputBlock, { opacity: warningOpacity, transform: [{ translateX: shakeAnim }] }]}>
+                                        <Text style={styles.inputLabel}>
+                                             Type <Text style={styles.deleteWord}>DELETE</Text> to confirm
+                                        </Text>
+                                        <TextInput
+                                             style={[styles.input, confirmText.length > 0 && !isConfirmed && styles.inputError, isConfirmed && styles.inputSuccess]}
+                                             value={confirmText}
+                                             onChangeText={setConfirmText}
+                                             placeholder="Type DELETE here"
+                                             placeholderTextColor="#ccc"
+                                             autoCapitalize="characters"
+                                             editable={!isLoading}
+                                        />
+                                        {confirmText.length > 0 && !isConfirmed && <Text style={styles.inputHint}>Must type exactly: DELETE</Text>}
+                                   </Animated.View>
+                              )}
+
+                              {/* Buttons */}
+                              <View style={styles.btnRow}>
+                                   {/* Cancel */}
+                                   <TouchableOpacity style={styles.cancelBtn} onPress={onClose} disabled={isLoading} activeOpacity={0.8}>
+                                        <Text style={styles.cancelText}>Cancel</Text>
+                                   </TouchableOpacity>
+
+                                   {/* Delete */}
+                                   <TouchableOpacity onPress={handleDelete} disabled={isLoading} activeOpacity={isConfirmed ? 0.85 : 0.5} style={{ flex: 1 }}>
+                                        <View style={[styles.deleteBtn, !isConfirmed && styles.deleteBtnDisabled]}>
+                                             {isLoading ? (
+                                                  <Text style={styles.deleteBtnText}>Deleting...</Text>
+                                             ) : (
+                                                  <>
+                                                       <MaterialIcons name="delete-forever" size={18} color="#fff" />
+                                                       <Text style={styles.deleteBtnText}>Delete Account</Text>
+                                                  </>
+                                             )}
+                                        </View>
+                                   </TouchableOpacity>
                               </View>
                          </Animated.View>
-
-                         {/* Title */}
-                         <Animated.View style={[styles.textBlock, { opacity: warningOpacity }]}>
-                              <Text style={styles.title}>Delete Account</Text>
-                              <Text style={styles.subtitle}>
-                                   This action is <Text style={styles.bold}>permanent</Text> and cannot be undone. All your data will be lost forever.
-                              </Text>
-                         </Animated.View>
-
-                         {/* Warning bullets */}
-                         <Animated.View style={[styles.warningBox, { opacity: warningOpacity }]}>
-                              {['Your profile will be permanently deleted', 'You will not be able to recover your account'].map((item, i) => (
-                                   <View key={i} style={styles.warningRow}>
-                                        <MaterialIcons name="warning-amber" size={14} color={colors.errorRed} />
-                                        <Text style={styles.warningText}>{item}</Text>
-                                   </View>
-                              ))}
-                         </Animated.View>
-
-                         {/* Confirm input */}
-                         {requireConfirmText && (
-                              <Animated.View style={[styles.inputBlock, { opacity: warningOpacity, transform: [{ translateX: shakeAnim }] }]}>
-                                   <Text style={styles.inputLabel}>
-                                        Type <Text style={styles.deleteWord}>DELETE</Text> to confirm
-                                   </Text>
-                                   <TextInput
-                                        style={[styles.input, confirmText.length > 0 && !isConfirmed && styles.inputError, isConfirmed && styles.inputSuccess]}
-                                        value={confirmText}
-                                        onChangeText={setConfirmText}
-                                        placeholder="Type DELETE here"
-                                        placeholderTextColor="#ccc"
-                                        autoCapitalize="characters"
-                                        editable={!isLoading}
-                                   />
-                                   {confirmText.length > 0 && !isConfirmed && <Text style={styles.inputHint}>Must type exactly: DELETE</Text>}
-                              </Animated.View>
-                         )}
-
-                         {/* Buttons */}
-                         <View style={styles.btnRow}>
-                              {/* Cancel */}
-                              <TouchableOpacity style={styles.cancelBtn} onPress={onClose} disabled={isLoading} activeOpacity={0.8}>
-                                   <Text style={styles.cancelText}>Cancel</Text>
-                              </TouchableOpacity>
-
-                              {/* Delete */}
-                              <TouchableOpacity onPress={handleDelete} disabled={isLoading} activeOpacity={isConfirmed ? 0.85 : 0.5} style={{ flex: 1 }}>
-                                   <View style={[styles.deleteBtn, !isConfirmed && styles.deleteBtnDisabled]}>
-                                        {isLoading ? (
-                                             <Text style={styles.deleteBtnText}>Deleting...</Text>
-                                        ) : (
-                                             <>
-                                                  <MaterialIcons name="delete-forever" size={18} color="#fff" />
-                                                  <Text style={styles.deleteBtnText}>Delete Account</Text>
-                                             </>
-                                        )}
-                                   </View>
-                              </TouchableOpacity>
-                         </View>
-                    </Animated.View>
+                    </KeyboardAvoidingView>
                </View>
           </Modal>
      );

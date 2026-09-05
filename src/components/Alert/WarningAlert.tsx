@@ -1,15 +1,16 @@
 // components/WarningAlert.tsx
-import React, { useEffect, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
 interface WarningAlertProps {
-     message: string;
+     message?: string;
      title?: string;
      onDismiss?: () => void;
      visible?: boolean;
+     view?: ReactNode;
 }
 
-const WarningAlert: React.FC<WarningAlertProps> = ({ message, title = 'Warning', onDismiss, visible = true }) => {
+const WarningAlert: React.FC<WarningAlertProps> = ({ message, view, title = 'Warning', onDismiss, visible = true }) => {
      const translateY = useRef(new Animated.Value(-80)).current;
      const opacity = useRef(new Animated.Value(0)).current;
 
@@ -55,7 +56,7 @@ const WarningAlert: React.FC<WarningAlertProps> = ({ message, title = 'Warning',
                {/* Text */}
                <View style={styles.textWrapper}>
                     <Text style={styles.title}>{title}</Text>
-                    <Text style={styles.message}>{message}</Text>
+                    {view ? view : <Text style={styles.message}>{message}</Text>}
                </View>
 
                {/* Dismiss X (optional) */}
