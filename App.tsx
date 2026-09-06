@@ -22,7 +22,7 @@ export default function App() {
           <Provider store={store}>
                <SafeAreaProvider>
                     <GestureHandlerRootView style={{ flex: 1 }}>
-                         <StatusBar backgroundColor="#006860" translucent={false} />
+                         <StatusBar barStyle="light-content" />
                          <SafeAreaView
                               style={{ flex: 1, backgroundColor: '#1a7a6e' }} // 👈 background color match karo
                               edges={['top', 'bottom', 'left', 'right']}
