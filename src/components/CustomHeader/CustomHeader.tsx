@@ -6,7 +6,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Navigation from '../../utils/NavigationProps/NavigationProps';
 import { useSelector } from 'react-redux';
 import { useProfileData } from '../../model/Profile/ProfileModel';
-import FastImage from '@d11/react-native-fast-image';
 import Skeleton from '../SkeletonComp/Skeleton';
 import { RootState } from '../../redux/store';
 
@@ -17,6 +16,8 @@ const CustomHeader = ({ showDrawerButton = true, navigation, style }: { showDraw
 
      const getProfile = useProfileData({ Token: Token ?? '', id: id ?? '' });
      const userData = getProfile?.data?.profile;
+     const profileImage = userData?.profilePicture ? userData.profilePicture.replace('/image/upload/', '/image/upload/w_90,h_90,c_fill,q_auto,f_auto/') : undefined;
+     console.log({ profileImage, original: userData?.profilePicture });
      const isLoadingProfile = getProfile?.isLoading;
      const isLoggin = selector?.isLoggin;
 
@@ -36,12 +37,8 @@ const CustomHeader = ({ showDrawerButton = true, navigation, style }: { showDraw
                          <Skeleton width={45} height={45} borderRadius={10000} />
                     ) : (
                          <TouchableOpacity onPress={() => navigation.navigate('ProfileStackScreen')}>
-                              <FastImage
-                                   source={{
-                                        uri: userData?.profilePicture,
-                                        priority: FastImage.priority.high, // high priority load
-                                        cache: FastImage.cacheControl.immutable, // cache karo
-                                   }}
+                              <Image
+                                   source={userData?.profilePicture ? { uri: userData.profilePicture } : require('../../assets/dummyProfileImage.jpg')}
                                    style={{ width: 45, height: 45, borderRadius: 1000 }}
                               />
                          </TouchableOpacity>

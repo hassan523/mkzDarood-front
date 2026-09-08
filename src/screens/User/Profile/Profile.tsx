@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Animated, Image } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import Font from '../../../utils/fonts/Font';
 import colors from '../../../utils/colors/colors';
@@ -14,7 +14,6 @@ import CustomHeader from '../../../components/CustomHeader/CustomHeader';
 import Navigation from '../../../utils/NavigationProps/NavigationProps';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
-import FastImage from '@d11/react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import EditProfileScreen from './EditProfileScreen';
 import { windowWidth } from '../../../utils/dimensions/dimensions';
@@ -200,8 +199,8 @@ const Profile = ({ navigation }: { navigation: Navigation }) => {
                                                   {isLoadingProfile || imageLoading ? (
                                                        <Skeleton width={110} height={110} borderRadius={55} />
                                                   ) : profilePic ? (
-                                                       <FastImage
-                                                            source={{ uri: profilePic, priority: FastImage.priority.high, cache: FastImage.cacheControl.immutable }}
+                                                       <Image
+                                                            source={profilePic ? { uri: profilePic } : require('../../../assets/DummyPost.png')}
                                                             style={styles.avatarImage}
                                                             onLoad={() => setImageLoading(false)}
                                                             onError={() => setImageLoading(false)}

@@ -1,8 +1,7 @@
 // NewsDetail.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, FlatList, Linking, StatusBar, Modal } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, FlatList, Linking, Modal, Image } from 'react-native';
 import { useVideoPlayer, VideoView } from 'react-native-video';
-import FastImage from '@d11/react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import colors from '../../../utils/colors/colors';
@@ -35,8 +34,6 @@ const ImageViewerModal = ({ images, startIndex, visible, onClose }: { images: st
      return (
           <Modal visible={visible} transparent animationType="fade" statusBarTranslucent onRequestClose={onClose}>
                <View style={styles.modalRoot}>
-                    <StatusBar barStyle="light-content" backgroundColor="#000" />
-
                     {/* Close btn */}
                     <TouchableOpacity style={styles.modalCloseBtn} onPress={onClose} activeOpacity={0.8}>
                          <MaterialIcons name="close" size={22} color="#fff" />
@@ -64,7 +61,7 @@ const ImageViewerModal = ({ images, startIndex, visible, onClose }: { images: st
                          }}
                          renderItem={({ item }) => (
                               <View style={styles.modalImgContainer}>
-                                   <FastImage source={{ uri: item, priority: FastImage.priority.high }} style={styles.modalImg} resizeMode={FastImage.resizeMode.contain} />
+                                   <Image source={item ? { uri: item } : require('../../../assets/DummyPost.png')} style={styles.modalImg} />
                               </View>
                          )}
                     />
@@ -108,11 +105,7 @@ const ImageGridSection = ({ images }: { images: string[] }) => {
                               const isLast = i === MAX_VISIBLE - 1 && remaining > 0;
                               return (
                                    <TouchableOpacity key={i} style={styles.gridCell} onPress={() => openViewer(i)} activeOpacity={0.8}>
-                                        <FastImage
-                                             source={{ uri, priority: FastImage.priority.normal, cache: FastImage.cacheControl.immutable }}
-                                             style={styles.gridImg}
-                                             resizeMode={FastImage.resizeMode.cover}
-                                        />
+                                        <Image source={uri ? { uri: uri } : require('../../../assets/DummyPost.png')} style={styles.gridImg} />
                                         {isLast && (
                                              <View style={styles.moreOverlay}>
                                                   <Text style={styles.moreText}>+{remaining}</Text>
@@ -149,17 +142,11 @@ const NewsDetail = ({ navigation, route }: { navigation: Navigation; route: any 
 
      return (
           <View style={styles.root}>
-               <StatusBar barStyle="light-content" backgroundColor={colors.PrimaryColor} />
-
                <ScrollView showsVerticalScrollIndicator={false} bounces>
                     {/* ── Hero Image (single thumbnail[0]) ── */}
                     {heroImg ? (
                          <View style={styles.heroWrapper}>
-                              <FastImage
-                                   source={{ uri: heroImg, priority: FastImage.priority.high, cache: FastImage.cacheControl.immutable }}
-                                   style={styles.heroImg}
-                                   resizeMode={FastImage.resizeMode.cover}
-                              />
+                              <Image source={heroImg ? { uri: heroImg } : require('../../../assets/DummyPost.png')} style={styles.heroImg} />
                               <LinearGradient colors={['transparent', colors.PrimaryColor]} style={styles.heroGradient} />
                          </View>
                     ) : null}

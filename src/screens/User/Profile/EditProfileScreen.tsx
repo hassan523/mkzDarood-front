@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ImagePicker from 'react-native-image-crop-picker';
-import FastImage from '@d11/react-native-fast-image';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux/store';
 import { useProfileData, useUpdateProfile } from '../../../model/Profile/ProfileModel';
@@ -183,11 +182,11 @@ const EditProfileScreen = ({ goBack }: { goBack: any }) => {
                                              {isLoadingProfile ? (
                                                   <Skeleton width={100} height={100} borderRadius={50} />
                                              ) : profilePic ? (
-                                                  <FastImage
-                                                       source={{ uri: profilePic, priority: FastImage.priority.high, cache: FastImage.cacheControl.immutable }}
+                                                  <Image
+                                                       source={profilePic ? { uri: profilePic } : require('../../../assets/DummyPost.png')}
                                                        style={styles.avatarImg}
-                                                       onLoad={() => setImageLoading(false)}
                                                        onError={() => setImageLoading(false)}
+                                                       onLoad={() => setImageLoading(false)}
                                                   />
                                              ) : (
                                                   <LinearGradient colors={[colors.gradientOne, colors.gradientTwo]} style={styles.avatarFallback}>

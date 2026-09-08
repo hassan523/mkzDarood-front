@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View, Animated } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View, Animated, Image } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import colors from '../../../utils/colors/colors';
 import Font from '../../../utils/fonts/Font';
@@ -12,7 +12,6 @@ import { RootState } from '../../../redux/store';
 import { useSelector } from 'react-redux';
 import Skeleton from '../../../components/SkeletonComp/Skeleton';
 import { useIsFocused } from '@react-navigation/native';
-import FastImage from '@d11/react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -38,19 +37,12 @@ const NewsCard = ({ item, index, onPress }: { item: any; index: number; onPress:
                          {/* ── LEFT: Media Column ── */}
                          {item?.thumbnail.length > 0 && item?.video.length == 0 ? (
                               <View style={styles.mediaBox}>
-                                   <FastImage
-                                        source={{ uri: item.thumbnail?.[0], priority: FastImage.priority.normal, cache: FastImage.cacheControl.immutable }}
-                                        style={styles.thumbImg}
-                                        resizeMode={FastImage.resizeMode.cover}
-                                   />
+                                   <Image source={item.thumbnail?.[0] ? { uri: item.thumbnail?.[0] } : require('../../../assets/DummyPost.png')} style={styles.thumbImg} />
                               </View>
                          ) : item?.video.length > 0 ? (
                               <View style={styles.mediaBox}>
-                                   <FastImage
-                                        source={{ uri: item.thumbnail?.[0], priority: FastImage.priority.normal, cache: FastImage.cacheControl.immutable }}
-                                        style={styles.thumbImg}
-                                        resizeMode={FastImage.resizeMode.cover}
-                                   />
+                                   <Image source={item.thumbnail?.[0] ? { uri: item.thumbnail?.[0] } : require('../../../assets/DummyPost.png')} style={styles.thumbImg} />
+
                                    <View style={styles.playOverlay}>
                                         <View style={styles.playBtn}>
                                              <MaterialIcons name="play-arrow" size={22} color={colors.PrimaryColor} />
