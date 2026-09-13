@@ -1,0 +1,15 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "AppOptomization",
+    "main"
+  ],
+  "parent": {
+    "AppOptomization": "main",
+    "main": null
+  },
+  "order": [
+    "main",
+    "AppOptomization"
+  ]
+}
