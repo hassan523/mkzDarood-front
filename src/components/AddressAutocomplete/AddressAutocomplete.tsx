@@ -40,7 +40,7 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
      const [searchText, setSearchText] = useState('');
      const [suggestions, setSuggestions] = useState<Prediction[]>([]);
      const [loading, setLoading] = useState(false);
-     const searchInputRef = useRef<TextInput>(null);
+     const searchInputRef = useRef<React.ElementRef<typeof TextInput>>(null);
 
      // GET COUNTRY CODE
      const getCountryCode = async (placeId: string) => {
@@ -100,7 +100,9 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                fetchPlaceSuggestions('pakistan');
           }
 
-          setTimeout(() => searchInputRef.current?.focus(), 300);
+          setTimeout(() => {
+               searchInputRef.current?.focus();
+          }, 300);
      };
 
      // HANDLE SELECT
@@ -132,8 +134,23 @@ const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
                </TouchableOpacity>
 
                {/* MODAL */}
-               <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={handleClose}>
-                    <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+               <Modal
+                    visible={modalVisible}
+                    transparent
+                    animationType="slide"
+                    onRequestClose={handleClose}
+                    // IMPORTANT (Android): without this, the Modal draws above the keyboard
+                    // and KeyboardAvoidingView inside it never receives correct keyboard insets.
+                    statusBarTranslucent
+               >
+                    <KeyboardAvoidingView
+                         style={styles.modalOverlay}
+                         // FIX: Android was getting `undefined` before, so nothing pushed the
+                         // sheet up when the keyboard opened. 'height' works correctly for
+                         // bottom-sheet style modals on Android.
+                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+                    >
                          <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={handleClose} />
 
                          <View style={styles.modalContainer}>
