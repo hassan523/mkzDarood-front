@@ -3,7 +3,7 @@ const Font = {
      font500: 'Urbanist-Medium',
      font600: 'Urbanist-SemiBold',
      font700: 'Urbanist-Bold',
-     arabic400: 'ScheherazadeNew-Regular',
+     arabic400: 'Amiri-Regular',
 };
 
 export default Font;
